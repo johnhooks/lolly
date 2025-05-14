@@ -1,0 +1,12 @@
+/vendor/
+/bin/*.phar
+/tests/_wordpress
+/tests/Support/Data/dump.sql
+node_modules
+build
+.cache/
+.phpunit.result.cache
+.idea/
+.vscode/
+
+**/.claude/settings.local.json

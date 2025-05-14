@@ -1,0 +1,149 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "https://dozuki.zip/schemas/http-logging-config.json",
+    "title": "Dozuki log configuration.",
+    "description": "Configuration for the Dozuki WordPress logging plugin.",
+    "type": "object",
+    "properties": {
+        "version": {
+            "description": "The config schema version number.",
+            "type": "number"
+        },
+        "enabled": {
+            "description": "Whether the Dozuki logger is enabled.",
+            "type": "boolean"
+        },
+        "wp_rest_logging_enabled": {
+            "description": "Whether the WordPress REST API logging feature is enabled.",
+            "type": "boolean"
+        },
+        "wp_http_client_logging_enabled": {
+            "description": "Whether the WordPress HTTP client logging feature is enabled.",
+            "type": "boolean"
+        },
+        "http_redactions_enabled": {
+            "description": "Whether the HTTP logging redaction feature is enabled.",
+            "type": "boolean"
+        },
+        "http_whitelist_enabled": {
+            "description": "Whether the HTTP logging whitelist feature is enabled.",
+            "type": "boolean"
+        },
+        "http_redactions": {
+            "description": "The HTTP message redaction configuration.",
+            "type": "array",
+            "items": {
+                "title": "HTTP redaction set.",
+                "description": "A configuration of properties to redact from HTTP messages.",
+                "type": "object",
+                "properties": {
+                    "host": {
+                        "description": "The URL host value to match for redaction target.",
+                        "type": "string"
+                    },
+                    "paths": {
+                        "description": "The URL path redaction set.",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "path": {
+                                    "description": "The URL path value to match for redaction target.",
+                                    "type": "string"
+                                },
+                                "redactions": {
+                                    "description": "The redaction set.",
+                                    "type": "array",
+                                    "items": {
+                                        "title": "Redaction item.",
+                                        "description": "The target property redaction data.",
+                                        "type": "object",
+                                        "properties": {
+                                            "type": {
+                                                "description": "The HTTP redaction type.",
+                                                "type": "string",
+                                                "enum": ["*", "query", "header", "request", "response"]
+                                            },
+                                            "value": {
+                                                "description": "The value to match a redaction target property.",
+                                                "type": "string"
+                                            },
+                                            "remove": {
+                                                "description": "Whether the property should be entirely removed from the target.",
+                                                "type": "boolean"
+                                            }
+                                        },
+                                        "required": [
+                                            "type",
+                                            "value"
+                                        ]
+                                    }
+                                },
+                                "glob": {
+                                    "description": "Whether to glob match the URL path.",
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "path",
+                                "redactions"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "http_whitelist": {
+            "description": "The HTTP message whitelisting configuration.",
+            "type": "array",
+            "items": {
+                "title": "HTTP whitelist set.",
+                "description": "A configuration URLs to whitelist for HTTP message logging.",
+                "type": "object",
+                "properties": {
+                    "host": {
+                        "description": "The URL host value to match for whitelist target.",
+                        "type": "string"
+                    },
+                    "paths": {
+                        "description": "The URL path whitelist set.",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "path": {
+                                    "description": "The URL path value to match for a whitelist target.",
+                                    "type": "string"
+                                },
+                                "glob": {
+                                    "description": "Whether to glob match the URL path.",
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "path"
+                            ]
+                        }
+                    },
+                    "glob": {
+                        "description": "Whether to glob match the URL host.",
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "host"
+                ]
+            }
+        }
+    },
+    "required": [
+        "version",
+        "enabled",
+        "http_redactions_enabled",
+        "http_whitelist_enabled",
+        "wp_rest_logging_enabled",
+        "wp_http_client_logging_enabled",
+        "http_redactions",
+        "http_whitelist"
+    ]
+}

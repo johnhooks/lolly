@@ -1,0 +1,41 @@
+{
+    "name": "dozuki",
+    "version": "1.0.0",
+    "description": "Dozuki Logger WordPress plugin",
+    "main": "index.js",
+    "scripts": {
+        "build": "wp-scripts build",
+        "start": "wp-scripts start",
+        "lint:js": "wp-scripts lint-js",
+        "lint:style": "wp-scripts lint-style",
+        "format:js": "wp-scripts format-js",
+        "packages-update": "wp-scripts packages-update",
+        "check-types": "tsc --noEmit",
+        "lint:ts": "eslint 'resources/js/**/*.{ts,tsx}'"
+    },
+    "author": "",
+    "license": "GPL-2.0-or-later",
+    "devDependencies": {
+        "@types/node": "^20.10.5",
+        "@types/react": "^18.2.45",
+        "@types/react-dom": "^18.2.18",
+        "@typescript-eslint/eslint-plugin": "^6.15.0",
+        "@typescript-eslint/parser": "^6.15.0",
+        "@wordpress/eslint-plugin": "^19.0.1",
+        "@wordpress/scripts": "^28.0.2",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.0.1",
+        "prettier": "^3.1.1",
+        "typescript": "^5.3.3"
+    },
+    "dependencies": {
+        "@wordpress/api-fetch": "^7.0.1",
+        "@wordpress/components": "^28.0.3",
+        "@wordpress/compose": "^7.0.1",
+        "@wordpress/data": "^10.0.2",
+        "@wordpress/element": "^6.0.1",
+        "@wordpress/i18n": "^5.0.1",
+        "react": "18.3.1",
+        "react-dom": "18.3.1"
+    }
+}

@@ -1,0 +1,18 @@
+parameters:
+    level: 6
+    bootstrapFiles:
+        - dozuki.php
+
+    paths:
+        - dozuki.php
+        - src
+
+    scanFiles:
+        - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+
+    ignoreErrors:
+        -
+            messages:
+                - '#Method Dozuki::[a-z]+\(\) has parameter \$context with no value type specified in iterable type array.#'
+                - '#Parameter \#[1-2] \$message \(string\) of method Dozuki::[a-z]+\(\) should be contravariant with parameter#'
+            path: dozuki.php
