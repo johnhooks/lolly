@@ -37,16 +37,16 @@ using `$I->see()` style of methods over asserts.
 Commands:
 ```bash
 # Run all tests
-./vendor/bin/codecept run
+./vendor/bin/codecept run --no-ansi
 
 # Run unit tests only
-./vendor/bin/codecept run Wpunit
+./vendor/bin/codecept run Wpunit --no-ansi
 
 # Run end to end tests only
-./vendor/bin/codecept run EndToEnd 
+./vendor/bin/codecept run EndToEnd --no-ansi
 
 # Run a specific test
-./vendor/bin/codecept run Wpunit:SettingsTest
+./vendor/bin/codecept run Wpunit:SettingsTest --no-ansi
 ```
 
 ## Resources
