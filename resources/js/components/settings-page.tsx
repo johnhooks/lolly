@@ -18,7 +18,9 @@ import { SETTINGS_KEY } from '../constants';
 import { default as settingStore } from '../store';
 
 import AddHostButton from './add-host-button';
+import AddWhitelistHostButton from './add-whitelist-host-button';
 import HttpRedactionOverview from './http-redaction-overview';
+import HttpWhitelistOverview from './http-whitelist-overview';
 
 export default function SettingsPage(): React.ReactNode {
     const { settings, isSaving, message, isEnabled } = useSelect(
@@ -65,70 +67,72 @@ export default function SettingsPage(): React.ReactNode {
                     </h2>
                 </CardHeader>
                 <CardBody>
-                    <ToggleControl
-                        label={__('Enable', 'dozuki')}
-                        checked={settings.enabled}
-                        onChange={(value: boolean) =>
-                            updateSetting('enabled', value)
-                        }
-                        help={__('Enable Dozuki logging.', 'dozuki')}
-                        __nextHasNoMarginBottom
-                    />
-                    <ToggleControl
-                        label={__('REST API Logging', 'dozuki')}
-                        checked={settings.wp_rest_logging_enabled}
-                        onChange={(value: boolean) =>
-                            updateSetting('wp_rest_logging_enabled', value)
-                        }
-                        disabled={!isEnabled}
-                        help={__(
-                            'Enable WordPress REST API logging.',
-                            'dozuki'
-                        )}
-                        __nextHasNoMarginBottom
-                    />
-                    <ToggleControl
-                        label={__('HTTP Client Logging', 'dozuki')}
-                        checked={settings.wp_http_client_logging_enabled}
-                        onChange={(value: boolean) =>
-                            updateSetting(
-                                'wp_http_client_logging_enabled',
-                                value
-                            )
-                        }
-                        disabled={!isEnabled}
-                        help={__(
-                            'Enable WordPress HTTP client logging.',
-                            'dozuki'
-                        )}
-                        __nextHasNoMarginBottom
-                    />
-                    <ToggleControl
-                        label={__('HTTP Redactions', 'dozuki')}
-                        checked={settings.http_redactions_enabled}
-                        onChange={(value: boolean) =>
-                            updateSetting('http_redactions_enabled', value)
-                        }
-                        disabled={!isEnabled}
-                        help={__(
-                            'Enable the HTTP Redactions feature.',
-                            'dozuki'
-                        )}
-                        __nextHasNoMarginBottom
-                    />
-                    <ToggleControl
-                        label={__('HTTP Whitelist', 'dozuki')}
-                        checked={settings.http_whitelist_enabled}
-                        onChange={(value: boolean) =>
-                            updateSetting('http_whitelist_enabled', value)
-                        }
-                        disabled={!isEnabled}
-                        help={__(
-                            'Enable the HTTP Whitelist feature.',
-                            'dozuki'
-                        )}
-                        __nextHasNoMarginBottom
-                    />
+                    <VStack spacing={4}>
+                        <ToggleControl
+                            label={__('Enable', 'dozuki')}
+                            checked={settings.enabled}
+                            onChange={(value: boolean) =>
+                                updateSetting('enabled', value)
+                            }
+                            help={__('Enable Dozuki logging.', 'dozuki')}
+                            __nextHasNoMarginBottom
+                        />
+                        <ToggleControl
+                            label={__('REST API Logging', 'dozuki')}
+                            checked={settings.wp_rest_logging_enabled}
+                            onChange={(value: boolean) =>
+                                updateSetting('wp_rest_logging_enabled', value)
+                            }
+                            disabled={!isEnabled}
+                            help={__(
+                                'Enable WordPress REST API logging.',
+                                'dozuki'
+                            )}
+                            __nextHasNoMarginBottom
+                        />
+                        <ToggleControl
+                            label={__('HTTP Client Logging', 'dozuki')}
+                            checked={settings.wp_http_client_logging_enabled}
+                            onChange={(value: boolean) =>
+                                updateSetting(
+                                    'wp_http_client_logging_enabled',
+                                    value
+                                )
+                            }
+                            disabled={!isEnabled}
+                            help={__(
+                                'Enable WordPress HTTP client logging.',
+                                'dozuki'
+                            )}
+                            __nextHasNoMarginBottom
+                        />
+                        <ToggleControl
+                            label={__('HTTP Redactions', 'dozuki')}
+                            checked={settings.http_redactions_enabled}
+                            onChange={(value: boolean) =>
+                                updateSetting('http_redactions_enabled', value)
+                            }
+                            disabled={!isEnabled}
+                            help={__(
+                                'Enable the HTTP Redactions feature.',
+                                'dozuki'
+                            )}
+                            __nextHasNoMarginBottom
+                        />
+                        <ToggleControl
+                            label={__('HTTP Whitelist', 'dozuki')}
+                            checked={settings.http_whitelist_enabled}
+                            onChange={(value: boolean) =>
+                                updateSetting('http_whitelist_enabled', value)
+                            }
+                            disabled={!isEnabled}
+                            help={__(
+                                'Enable the HTTP Whitelist feature.',
+                                'dozuki'
+                            )}
+                            __nextHasNoMarginBottom
+                        />
+                    </VStack>
                 </CardBody>
             </Card>
 
@@ -143,6 +147,20 @@ export default function SettingsPage(): React.ReactNode {
                         </HStack>
                     </CardHeader>
                     <HttpRedactionOverview />
+                </Card>
+            )}
+
+            {isEnabled && settings.http_whitelist_enabled && (
+                <Card>
+                    <CardHeader>
+                        <HStack justify="space-between">
+                            <h2 style={{ margin: 0 }}>
+                                {__('HTTP Whitelist Settings', 'dozuki')}
+                            </h2>
+                            <AddWhitelistHostButton />
+                        </HStack>
+                    </CardHeader>
+                    <HttpWhitelistOverview />
                 </Card>
             )}
 

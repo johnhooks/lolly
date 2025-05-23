@@ -1,4 +1,4 @@
-import type { State, Settings, HttpRedactionSet } from './types';
+import type { State, Settings, HttpRedactionSet, HttpWhitelistSet } from './types';
 
 export const getSettings = (state: State): Settings => {
     return state.settings;
@@ -18,6 +18,10 @@ export const isEnabled = (state: State): boolean => {
 
 export const getHttpRedactions = (state: State): HttpRedactionSet[] => {
     return state.settings.http_redactions;
+};
+
+export const getHttpWhitelist = (state: State): HttpWhitelistSet[] => {
+    return state.settings.http_whitelist;
 };
 
 export const isHttpRedactionsEnabled = (state: State): boolean => {
@@ -42,6 +46,7 @@ export default {
     getMessage,
     isEnabled,
     getHttpRedactions,
+    getHttpWhitelist,
     isHttpRedactionsEnabled,
     isHttpWhitelistEnabled,
     isWpRestLoggingEnabled,

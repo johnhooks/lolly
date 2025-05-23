@@ -9,6 +9,13 @@ export const UPDATE_PATH = 'UPDATE_PATH';
 export const REMOVE_PATH = 'REMOVE_PATH';
 export const ADD_PATH = 'ADD_PATH';
 export const UPDATE_REDACTIONS = 'UPDATE_REDACTIONS';
+export const UPDATE_WHITELIST_HOST = 'UPDATE_WHITELIST_HOST';
+export const UPDATE_WHITELIST_HOST_GLOB = 'UPDATE_WHITELIST_HOST_GLOB';
+export const REMOVE_WHITELIST_HOST = 'REMOVE_WHITELIST_HOST';
+export const ADD_WHITELIST_HOST = 'ADD_WHITELIST_HOST';
+export const UPDATE_WHITELIST_PATH = 'UPDATE_WHITELIST_PATH';
+export const REMOVE_WHITELIST_PATH = 'REMOVE_WHITELIST_PATH';
+export const ADD_WHITELIST_PATH = 'ADD_WHITELIST_PATH';
 export const SET_SAVING = 'SET_SAVING';
 export const SET_MESSAGE = 'SET_MESSAGE';
 
@@ -76,6 +83,51 @@ export const updateRedactions = (
     redactions,
 });
 
+export const updateWhitelistHost = (hostIndex: number, host: string) => ({
+    type: UPDATE_WHITELIST_HOST,
+    hostIndex,
+    host,
+});
+
+export const updateWhitelistHostGlob = (hostIndex: number, glob: boolean) => ({
+    type: UPDATE_WHITELIST_HOST_GLOB,
+    hostIndex,
+    glob,
+});
+
+export const removeWhitelistHost = (hostIndex: number) => ({
+    type: REMOVE_WHITELIST_HOST,
+    hostIndex,
+});
+
+export const addWhitelistHost = () => ({
+    type: ADD_WHITELIST_HOST,
+});
+
+export const updateWhitelistPath = (
+    hostIndex: number,
+    pathIndex: number,
+    field: 'path' | 'glob',
+    value: string | boolean
+) => ({
+    type: UPDATE_WHITELIST_PATH,
+    hostIndex,
+    pathIndex,
+    field,
+    value,
+});
+
+export const removeWhitelistPath = (hostIndex: number, pathIndex: number) => ({
+    type: REMOVE_WHITELIST_PATH,
+    hostIndex,
+    pathIndex,
+});
+
+export const addWhitelistPath = (hostIndex: number) => ({
+    type: ADD_WHITELIST_PATH,
+    hostIndex,
+});
+
 export const setSaving = (isSaving: boolean) => ({
     type: SET_SAVING,
     isSaving,
@@ -96,6 +148,13 @@ export default {
     removePath,
     addPath,
     updateRedactions,
+    updateWhitelistHost,
+    updateWhitelistHostGlob,
+    removeWhitelistHost,
+    addWhitelistHost,
+    updateWhitelistPath,
+    removeWhitelistPath,
+    addWhitelistPath,
     setSaving,
     setMessage,
 };

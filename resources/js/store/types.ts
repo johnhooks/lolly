@@ -15,6 +15,17 @@ export interface HttpRedactionSet {
     paths: PathRedaction[];
 }
 
+export interface PathWhitelist {
+    path: string;
+    glob?: boolean;
+}
+
+export interface HttpWhitelistSet {
+    host: string;
+    paths: PathWhitelist[];
+    glob?: boolean;
+}
+
 export interface Settings {
     enabled: boolean;
     http_redactions_enabled: boolean;
@@ -22,7 +33,7 @@ export interface Settings {
     wp_rest_logging_enabled: boolean;
     wp_http_client_logging_enabled: boolean;
     http_redactions: HttpRedactionSet[];
-    http_whitelist: string[];
+    http_whitelist: HttpWhitelistSet[];
 }
 
 export interface State {
