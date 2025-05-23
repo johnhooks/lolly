@@ -17,6 +17,7 @@ import { __ } from '@wordpress/i18n';
 import { SETTINGS_KEY } from '../constants';
 import { default as settingStore } from '../store';
 
+import AddHostButton from './add-host-button';
 import HttpRedactionOverview from './http-redaction-overview';
 
 export default function SettingsPage(): React.ReactNode {
@@ -134,10 +135,11 @@ export default function SettingsPage(): React.ReactNode {
             {isEnabled && settings.http_redactions_enabled && (
                 <Card>
                     <CardHeader>
-                        <HStack>
+                        <HStack justify="space-between">
                             <h2 style={{ margin: 0 }}>
                                 {__('HTTP Redaction Settings', 'dozuki')}
                             </h2>
+                            <AddHostButton />
                         </HStack>
                     </CardHeader>
                     <HttpRedactionOverview />

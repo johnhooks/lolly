@@ -33,11 +33,6 @@ interface FlatRedactionItem {
     redactionIndex: number;
 }
 
-interface EditingHost {
-    hostIndex: number;
-    isNew: boolean;
-}
-
 interface EditingPath {
     hostIndex: number;
     pathIndex: number;
@@ -64,10 +59,9 @@ export default function HttpRedactionOverview(): React.ReactNode {
         return select(settingStore).getHttpRedactions();
     }, []);
 
-    const { updateHost, addHost, updatePath, addPath, updateRedactions } =
+    const { updateHost, updatePath, addPath, updateRedactions } =
         useDispatch(settingStore);
 
-    const [editingHost, setEditingHost] = useState<EditingHost | null>(null);
     const [editingPath, setEditingPath] = useState<EditingPath | null>(null);
     const [editingRedaction, setEditingRedaction] =
         useState<EditingRedaction | null>(null);
@@ -243,10 +237,11 @@ export default function HttpRedactionOverview(): React.ReactNode {
             callback: (items: FlatRedactionItem[]) => {
                 if (items.length === 1) {
                     const item = items[0];
-                    setEditingHost({
-                        hostIndex: item.hostIndex,
-                        isNew: false,
-                    });
+                    const currentHost = redactionSets[item.hostIndex].host;
+                    const newHost = prompt(__('Enter new host:', 'dozuki'), currentHost);
+                    if (newHost !== null && newHost !== currentHost) {
+                        updateHost(item.hostIndex, newHost);
+                    }
                 }
             },
         },
@@ -297,23 +292,6 @@ export default function HttpRedactionOverview(): React.ReactNode {
         setEditingRedaction(null);
     };
 
-    const handleSaveHost = (formData: { host: string }) => {
-        if (!editingHost) return;
-
-        const { hostIndex, isNew } = editingHost;
-        if (isNew) {
-            addHost();
-            // Update the newly added host with the host value
-            setTimeout(() => {
-                const newHostIndex = redactionSets.length;
-                updateHost(newHostIndex, formData.host);
-            }, 0);
-        } else {
-            updateHost(hostIndex, formData.host);
-        }
-        setEditingHost(null);
-    };
-
     const handleSavePath = (formData: { path: string; glob: boolean }) => {
         if (!editingPath) return;
 
@@ -343,14 +321,6 @@ export default function HttpRedactionOverview(): React.ReactNode {
         ];
     };
 
-    const getCurrentHost = () => {
-        if (!editingHost || editingHost.isNew) {
-            return { host: '' };
-        }
-        const { hostIndex } = editingHost;
-        return { host: redactionSets[hostIndex].host };
-    };
-
     const getCurrentPath = () => {
         if (!editingPath || editingPath.isNew) {
             return { path: '', glob: false };
@@ -363,17 +333,6 @@ export default function HttpRedactionOverview(): React.ReactNode {
     return (
         <>
             <VStack spacing={4}>
-                <HStack>
-                    <Button
-                        variant="primary"
-                        onClick={() => {
-                            setEditingHost({ hostIndex: -1, isNew: true });
-                        }}
-                    >
-                        {__('Add Host', 'dozuki')}
-                    </Button>
-                </HStack>
-
                 {flatRedactions.length === 0 ? (
                     <div
                         style={{
@@ -385,7 +344,7 @@ export default function HttpRedactionOverview(): React.ReactNode {
                         <p>
                             {__('No redaction rules configured yet.', 'dozuki')}
                         </p>
-                        <p>{__('Add a host to get started.', 'dozuki')}</p>
+                        <p>{__('Click "Add Host" above to create your first redaction configuration.', 'dozuki')}</p>
                     </div>
                 ) : (
                     <DataViews
@@ -408,16 +367,6 @@ export default function HttpRedactionOverview(): React.ReactNode {
                     onSave={handleSaveRedaction}
                     onCancel={() => setEditingRedaction(null)}
                     isNew={editingRedaction.isNew}
-                />
-            )}
-
-            {/* Host Edit Modal */}
-            {editingHost && (
-                <HostEditModal
-                    host={getCurrentHost()}
-                    onSave={handleSaveHost}
-                    onCancel={() => setEditingHost(null)}
-                    isNew={editingHost.isNew}
                 />
             )}
 
@@ -502,53 +451,6 @@ function RedactionEditModal({
                     <Button variant="primary" onClick={handleSave}>
                         {isNew
                             ? __('Add Redaction', 'dozuki')
-                            : __('Save Changes', 'dozuki')}
-                    </Button>
-                </HStack>
-            </VStack>
-        </Modal>
-    );
-}
-
-interface HostEditModalProps {
-    host: { host: string };
-    onSave: (data: { host: string }) => void;
-    onCancel: () => void;
-    isNew: boolean;
-}
-
-function HostEditModal({ host, onSave, onCancel, isNew }: HostEditModalProps) {
-    const [hostValue, setHostValue] = useState(host.host);
-
-    const handleSave = () => {
-        onSave({ host: hostValue });
-    };
-
-    return (
-        <Modal
-            title={isNew ? __('Add Host', 'dozuki') : __('Edit Host', 'dozuki')}
-            onRequestClose={onCancel}
-            size="medium"
-        >
-            <VStack spacing={4}>
-                <TextControl
-                    label={__('Host', 'dozuki')}
-                    value={hostValue}
-                    onChange={setHostValue}
-                    placeholder="api.example.com, *.example.com"
-                    help={__(
-                        'The hostname or domain pattern to match',
-                        'dozuki'
-                    )}
-                />
-
-                <HStack justify="right">
-                    <Button variant="tertiary" onClick={onCancel}>
-                        {__('Cancel', 'dozuki')}
-                    </Button>
-                    <Button variant="primary" onClick={handleSave}>
-                        {isNew
-                            ? __('Add Host', 'dozuki')
                             : __('Save Changes', 'dozuki')}
                     </Button>
                 </HStack>
