@@ -1,21 +1,2 @@
-:root {
-    --white: #fff;
-    --border-gray: #e0e0e0;
-}
-
-.dozuki-settings {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-
-    & .dozuki-settings__panel {
-        display: flex;
-        flex-direction: column;
-        gap: 1.25rem;
-
-        padding: 1rem;
-
-        background: var(--white);
-        border: 1px solid var(--border-gray);
-    }
-}
+@import '@wordpress/dataviews/build-style/style.css';
+@import '@wordpress/dataviews/build-style/style-rtl.css';
