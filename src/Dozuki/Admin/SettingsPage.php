@@ -52,7 +52,7 @@ class SettingsPage {
 
         wp_enqueue_style(
             'dozuki-admin-styles',
-            plugin_dir_url( DOZUKI_PLUGIN_FILE ) . 'build/admin.css',
+            plugin_dir_url( DOZUKI_PLUGIN_FILE ) . 'build/style-admin.css',
             [ 'wp-components' ],
             $asset['version']
         );
