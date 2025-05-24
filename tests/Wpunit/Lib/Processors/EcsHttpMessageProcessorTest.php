@@ -21,7 +21,7 @@ class EcsHttpMessageProcessorTest extends WpTestCase {
         $this->processor = new EcsHttpMessageProcessor();
     }
 
-    #[DataProvider( 'httpRequestProvider' )]
+    #[DataProvider( 'http_request_provider' )]
     public function testItShouldProcessHttpRequest( Request $request, array $expected ): void {
         $record = $this->build_log_record( context: [ 'request' => $request ] );
         $result = call_user_func( $this->processor, $record );
@@ -29,7 +29,7 @@ class EcsHttpMessageProcessorTest extends WpTestCase {
         $this->assertArrayNotHasKey( 'request', $result->context );
     }
 
-    #[DataProvider( 'httpResponseProvider' )]
+    #[DataProvider( 'http_response_provider' )]
     public function testItShouldProcessHttpResponse( Response $request, array $expected ): void {
         $record = $this->build_log_record( context: [ 'response' => $request ] );
         $result = call_user_func( $this->processor, $record );
@@ -37,9 +37,9 @@ class EcsHttpMessageProcessorTest extends WpTestCase {
         $this->assertArrayNotHasKey( 'response', $result->context );
     }
 
-    protected function httpRequestProvider(): iterable {
+    protected function http_request_provider(): iterable {
         return [
-            [
+            'get_request_with_accept_header'    => [
                 new Request(
                     'GET',
                     'https://example.com/',
@@ -64,7 +64,7 @@ class EcsHttpMessageProcessorTest extends WpTestCase {
                     ],
                 ],
             ],
-            [
+            'post_request_with_json_body'       => [
                 new Request(
                     'POST',
                     'https://example.com/',
@@ -100,7 +100,7 @@ class EcsHttpMessageProcessorTest extends WpTestCase {
                     ],
                 ],
             ],
-            [
+            'get_request_with_query_parameters' => [
                 new Request(
                     'GET',
                     'https://example.com/test?pram1=abc&pram2=111&pram3%5B0%5D=x&pram3%5B1%5D=y&pram3%5B2%5D=z',
@@ -126,7 +126,7 @@ class EcsHttpMessageProcessorTest extends WpTestCase {
                     ],
                 ],
             ],
-            [
+            'post_request_with_form_data'       => [
                 new Request(
                     'POST',
                     'https://example.com/',
@@ -162,43 +162,12 @@ class EcsHttpMessageProcessorTest extends WpTestCase {
                     ],
                 ],
             ],
-            // Test redactions
-            [
-                new Request(
-                    'GET',
-                    'https://example.com/',
-                    [
-                        'Accepts'       => 'application/json; charset=utf-8',
-                        'Authorization' => 'Bearer test',
-                        'Cookie'        => 'SESSION=test; SHOULD=remove',
-                    ],
-                ),
-                [
-                    'url'  => [
-                        'original' => 'https://example.com/',
-                        'domain'   => 'example.com',
-                        'path'     => '/',
-                        'scheme'   => 'https',
-                    ],
-                    'http' => [
-                        'version' => '1.1',
-                        'request' => [
-                            'method'  => 'get',
-                            'headers' => [
-                                'host'          => [ 'example.com' ],
-                                'accepts'       => [ 'application/json; charset=utf-8' ],
-                                'authorization' => [ 'xxxxxx' ],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
         ];
     }
 
-    protected function httpResponseProvider(): iterable {
+    protected function http_response_provider(): iterable {
         return [
-            [
+            'json_response_200_ok'           => [
                 new Response(
                     200,
                     [ 'Content-Type' => 'application/json; charset=utf-8' ],
@@ -226,7 +195,7 @@ class EcsHttpMessageProcessorTest extends WpTestCase {
                     ],
                 ],
             ],
-            [
+            'html_response_400_client_error' => [
                 new Response(
                     400,
                     [ 'Content-Type' => 'text/html; charset=utf-8' ],

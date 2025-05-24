@@ -76,6 +76,14 @@ final class DefaultRedactor implements Redactors\HttpMessage {
             return $url;
         }
 
+        if ( count( $query_redactions ) === 1 && $query_redactions[0]->value === '*' ) {
+            if ( $query_redactions[0]->should_remove ) {
+                return $url->withQuery( '' );
+            } else {
+                return $url->withQuery( 'redacted=1' );
+            }
+        }
+
         return $url->withQuery( $this->redact_query_params( $url->getQuery(), $query_redactions ) );
     }
 
@@ -88,19 +96,39 @@ final class DefaultRedactor implements Redactors\HttpMessage {
      * @return T
      */
     private function redact_headers( Context $context, $message ) {
-        $header_redactions = $this->get_redactions( $context, HttpRedactionType::Header );
+        $redactions = $this->get_redactions( $context, HttpRedactionType::Header );
 
-        // @todo How can redact all be handled better?
-        if ( ! is_array( $header_redactions ) ) {
-            foreach ( $message->getHeaders() as $header => $_ ) {
-                $message = $message->withHeader( $header, '[redacted]' );
+        if ( count( $redactions ) === 0 ) {
+            return $message;
+        }
+
+        if ( count( $redactions ) === 1 && $redactions[0]->value === '*' ) {
+            $headers = $message->getHeaders();
+            $should_remove = $redactions[0]->should_remove;
+
+            foreach ( $headers as $header => $_ ) {
+                if ( $should_remove ) {
+                    $message = $message->withoutHeader( $header );
+                } else {
+                    $message = $message->withHeader( $header, 'redacted' );
+                }
             }
 
             return $message;
         }
 
-        foreach ( $header_redactions as $header ) {
-            $message = $message->withHeader( $header, '[redacted]' );
+        foreach ( $redactions as $redaction ) {
+            $headers = $message->getHeaders();
+
+            foreach ( $headers as $header => $_ ) {
+                if ( strtolower( $redaction->value ) === strtolower( $header ) ) {
+                    if ( $redaction->should_remove ) {
+                        $message = $message->withoutHeader( $header );
+                    } else {
+                        $message = $message->withHeader( $header, 'redacted' );
+                    }
+                }
+            }
         }
 
         return $message;
@@ -116,19 +144,29 @@ final class DefaultRedactor implements Redactors\HttpMessage {
      * @return T
      */
     private function redact_body( Context $context, $message ) {
-        $body_redactions = $message instanceof RequestInterface
+        $redactions = $message instanceof RequestInterface
             ? $this->get_redactions( $context, HttpRedactionType::Request )
             : $this->get_redactions( $context, HttpRedactionType::Response );
 
+        if ( count( $redactions ) === 0 ) {
+            return $message;
+        }
+
         $content_type = $message->getHeaderLine( 'Content-Type' );
 
-        if ( $body_redactions === true && $this->content_type_is_url_encoded( $content_type ) ) {
-            $body = 'redacted=1';
-        } elseif ( $body_redactions === true ) {
-            $body = '"[redacted]"';
-        } else {
-            $body = $this->redact_body_content( $message->getBody()->getContents(), $body_redactions, $content_type );
+        if ( count( $redactions ) === 1 && $redactions[0]->value === '*' ) {
+            if ( $redactions[0]->should_remove ) {
+                return $message->withBody( Utils::streamFor() );
+            } elseif ( $this->content_type_is_json( $content_type ) ) {
+                return $message->withBody( Utils::streamFor( '"redacted"' ) );
+            } elseif ( $this->content_type_is_url_encoded( $content_type ) ) {
+                return $message->withBody( Utils::streamFor( 'redacted=1' ) );
+            } else {
+                return $message->withBody( Utils::streamFor( 'redacted' ) );
+            }
         }
+
+        $body = $this->redact_body_content( $message->getBody()->getContents(), $redactions, $content_type );
 
         return $message->withBody( Utils::streamFor( $body ) );
     }
@@ -197,9 +235,9 @@ final class DefaultRedactor implements Redactors\HttpMessage {
      *
      * If encode/decode fails, the entire JSON data structure is redacted.
      *
-     * @param string                  $content
+     * @param string              $content
      * @param list<RedactionItem> $redactions
-     * @param string                  $content_type
+     * @param string              $content_type
      *
      * @return string The redacted data.
      */
@@ -214,7 +252,7 @@ final class DefaultRedactor implements Redactors\HttpMessage {
             return $this->redact_query_params( $content, $redactions );
         }
 
-        return '[redacted]';
+        return 'redacted';
     }
 
     /**
@@ -222,7 +260,7 @@ final class DefaultRedactor implements Redactors\HttpMessage {
      *
      * If encode/decode fail, the entire JSON data structure is redacted.
      *
-     * @param string                  $content
+     * @param string              $content
      * @param list<RedactionItem> $redactions
      *
      * @return string The re-encoded and redacted data.
@@ -250,11 +288,11 @@ final class DefaultRedactor implements Redactors\HttpMessage {
     /**
      * Recursively redact keys from an associative array.
      *
-     * @param array                   $data
+     * @param array               $data
      * @param list<RedactionItem> $redactions
-     * @param bool                    $is_query
+     * @param bool                $is_query
      *
-     * @return array
+     * @return array|string The redacted data.
      */
     private function redact_keys(
         array $data,
@@ -262,13 +300,16 @@ final class DefaultRedactor implements Redactors\HttpMessage {
         bool $is_query = false
     ): array {
         foreach ( $data as $key => $value ) {
-            if ( in_array( $key, $redactions, true ) ) {
-                $data[ $key ] = $is_query ? 'redacted' : '[redacted]';
-                continue;
-            }
-
-            if ( is_array( $value ) && ! array_is_list( $value ) ) {
-                $data[ $key ] = $this->redact_keys( $value, $redactions, $is_query );
+            foreach ( $redactions as $redaction ) {
+                if ( $redaction->value === $key ) {
+                    if ( $redaction->should_remove ) {
+                        unset( $data[ $key ] );
+                    } else {
+                        $data[ $key ] = $is_query ? 'redacted' : 'redacted';
+                    }
+                } elseif ( is_array( $value ) && ! array_is_list( $value ) ) {
+                        $data[ $key ] = $this->redact_keys( $value, $redactions, $is_query );
+                }
             }
         }
 
@@ -276,7 +317,7 @@ final class DefaultRedactor implements Redactors\HttpMessage {
     }
 
     /**
-     * @param string                  $query
+     * @param string              $query
      * @param list<RedactionItem> $redactions
      * @return string
      */

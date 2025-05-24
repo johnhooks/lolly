@@ -73,7 +73,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
         $this->assertEquals( $result->message, '[max depth exceeded]' );
     }
 
-    #[DataProvider( 'interpolateValueProvider' )]
+    #[DataProvider( 'interpolate_value_provider' )]
     public function testItInterpolatesValue( $expected, $value ) {
         $record = $this->build_log_record( message: '{key}', context: [ 'key' => $value ] );
         $result = call_user_func( $this->processor, $record );
@@ -81,7 +81,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
         $this->assertEquals( $result->message, $expected );
     }
 
-    #[DataProvider( 'interpolateValueProvider' )]
+    #[DataProvider( 'interpolate_value_provider' )]
     public function testItInterpolatesValueInsideMessage( $expected, $value ) {
         $record = $this->build_log_record( message: 'Surrounding {key} message', context: [ 'key' => $value ] );
         $result = call_user_func( $this->processor, $record );
@@ -89,7 +89,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
         $this->assertEquals( $result->message, "Surrounding $expected message" );
     }
 
-    #[DataProvider( 'interpolateValueProvider' )]
+    #[DataProvider( 'interpolate_value_provider' )]
     public function testItInterpolatesMultipleValuesInsideMessage( $expected, $value ) {
         $record = $this->build_log_record(
             message: 'Surrounding {first} message {second}',
@@ -103,7 +103,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
         $this->assertEquals( $result->message, "Surrounding $expected message test" );
     }
 
-    #[DataProvider( 'interpolateValueProvider' )]
+    #[DataProvider( 'interpolate_value_provider' )]
     public function testItInterpolatesPath( $expected, $value ) {
         $record = $this->build_log_record( message: '{test.prop}', context: [ 'test' => [ 'prop' => $value ] ] );
         $result = call_user_func( $this->processor, $record );
@@ -111,7 +111,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
         $this->assertEquals( $result->message, $expected );
     }
 
-    #[DataProvider( 'interpolateValueProvider' )]
+    #[DataProvider( 'interpolate_value_provider' )]
     public function testItInterpolatesPathInsideMessage( $expected, $value ) {
         $record = $this->build_log_record(
             message: 'Surrounding {test.prop} message',
@@ -122,7 +122,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
         $this->assertEquals( $result->message, "Surrounding $expected message" );
     }
 
-    #[DataProvider( 'interpolateValueProvider' )]
+    #[DataProvider( 'interpolate_value_provider' )]
     public function testItInterpolatesPathAndMultipleValuesInsideMessage( $expected, $value ) {
         $record = $this->build_log_record(
             message: 'Surrounding {test.prop} message {second}',
@@ -136,7 +136,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
         $this->assertSame( $result->message, "Surrounding $expected message test" );
     }
 
-    #[DataProvider( 'interpolateComplexPathProvider' )]
+    #[DataProvider( 'interpolate_complex_path_provider' )]
     public function testItInterpolatesComplexPath( $path, $expected, $value ) {
         $record = $this->build_log_record( message: '{' . $path . '}', context: [ 'test' => $value ] );
         $result = call_user_func( $this->processor, $record );
@@ -144,20 +144,20 @@ class PsrLogMessageProcessorTest extends WPTestCase {
         $this->assertSame( $result->message, $expected );
     }
 
-    protected function interpolateValueProvider(): array {
+    protected function interpolate_value_provider(): array {
         return [
-            [ '[null]', null ],
-            [ '[empty string]', '' ],
-            [ '[true]', true ],
-            [ '[false]', false ],
-            [ 'test', 'test' ],
-            [ '100', 100 ],
-            [ '3.14', 3.14 ],
-            [ 'error message', new Exception( 'error message' ) ],
-            [ '[1, 2, 3]', [ 1, 2, 3 ] ],
-            [ '[x, y, z]', [ 'x', 'y', 'z' ] ],
-            [ '[1, 3.14, mixed]', [ 1, 3.14, 'mixed' ] ],
-            [
+            'null_value'               => [ '[null]', null ],
+            'empty_string'             => [ '[empty string]', '' ],
+            'boolean_true'             => [ '[true]', true ],
+            'boolean_false'            => [ '[false]', false ],
+            'string_value'             => [ 'test', 'test' ],
+            'integer_value'            => [ '100', 100 ],
+            'float_value'              => [ '3.14', 3.14 ],
+            'exception_object'         => [ 'error message', new Exception( 'error message' ) ],
+            'numeric_array'            => [ '[1, 2, 3]', [ 1, 2, 3 ] ],
+            'string_array'             => [ '[x, y, z]', [ 'x', 'y', 'z' ] ],
+            'mixed_array'              => [ '[1, 3.14, mixed]', [ 1, 3.14, 'mixed' ] ],
+            'associative_array_int'    => [
                 '[a => 1, b => 2, c => 3]',
                 [
                     'a' => 1,
@@ -165,7 +165,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
                     'c' => 3,
                 ],
             ],
-            [
+            'associative_array_string' => [
                 '[a => x, b => y, c => z]',
                 [
                     'a' => 'x',
@@ -173,7 +173,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
                     'c' => 'z',
                 ],
             ],
-            [
+            'associative_array_mixed'  => [
                 '[a => 1, b => 3.14, c => mixed]',
                 [
                     'a' => 1,
@@ -181,7 +181,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
                     'c' => 'mixed',
                 ],
             ],
-            [
+            'object_with_tostring'     => [
                 'call __toString',
                 new class() {
                     public function __toString() {
@@ -189,7 +189,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
                     }
                 },
             ],
-            [
+            'log_record_object'        => [
                 '[object Dozuki\Monolog\LogRecord]',
                 new LogRecord(
                     datetime: new DateTimeImmutable( 'now' ),
@@ -203,23 +203,23 @@ class PsrLogMessageProcessorTest extends WPTestCase {
         ];
     }
 
-    protected function interpolateComplexPathProvider(): array {
+    protected function interpolate_complex_path_provider(): array {
         return [
-            [
+            'object_string_property'        => [
                 'test.prop',
                 'test',
                 new class() {
                     public string $prop = 'test';
                 },
             ],
-            [
+            'object_integer_property'       => [
                 'test.prop',
                 '222',
                 new class() {
                     public int $prop = 222;
                 },
             ],
-            [
+            'nested_object_with_tostring'   => [
                 'test.prop',
                 'call __toString',
                 new class() {
@@ -234,7 +234,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
                     }
                 },
             ],
-            [
+            'deeply_nested_object_property' => [
                 'test.prop.int',
                 '333',
                 new class() {
@@ -247,7 +247,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
                     }
                 },
             ],
-            [
+            'nested_object_array_property'  => [
                 'test.prop.array',
                 '[x, y, z]',
                 new class() {
@@ -260,7 +260,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
                     }
                 },
             ],
-            [
+            'nested_object_array_index'     => [
                 'test.prop.array.1',
                 'y',
                 new class() {

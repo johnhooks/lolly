@@ -53,6 +53,7 @@ class EcsHttpMessageProcessor implements ProcessorInterface {
                 $response = $this->format_response( $value );
 
                 if ( ! isset( $http['response'] ) ) {
+                    $http['version'] ??= $value->getProtocolVersion();
                     $http['response'] = $response;
 
                     unset( $context[ $key ] );

@@ -104,4 +104,10 @@
     </rule>
 
     <rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
+
+    <rule ref="Squiz.Commenting.InlineComment.InvalidEndChar">
+        <exclude-pattern>codeception/_support/*</exclude-pattern>
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
+
 </ruleset>
