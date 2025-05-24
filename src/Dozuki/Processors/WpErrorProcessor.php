@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Dozuki\Processors;
 
@@ -10,7 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class WpErrorProcessor implements ProcessorInterface {
-
     public function __invoke( LogRecord $record ): LogRecord {
         $context = $record->context;
         $extra   = $record->extra;

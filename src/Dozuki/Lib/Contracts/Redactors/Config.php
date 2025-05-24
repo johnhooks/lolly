@@ -13,6 +13,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 interface Config {
     /**
+     * Check whether the HTTP logging redaction feature is enabled.
+     *
+     * @return bool Whether the HTTP logging redaction feature is enabled.
+     */
+    public function is_http_redactions_enabled(): bool;
+
+    /**
      * Get the redaction items for a specific URL.
      *
      * @param UriInterface|string $url The URL of the HTTP message to redact.

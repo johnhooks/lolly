@@ -1,15 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Dozuki\Processors;
 
-use Dozuki\Config\Config;
-use Dozuki\Processors\Concerns\FormatsHeaders;
 use Dozuki\ValueObjects\WpRestApiContext;
 use Dozuki\GuzzleHttp\Psr7\Request;
 use Dozuki\GuzzleHttp\Psr7\Response;
 use Dozuki\Monolog\LogRecord;
 use Dozuki\Monolog\Processor\ProcessorInterface;
-
 use WP_Error;
 use WP_REST_Response;
 

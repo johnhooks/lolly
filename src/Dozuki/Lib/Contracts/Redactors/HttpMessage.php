@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dozuki\Lib\Contracts\Redactors;
 
+use Dozuki\Lib\ValueObjects\Http\RedactionItem;
 use Dozuki\Psr;
 use Dozuki\Psr\Http\Message\MessageInterface;
 use Dozuki\Psr\Http\Message\UriInterface;
@@ -18,8 +19,9 @@ interface HttpMessage {
      *
      * @param UriInterface|string $url The URL of the HTTP message to redact.
      * @param MessageInterface    $message The HTTP message to redact.
+     * @param RedactionItem[]     $redactions Optionally, additional redaction items to apply.
      *
      * @return MessageInterface The redacted HTTP message.
      */
-    public function redact( UriInterface|string $url, MessageInterface $message ): MessageInterface;
+    public function redact( UriInterface|string $url, MessageInterface $message, array $redactions = [] ): MessageInterface;
 }

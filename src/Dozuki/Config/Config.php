@@ -5,6 +5,8 @@ namespace Dozuki\Config;
 use Dozuki\GuzzleHttp\Psr7\Uri;
 use Dozuki\Lib\Contracts\Redactors\Config as RedactorConfig;
 use Dozuki\Lib\Contracts\Whitelist\Config as WhitelistConfig;
+use Dozuki\Lib\Enums\HttpRedactionType;
+use Dozuki\Lib\ValueObjects\Http\RedactionItem;
 use Dozuki\Psr\Http\Message\UriInterface;
 use WP_Error;
 
@@ -17,11 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 // - Can disable
 // - Whitelist or blacklist certain request.
 
-
 // If host api.wordpress.org and path starts with /core/version-check, remove the
 // query, it's huge and not very helpful.
-
-// @todo Add a similar system for whitelisting.
 
 // The logging redaction to merge into this system is
 // ["query" => ['user']]
@@ -61,26 +60,18 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @phpstan-type HttpLoggingConfig array{
  *      verion: int,
  *      enabled: bool,
- *
- *
- *      redactions: array<HttpHostRedactions>,
- *      whitelist: array<HttpHostWhitelist>,
+ *      http_redactions_enabled: bool,
+ *      http_whitelist_enabled: bool,
+ *      wp_rest_logging_enabled: bool,
+ *      wp_http_client_logging_enabled: bool,
+ *      http_redactions: array<HttpHostRedactions>,
+ *      http_whitelist: array<HttpHostWhitelist>,
  *  }
  */
 class Config implements RedactorConfig, WhitelistConfig {
     public const OPTION_SLUG = 'dozuki_settings';
 
     private readonly string $log_dir_path;
-
-    /**
-     * @var array<string>
-     */
-    private readonly array $http_body_blacklist;
-
-    /**
-     * @var array<string>
-     */
-    private readonly array $http_query_blacklist;
 
     /**
      * @var HttpLoggingConfig|WP_Error|null
@@ -115,6 +106,35 @@ class Config implements RedactorConfig, WhitelistConfig {
     }
 
     /**
+     * Whether the logging feature is enabled.
+     */
+    public function is_logging_enabled(): bool {
+        return $this->http_logging_config['enabled'] ?? false;
+    }
+
+    /**
+     * Whether the REST API logging feature is enabled.
+     */
+    public function is_wp_rest_logging_enabled(): bool {
+        if ( ! $this->is_logging_enabled() ) {
+            return false;
+        }
+
+        return $this->http_logging_config['wp_rest_logging_enabled'] ?? false;
+    }
+
+    /**
+     * Whether the HTTP client logging feature is enabled.
+     */
+    public function is_wp_http_client_logging_enabled(): bool {
+        if ( ! $this->is_logging_enabled() ) {
+            return false;
+        }
+
+        return $this->http_logging_config['wp_http_client_logging_enabled'] ?? false;
+    }
+
+    /**
      * @inheritDoc
      */
     public function is_whitelist_enabled(): bool {
@@ -129,7 +149,7 @@ class Config implements RedactorConfig, WhitelistConfig {
         $host = $url->getHost();
         $path = $url->getPath();
 
-        foreach ( $this->http_logging_config['whitelist'] as $current ) {
+        foreach ( $this->http_logging_config['http_whitelist'] as $current ) {
             $glob = $current['glob'] ?? false;
 
             if (
@@ -155,6 +175,13 @@ class Config implements RedactorConfig, WhitelistConfig {
     /**
      * @inheritDoc
      */
+    public function is_http_redactions_enabled(): bool {
+        return $this->http_logging_config['http_redactions_enabled'] ?? false;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function get_http_redactions( UriInterface|string $url ): array {
         $url  = $url instanceof Uri ? $url : new Uri( $url );
         $host = $url->getHost();
@@ -163,13 +190,13 @@ class Config implements RedactorConfig, WhitelistConfig {
         /** @var array<HttpHostRedactions> $redaction_sets */
         $redaction_sets = [];
 
-        foreach ( $this->http_logging_config['redactions'] as $current ) {
+        foreach ( $this->http_logging_config['http_redactions'] as $current ) {
             if ( $current['host'] === '*' || $current['host'] === $host ) {
                 $redaction_sets[] = $current;
             }
         }
 
-        /** @var array<HttpRedactionItem> $redactions */
+        /** @var RedactionItem[] $redactions */
         $redactions = [];
 
         foreach ( $redaction_sets as $current ) {
@@ -181,7 +208,26 @@ class Config implements RedactorConfig, WhitelistConfig {
                     ( $glob && str_starts_with( $path, $current_path['path'] ) ) ||
                     ( $current_path['path'] === $path )
                 ) {
-                    $redactions[] = $current_path['redactions'];
+                    foreach ( $current_path['redactions'] as $redaction ) {
+                        $redaction_type = HttpRedactionType::tryFrom( $redaction['type'] );
+
+                        if ( $redaction_type === null ) {
+                            dozuki()->error(
+                                '[Dozuki] Invalid HTTP redaction type.',
+                                [
+                                    'type' => $redaction['type'],
+                                ]
+                            );
+
+                            continue;
+                        }
+
+                        $redactions[] = new RedactionItem(
+                            $redaction_type,
+                            $redaction['value'],
+                            $redaction['remove'] ?? false,
+                        );
+                    }
                 }
             }
         }

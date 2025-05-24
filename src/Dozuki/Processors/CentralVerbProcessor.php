@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Dozuki\Processors;
 
@@ -9,7 +11,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class CentralVerbProcessor {
-
-    public function __invoke( LogRecord $record ) {
-    }
+    public function __invoke( LogRecord $record ) {}
 }

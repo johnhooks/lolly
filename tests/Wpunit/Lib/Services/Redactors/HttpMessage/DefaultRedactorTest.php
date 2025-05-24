@@ -345,6 +345,118 @@ class DefaultRedactorTest extends WpTestCase {
         $this->assertEquals( $expected['body'], $result->getBody()->getContents() );
     }
 
+    #[DataProvider( 'additional_redactions_provider' )]
+    public function test_it_accepts_additional_redactions( string $url, array $headers, string $body, array $config_redactions, array $additional_redactions, array $expected ): void {
+        $request = new Request( 'POST', $url, $headers, $body );
+
+        $this->config->expects( $this->once() )
+            ->method( 'get_http_redactions' )
+            ->willReturn( $config_redactions );
+
+        $result = $this->redactor->redact( $url, $request, $additional_redactions );
+
+        $this->assertEquals( $expected['query'], $result->getUri()->getQuery() );
+        $this->assertEquals( $expected['headers'], $result->getHeaders() );
+        $this->assertEquals( $expected['body'], $result->getBody()->getContents() );
+    }
+
+    public function test_it_works_with_empty_additional_redactions(): void {
+        $url     = 'https://example.com/api/test?param=value';
+        $headers = [ 'Authorization' => 'Bearer token' ];
+        $body    = '{"data":"content"}';
+        $request = new Request( 'POST', $url, $headers, $body );
+
+        $config_redactions = [ new RedactionItem( HttpRedactionType::Query, 'param' ) ];
+        $this->config->expects( $this->once() )
+            ->method( 'get_http_redactions' )
+            ->willReturn( $config_redactions );
+
+        $result = $this->redactor->redact( $url, $request, [] );
+
+        $this->assertEquals( 'param=redacted', $result->getUri()->getQuery() );
+        $this->assertEquals( '{"data":"content"}', $result->getBody()->getContents() );
+    }
+
+    public function test_it_works_with_only_additional_redactions(): void {
+        $url     = 'https://example.com/api/test?param=value';
+        $headers = [
+            'Authorization' => 'Bearer token',
+            'Content-Type'  => 'application/json',
+        ];
+
+        $body    = '{"data":"content"}';
+        $request = new Request( 'POST', $url, $headers, $body );
+
+        $this->config->expects( $this->once() )
+            ->method( 'get_http_redactions' )
+            ->willReturn( [] );
+
+        $additional_redactions = [ new RedactionItem( HttpRedactionType::Request, 'data' ) ];
+        $result                = $this->redactor->redact( $url, $request, $additional_redactions );
+
+        $this->assertEquals( 'param=value', $result->getUri()->getQuery() );
+        $this->assertEquals( '{"data":"redacted"}', $result->getBody()->getContents() );
+    }
+
+    #[DataProvider( 'redaction_precedence_provider' )]
+    public function test_it_handles_redaction_precedence_correctly( string $url, array $headers, string $body, array $config_redactions, array $additional_redactions, array $expected ): void {
+        $request = new Request( 'POST', $url, $headers, $body );
+
+        $this->config->expects( $this->once() )
+            ->method( 'get_http_redactions' )
+            ->willReturn( $config_redactions );
+
+        $result = $this->redactor->redact( $url, $request, $additional_redactions );
+
+        $this->assertEquals( $expected['query'], $result->getUri()->getQuery() );
+        $this->assertEquals( $expected['headers'], $result->getHeaders() );
+        $this->assertEquals( $expected['body'], $result->getBody()->getContents() );
+    }
+
+    #[DataProvider( 'additional_redaction_types_provider' )]
+    public function test_it_handles_additional_redactions_for_all_types( string $url, array $headers, string $body, array $additional_redactions, array $expected ): void {
+        $request = new Request( 'POST', $url, $headers, $body );
+
+        $this->config->expects( $this->once() )
+            ->method( 'get_http_redactions' )
+            ->willReturn( [] );
+
+        $result = $this->redactor->redact( $url, $request, $additional_redactions );
+
+        $this->assertEquals( $expected['query'], $result->getUri()->getQuery() );
+        $this->assertEquals( $expected['headers'], $result->getHeaders() );
+        $this->assertEquals( $expected['body'], $result->getBody()->getContents() );
+    }
+
+    public function test_it_handles_additional_redactions_with_response(): void {
+        $url      = 'https://example.com/api/test';
+        $headers  = [
+            'Set-Cookie'   => 'session=abc123',
+            'Content-Type' => 'application/json',
+        ];
+        $body     = '{"token":"secret","data":"public"}';
+        $response = new Response( 200, $headers, $body );
+
+        $this->config->expects( $this->once() )
+            ->method( 'get_http_redactions' )
+            ->willReturn( [] );
+
+        $additional_redactions = [
+            new RedactionItem( HttpRedactionType::Header, 'Set-Cookie' ),
+            new RedactionItem( HttpRedactionType::Response, 'token' ),
+        ];
+
+        $result = $this->redactor->redact( $url, $response, $additional_redactions );
+
+        $expected_headers = [
+            'Set-Cookie'   => [ 'redacted' ],
+            'Content-Type' => [ 'application/json' ],
+        ];
+
+        $this->assertEquals( $expected_headers, $result->getHeaders() );
+        $this->assertEquals( '{"token":"redacted","data":"public"}', $result->getBody()->getContents() );
+    }
+
     protected function query_redaction_provider(): iterable {
         return [
             'no_redactions'                   => [
@@ -622,7 +734,7 @@ class DefaultRedactorTest extends WpTestCase {
 
     protected function header_case_sensitivity_provider(): iterable {
         return [
-            'lowercase_header_name_matches_uppercase'   => [
+            'lowercase_header_name_matches_uppercase' => [
                 [ 'AUTHORIZATION' => 'Bearer token' ],
                 [ new RedactionItem( HttpRedactionType::Header, 'authorization' ) ],
                 [
@@ -630,7 +742,7 @@ class DefaultRedactorTest extends WpTestCase {
                     'AUTHORIZATION' => [ 'redacted' ],
                 ],
             ],
-            'uppercase_header_name_matches_lowercase'   => [
+            'uppercase_header_name_matches_lowercase' => [
                 [ 'authorization' => 'Bearer token' ],
                 [ new RedactionItem( HttpRedactionType::Header, 'AUTHORIZATION' ) ],
                 [
@@ -638,7 +750,7 @@ class DefaultRedactorTest extends WpTestCase {
                     'authorization' => [ 'redacted' ],
                 ],
             ],
-            'mixed_case_header_matching'                => [
+            'mixed_case_header_matching'              => [
                 [ 'Content-Type' => 'application/json' ],
                 [ new RedactionItem( HttpRedactionType::Header, 'content-type' ) ],
                 [
@@ -767,6 +879,196 @@ class DefaultRedactorTest extends WpTestCase {
                         'Content-Type'  => [ 'application/json' ],
                     ],
                     'body'    => '{"password":"redacted","data":"public"}',
+                ],
+            ],
+        ];
+    }
+
+    protected function additional_redactions_provider(): iterable {
+        return [
+            'config_and_additional_combined'     => [
+                'https://example.com/api/test?config_param=value1&additional_param=value2',
+                [
+                    'Config-Header'     => 'config-value',
+                    'Additional-Header' => 'additional-value',
+                    'Content-Type'      => 'application/json',
+                ],
+                '{"config_field":"config-data","additional_field":"additional-data"}',
+                [ new RedactionItem( HttpRedactionType::Query, 'config_param' ) ],
+                [ new RedactionItem( HttpRedactionType::Query, 'additional_param' ) ],
+                [
+                    'query'   => 'config_param=redacted&additional_param=redacted',
+                    'headers' => [
+                        'Host'              => [ 'example.com' ],
+                        'Config-Header'     => [ 'config-value' ],
+                        'Additional-Header' => [ 'additional-value' ],
+                        'Content-Type'      => [ 'application/json' ],
+                    ],
+                    'body'    => '{"config_field":"config-data","additional_field":"additional-data"}',
+                ],
+            ],
+            'additional_redacts_different_types' => [
+                'https://example.com/api/test?param=value',
+                [
+                    'Authorization' => 'Bearer token',
+                    'Content-Type'  => 'application/json',
+                ],
+                '{"password":"secret","data":"public"}',
+                [],
+                [
+                    new RedactionItem( HttpRedactionType::Query, 'param' ),
+                    new RedactionItem( HttpRedactionType::Header, 'Authorization' ),
+                    new RedactionItem( HttpRedactionType::Request, 'password' ),
+                ],
+                [
+                    'query'   => 'param=redacted',
+                    'headers' => [
+                        'Host'          => [ 'example.com' ],
+                        'Authorization' => [ 'redacted' ],
+                        'Content-Type'  => [ 'application/json' ],
+                    ],
+                    'body'    => '{"password":"redacted","data":"public"}',
+                ],
+            ],
+        ];
+    }
+
+    protected function redaction_precedence_provider(): iterable {
+        return [
+            'additional_redactions_added_after_config' => [
+                'https://example.com/api/test?param=value',
+                [
+                    'Authorization' => 'Bearer token',
+                    'Content-Type'  => 'application/json',
+                ],
+                '{"field":"data"}',
+                [
+                    new RedactionItem( HttpRedactionType::Query, 'param' ),
+                    new RedactionItem( HttpRedactionType::Header, 'Authorization' ),
+                ],
+                [
+                    new RedactionItem( HttpRedactionType::Request, 'field' ),
+                ],
+                [
+                    'query'   => 'param=redacted',
+                    'headers' => [
+                        'Host'          => [ 'example.com' ],
+                        'Authorization' => [ 'redacted' ],
+                        'Content-Type'  => [ 'application/json' ],
+                    ],
+                    'body'    => '{"field":"redacted"}',
+                ],
+            ],
+            'overlapping_redaction_types_both_applied' => [
+                'https://example.com/api/test?param=value',
+                [
+                    'Content-Type' => 'application/json',
+                ],
+                '{"field":"data"}',
+                [ new RedactionItem( HttpRedactionType::Query, 'param' ) ],
+                [ new RedactionItem( HttpRedactionType::Query, 'param' ) ],
+                [
+                    'query'   => 'param=redacted',
+                    'headers' => [
+                        'Host'         => [ 'example.com' ],
+                        'Content-Type' => [ 'application/json' ],
+                    ],
+                    'body'    => '{"field":"data"}',
+                ],
+            ],
+        ];
+    }
+
+    protected function additional_redaction_types_provider(): iterable {
+        return [
+            'query_redaction_only'           => [
+                'https://example.com/api/test?secret=hidden&public=visible',
+                [ 'Content-Type' => 'application/json' ],
+                '{"data":"content"}',
+                [ new RedactionItem( HttpRedactionType::Query, 'secret' ) ],
+                [
+                    'query'   => 'secret=redacted&public=visible',
+                    'headers' => [
+                        'Host'         => [ 'example.com' ],
+                        'Content-Type' => [ 'application/json' ],
+                    ],
+                    'body'    => '{"data":"content"}',
+                ],
+            ],
+            'header_redaction_only'          => [
+                'https://example.com/api/test?param=value',
+                [
+                    'Authorization' => 'Bearer token',
+                    'Content-Type'  => 'application/json',
+                ],
+                '{"data":"content"}',
+                [ new RedactionItem( HttpRedactionType::Header, 'Authorization' ) ],
+                [
+                    'query'   => 'param=value',
+                    'headers' => [
+                        'Host'          => [ 'example.com' ],
+                        'Authorization' => [ 'redacted' ],
+                        'Content-Type'  => [ 'application/json' ],
+                    ],
+                    'body'    => '{"data":"content"}',
+                ],
+            ],
+            'request_body_redaction_only'    => [
+                'https://example.com/api/test?param=value',
+                [ 'Content-Type' => 'application/json' ],
+                '{"secret":"hidden","public":"visible"}',
+                [ new RedactionItem( HttpRedactionType::Request, 'secret' ) ],
+                [
+                    'query'   => 'param=value',
+                    'headers' => [
+                        'Host'         => [ 'example.com' ],
+                        'Content-Type' => [ 'application/json' ],
+                    ],
+                    'body'    => '{"secret":"redacted","public":"visible"}',
+                ],
+            ],
+            'always_redaction_type'          => [
+                'https://example.com/api/test?token=secret',
+                [
+                    'Authorization' => 'Bearer token',
+                    'Content-Type'  => 'application/json',
+                ],
+                '{"token":"secret","data":"public"}',
+                [ new RedactionItem( HttpRedactionType::Always, 'token' ) ],
+                [
+                    'query'   => 'token=redacted',
+                    'headers' => [
+                        'Host'          => [ 'example.com' ],
+                        'Authorization' => [ 'Bearer token' ],
+                        'Content-Type'  => [ 'application/json' ],
+                    ],
+                    'body'    => '{"token":"redacted","data":"public"}',
+                ],
+            ],
+            'multiple_additional_redactions' => [
+                'https://example.com/api/test?secret1=hidden&secret2=hidden&public=visible',
+                [
+                    'Authorization' => 'Bearer token',
+                    'Secret-Header' => 'secret-value',
+                    'Content-Type'  => 'application/json',
+                ],
+                '{"password":"hidden","token":"secret","data":"public"}',
+                [
+                    new RedactionItem( HttpRedactionType::Query, 'secret1' ),
+                    new RedactionItem( HttpRedactionType::Query, 'secret2' ),
+                    new RedactionItem( HttpRedactionType::Header, 'Secret-Header' ),
+                    new RedactionItem( HttpRedactionType::Request, 'password' ),
+                    new RedactionItem( HttpRedactionType::Request, 'token' ),
+                ],
+                [
+                    'query'   => 'secret1=redacted&secret2=redacted&public=visible',
+                    'headers' => [
+                        'Host'          => [ 'example.com' ],
+                        'Authorization' => [ 'Bearer token' ],
+                        'Secret-Header' => [ 'redacted' ],
+                        'Content-Type'  => [ 'application/json' ],
+                    ],
+                    'body'    => '{"password":"redacted","token":"redacted","data":"public"}',
                 ],
             ],
         ];

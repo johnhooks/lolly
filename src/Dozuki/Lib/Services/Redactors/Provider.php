@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dozuki\Lib\Services\Redactors;
 
 use Dozuki\Lib\Contracts\Redactors\Config;
@@ -13,7 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Provider extends ServiceProvider {
-
     private readonly Config $config;
 
     public function __construct( Container $container, Config $config ) {

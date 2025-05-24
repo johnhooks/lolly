@@ -44,9 +44,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @see    https://github.com/elastic/logstash/blob/master/logstash-core/src/main/java/org/logstash/Event.java
  */
 class EcsLogStashFormatter extends NormalizerFormatter {
-
-    public const REACTED = 'xxxxxx';
-
     /**
      * @var string The name of the system for the Logstash log message, used to
      *             fill the @source field, defaults to the hostname of the machine.

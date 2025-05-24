@@ -18,18 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// @todo need to add the concept of removing properties, there is a difference
-// between redacting an dropping. Redacting keeps the keys so you know they
-// were there. Removing discards key and value. It would be great if I could
-// figure out a way to do both in one place. Otherwise we loop over everything
-// twice, and we wouldn't want to decode/encode more than necessary. Also we
-// want to make sure to remove properties before attempting to redact them,
-// otherwise we will just undo what was previously done.
-
-/**
- * @todo I need to rewrite this all to use the new redaction config.
- */
-
 /**
  * DefaultRedactor class.
  */
@@ -46,7 +34,8 @@ final class DefaultRedactor implements Redactors\HttpMessage {
      */
     public function redact(
         UriInterface|string $url,
-        MessageInterface $message
+        MessageInterface $message,
+        array $redactions = [],
     ): MessageInterface {
         if ( is_string( $url ) ) {
             $url = Utils::uriFor( $url );
@@ -54,7 +43,7 @@ final class DefaultRedactor implements Redactors\HttpMessage {
 
         // @todo Not a huge fan of this, but it's better than passing multiple variables around
         // Perhaps we need a redactor that contains the state and is called with `__invoke`.
-        $context = new Context( $url, $this->config->get_http_redactions( $url ) );
+        $context = new Context( $url, array_merge( $this->config->get_http_redactions( $url ), $redactions ) );
 
         if ( $message instanceof RequestInterface ) {
             return $this->redact_request( $context, $message );
@@ -103,7 +92,7 @@ final class DefaultRedactor implements Redactors\HttpMessage {
         }
 
         if ( count( $redactions ) === 1 && $redactions[0]->value === '*' ) {
-            $headers = $message->getHeaders();
+            $headers       = $message->getHeaders();
             $should_remove = $redactions[0]->should_remove;
 
             foreach ( $headers as $header => $_ ) {

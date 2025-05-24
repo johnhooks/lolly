@@ -28,7 +28,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Provider extends ServiceProvider {
-
     private readonly Config $config;
 
     public function __construct( Container $container, Config $config ) {
