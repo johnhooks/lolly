@@ -33,17 +33,14 @@ class EcsHttpMessageProcessor implements ProcessorInterface {
         foreach ( $context as $key => $value ) {
             if ( $value instanceof RequestInterface ) {
                 $request = $this->format_request( $value );
-                $url     = $this->format_url( $value->getUri() );
 
                 if ( ! isset( $http['request'] ) ) {
                     $http['version'] ??= $value->getProtocolVersion();
                     $http['request']   = $request;
-                    $extra['url']      = $url;
 
                     unset( $context[ $key ] );
                 } else {
-                    $context[ $key ]        = $request;
-                    $context[ $key ]['url'] = $url;
+                    $context[ $key ] = $request;
                 }
 
                 continue;
@@ -87,6 +84,7 @@ class EcsHttpMessageProcessor implements ProcessorInterface {
 
             $bytes = $request->getBody()->getSize();
 
+            // @todo How can we get the bytes from before redaction?
             $result['body']['bytes'] = $bytes !== null ? $bytes : $length;
         }
 
@@ -111,35 +109,6 @@ class EcsHttpMessageProcessor implements ProcessorInterface {
             $bytes = $response->getBody()->getSize();
 
             $result['body']['bytes'] = $bytes !== null ? $bytes : $length;
-        }
-
-        return $result;
-    }
-
-    private function format_url( UriInterface $uri ): array {
-        $result = [
-            'original' => (string) $uri,
-            'domain'   => $uri->getHost(),
-            'path'     => $uri->getPath(),
-            'query'    => $uri->getQuery(),
-            'fragment' => $uri->getFragment(),
-            'port'     => $uri->getPort(),
-            'scheme'   => $uri->getScheme(),
-            'username' => $uri->getUserInfo(),
-        ];
-
-        if ( $result['path'] !== '' ) {
-            $ext = pathinfo( $result['path'], PATHINFO_EXTENSION );
-
-            if ( strlen( $ext ) > 0 ) {
-                $result['extension'] = $ext;
-            }
-        }
-
-        foreach ( $result as $key => $value ) {
-            if ( $value === null || $value === '' ) {
-                unset( $result[ $key ] );
-            }
         }
 
         return $result;

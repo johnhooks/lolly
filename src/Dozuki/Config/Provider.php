@@ -2,6 +2,8 @@
 
 namespace Dozuki\Config;
 
+use Dozuki\Lib\Contracts\Redactors;
+use Dozuki\Lib\Contracts\Whitelist;
 use Dozuki\lucatume\DI52\ServiceProvider;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,6 +24,10 @@ class Provider extends ServiceProvider {
             ->give( fn(): string => DOZUKI_LOG_DIR );
 
         $this->container->singleton( Config::class, Config::class );
+
+        // Note: These are intended to function as aliases.
+        $this->container->bind( Redactors\Config::class, fn(): Redactors\Config => $this->container->get( Config::class ) );
+        $this->container->bind( Whitelist\Config::class, fn(): Whitelist\Config => $this->container->get( Config::class ) );
 
         add_action( 'admin_init', $this->container->callback( Config::class, 'register_settings' ) );
         add_action( 'rest_api_init', $this->container->callback( Config::class, 'register_settings' ) );

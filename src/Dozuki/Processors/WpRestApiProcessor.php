@@ -9,6 +9,7 @@ use Dozuki\GuzzleHttp\Psr7\Request;
 use Dozuki\GuzzleHttp\Psr7\Response;
 use Dozuki\Monolog\LogRecord;
 use Dozuki\Monolog\Processor\ProcessorInterface;
+use Dozuki\GuzzleHttp\Psr7\Uri;
 use WP_Error;
 use WP_REST_Response;
 
@@ -36,6 +37,7 @@ class WpRestApiProcessor implements ProcessorInterface {
                 continue;
             }
 
+            $context['url']          ??= new Uri( wp_guess_url() );
             $context['http_request'] ??= new Request(
                 $value->request->get_method(),
                 wp_guess_url(),

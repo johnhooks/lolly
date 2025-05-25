@@ -20,7 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @link https://www.elastic.co/guide/en/ecs/current/ecs-error.html
  */
 class EcsErrorProcessor implements ProcessorInterface {
-
     public function __invoke( LogRecord $record ): LogRecord {
         $e = $record->context['exception'] ?? null;
 

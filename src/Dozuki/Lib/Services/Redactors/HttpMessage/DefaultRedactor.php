@@ -163,12 +163,22 @@ final class DefaultRedactor implements Redactors\HttpMessage {
     private function redact_request( Context $context, RequestInterface $request ): RequestInterface {
         $request = $request->withUri( $this->redact_url( $context, $request->getUri() ), true );
         $request = $this->redact_headers( $context, $request );
-        return $this->redact_body( $context, $request );
+
+        if ( strtolower( $request->getMethod() ) !== 'get' && $request->getBody()->getSize() > 0 ) {
+            return $this->redact_body( $context, $request );
+        }
+
+        return $request;
     }
 
     private function redact_response( Context $context, ResponseInterface $response ): ResponseInterface {
         $response = $this->redact_headers( $context, $response );
-        return $this->redact_body( $context, $response );
+
+        if ( $response->getBody()->getSize() > 0 ) {
+            return $this->redact_body( $context, $response );
+        }
+
+        return $response;
     }
 
     /**
@@ -241,7 +251,7 @@ final class DefaultRedactor implements Redactors\HttpMessage {
             return $this->redact_query_params( $content, $redactions );
         }
 
-        return 'redacted';
+        return $content;
     }
 
     /**

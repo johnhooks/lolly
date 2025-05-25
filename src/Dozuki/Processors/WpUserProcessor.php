@@ -24,9 +24,8 @@ class WpUserProcessor implements ProcessorInterface {
                 ];
 
                 if ( $key === 'user' && ! isset( $extra['user'] ) ) {
-                    $extra['user'] = $user_fields;
-
-                    unset( $context[ $key ] );
+                    $context['user'] = $user_fields;
+                    $extra['user']   = $user_fields;
                 } else {
                     $context[ $key ] = $user_fields;
                 }

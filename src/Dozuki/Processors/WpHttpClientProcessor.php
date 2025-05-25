@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Dozuki\Processors;
 
+use Dozuki\GuzzleHttp\Psr7\Uri;
+use Dozuki\Monolog\Processor\ProcessorInterface;
 use Dozuki\ValueObjects\WpHttpClientContext;
 use Dozuki\GuzzleHttp\Psr7\Request;
 use Dozuki\GuzzleHttp\Psr7\Response;
@@ -21,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Transform `WpHttpClientContext` into Psr7 HTTP messages.
  */
-class WpHttpClientProcessor {
+class WpHttpClientProcessor implements ProcessorInterface {
     public function __invoke( LogRecord $record ): LogRecord {
         $context = $record->context;
         $extra   = $record->extra;
@@ -44,8 +46,7 @@ class WpHttpClientProcessor {
             $raw_body = $value->request_args['body'] ?? null;
             $body     = null;
 
-            if ( $raw_body !== null && is_array( $raw_body ) ) {
-                // @todo It would be best to redact the body here before encoding,
+            if ( is_array( $raw_body ) ) {
                 $body = json_encode( $raw_body );
 
                 if ( json_last_error() !== JSON_ERROR_NONE || $body === false ) {
@@ -62,6 +63,7 @@ class WpHttpClientProcessor {
                 $headers = $raw_headers;
             }
 
+            $context['url']          ??= new Uri( $value->url );
             $context['http_request'] ??= new Request(
                 $value->request_args['method'] ?? 'undefined',
                 $value->url,

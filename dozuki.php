@@ -24,6 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Dozuki\Admin;
 use Dozuki\Config;
+use Dozuki\Lib\Services\Redactors;
 use Dozuki\Listeners;
 use Dozuki\Log;
 use Dozuki\Plugin\Activator;
@@ -54,6 +55,7 @@ final class Dozuki implements LoggerInterface {
     private array $service_providers = [
         Admin\Provider::class,
         Config\Provider::class,
+        Redactors\Provider::class,
         Listeners\Provider::class,
         Log\Provider::class,
     ];
@@ -265,7 +267,8 @@ final class Dozuki implements LoggerInterface {
      * Normal but significant events.
      *
      * @param string $message
-     * @paramarray $context
+     * @param array  $context
+     *
      * @return void
      */
     public function notice( $message, array $context = [] ): void {
@@ -278,7 +281,8 @@ final class Dozuki implements LoggerInterface {
      * Example: User logs in, SQL logs.
      *
      * @param string|Stringable $message
-     * @paramarray $context
+     * @param array             $context
+     *
      * @return void
      */
     public function info( string|Stringable $message, array $context = [] ): void {
@@ -288,8 +292,8 @@ final class Dozuki implements LoggerInterface {
     /**
      * Detailed debug information.
      *
-     * @param string $message
-     * @paramarray $context
+     * @param string|Stringable $message
+     * @param array             $context
      *
      * @return void
      */
@@ -300,9 +304,9 @@ final class Dozuki implements LoggerInterface {
     /**
      * Logs with an arbitrary level.
      *
-     * @param mixed  $level
-     * @param string $message
-     * @paramarray $context
+     * @param mixed             $level
+     * @param string|Stringable $message
+     * @param array             $context
      *
      * @return void
      */

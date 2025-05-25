@@ -162,6 +162,14 @@ class EcsLogStashFormatter extends NormalizerFormatter {
      * A context is removed if it is duplicated by an extra field.
      */
     protected function should_remove_context( array $record, string $key, mixed $value ): bool {
+        if (
+            is_array( $value ) &&
+            isset( $record['extra'][ $key ] ) &&
+            $record['extra'][ $key ] === $value
+        ) {
+            return true;
+        }
+
         if ( 'exception' === $key && isset( $record['extra']['error'] ) ) {
             return true;
         }
@@ -178,14 +186,6 @@ class EcsLogStashFormatter extends NormalizerFormatter {
             is_array( $value ) &&
             isset( $record['extra']['http']['response'], $value['http'] ) &&
             $record['extra']['http']['response'] === $value['http']
-        ) {
-            return true;
-        }
-
-        if (
-            is_array( $value ) &&
-            isset( $record['extra']['url'], $value['url'] ) &&
-            $record['extra']['url'] === $value['url']
         ) {
             return true;
         }
