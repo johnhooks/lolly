@@ -104,6 +104,10 @@ class Config implements RedactorConfig, WhitelistConfig {
      * Whether the logging feature is enabled.
      */
     public function is_logging_enabled(): bool {
+        if ( defined( 'LOLLY_LOG_DISABLED' ) && LOLLY_LOG_DISABLED === true ) {
+            return false;
+        }
+
         return $this->http_logging_config['enabled'] ?? false;
     }
 

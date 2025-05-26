@@ -38,8 +38,6 @@ The plugin includes sophisticated redaction capabilities to protect sensitive in
 
 * **Development & Debugging** - Track down issues in WordPress applications
 * **Performance Monitoring** - Analyze HTTP request patterns and response times
-* **Security Auditing** - Monitor API access and suspicious activity
-* **Compliance** - Maintain audit logs while protecting sensitive data
 
 == Installation ==
 
@@ -65,13 +63,6 @@ The plugin includes configurable redaction rules to automatically sanitize sensi
 = What log format does the plugin use? =
 
 The plugin uses the Elastic Common Schema (ECS) format for structured logging, making it compatible with modern log analysis tools.
-
-== Screenshots ==
-
-1. Main settings page with logging configuration options
-2. HTTP redaction management interface
-3. Host whitelist configuration panel
-4. Log export and analysis tools
 
 == Changelog ==
 

@@ -172,8 +172,8 @@ final class Lolly implements LoggerInterface {
             define( 'LOLLY_PLUGIN_BASENAME', plugin_basename( LOLLY_PLUGIN_FILE ) );
         }
 
-        if ( ! defined( 'LOLLY_LOG_HTTP_ENABLED' ) ) {
-            define( 'LOLLY_LOG_HTTP_ENABLED', false );
+        if ( ! defined( 'LOLLY_LOG_DISABLED' ) ) {
+            define( 'LOLLY_LOG_DISABLED', false );
         }
 
         if ( ! defined( 'LOLLY_LOG_DIR' ) ) {
