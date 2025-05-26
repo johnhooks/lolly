@@ -25,28 +25,21 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Uninstaller {
     /**
-     * @var Container
-     */
-    private Container $container;
-
-    /**
      * The Singleton instance.
      *
-     * @var self|null
+     * @var self|null $instance
      */
     private static ?self $instance = null;
 
     /**
      * @param  Container $container The container.
      */
-    private function __construct( Container $container ) {
-        $this->container = $container;
-    }
+    private function __construct(
+        private readonly Container $container
+    ) {}
 
     /**
      * Get the singleton instance.
-     *
-     * @return self
      */
     public static function instance(): self {
         if ( self::$instance === null ) {
@@ -58,8 +51,6 @@ final class Uninstaller {
 
     /**
      * Uninstall hook run via register_uninstall_hook().
-     *
-     * @return void
      */
     public static function uninstall(): void {
         self::instance()->handle_uninstall();
@@ -67,8 +58,6 @@ final class Uninstaller {
 
     /**
      * Actual uninstall logic.
-     *
-     * @return void
      */
     private function handle_uninstall(): void {
         delete_option( Config::OPTION_SLUG );

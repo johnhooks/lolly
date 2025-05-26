@@ -22,22 +22,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package Dozuki
  */
 final class Activator {
-    /**
-     * @var Container
-     */
-    private Container $container;
-
-    /**
-     * @param Container $container The container.
-     */
-    private function __construct( Container $container ) {
-        $this->container = $container;
-    }
+    private function __construct(
+        private readonly Container $container
+    ) {}
 
     /**
      * Lazy-instantiated callable for register_activation_hook.
-     *
-     * @return callable
      */
     public static function callback(): callable {
         return static function (): void {
@@ -51,8 +41,6 @@ final class Activator {
 
     /**
      * Activation hook.
-     *
-     * @return void
      */
     private function activate(): void {
         $this->write_settings();
@@ -60,8 +48,6 @@ final class Activator {
 
     /**
      * Saves a set of default values in the config.
-     *
-     * @return void
      */
     private function write_settings(): void {
         $existing = get_option( Config::OPTION_SLUG );
