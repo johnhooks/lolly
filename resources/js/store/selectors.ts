@@ -1,4 +1,9 @@
-import type { State, Settings, HttpRedactionSet, HttpWhitelistSet } from './types';
+import type {
+    State,
+    Settings,
+    HttpRedactionSet,
+    HttpWhitelistSet,
+} from './types';
 
 export const getSettings = (state: State): Settings => {
     return state.settings;

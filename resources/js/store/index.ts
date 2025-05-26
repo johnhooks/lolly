@@ -7,6 +7,7 @@ import selectors from './selectors';
 
 const STORE_NAME = 'dozuki/settings';
 
+// @todo Resolvers should have matching selectors, and not combined with the actions.
 // Combine actions and resolvers
 const combinedActions = {
     ...actions,
