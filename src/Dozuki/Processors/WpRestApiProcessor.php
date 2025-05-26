@@ -17,10 +17,12 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Hints the request is from itself
-// Headers
-// "referer":["http://ok-wp-logger.test/wp-admin/post.php?post=2&action=edit"]
-// "origin":["http://ok-wp-logger.test"]
+/*
+ * Hints the request is from itself.
+ * Headers:
+ *   "referer":["http://ok-wp-logger.test/wp-admin/post.php?post=2&action=edit"]
+ *   "origin": ["http://ok-wp-logger.test"]
+ */
 
 /**
  * WpRestApiProcessor class.
@@ -46,10 +48,20 @@ class WpRestApiProcessor implements ProcessorInterface {
             );
 
             if ( $value->result instanceof WP_REST_Response ) {
-                $body = $value->result->jsonSerialize();
+                // Note: The return of `jsonSerialized` is type-hinted as `mixed`.
+                // It should be possible to pass it directly to `json_encode`,
+                // though let's perform a few checks.
+                $raw_body = $value->result->jsonSerialize();
 
-                if ( is_array( $body ) ) {
-                    $body = json_encode( $body );
+                /** @var string|null $body */
+                $body = null;
+
+                if ( $raw_body instanceof \stdClass ) {
+                    $body = get_object_vars( $raw_body );
+                }
+
+                if ( is_array( $raw_body ) ) {
+                    $body = json_encode( $raw_body );
 
                     if ( json_last_error() !== JSON_ERROR_NONE || $body === false ) {
                         $body = '"JSON encode error: ' . json_last_error_msg() . '"';
