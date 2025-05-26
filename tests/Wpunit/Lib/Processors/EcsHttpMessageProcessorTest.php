@@ -46,12 +46,6 @@ class EcsHttpMessageProcessorTest extends WpTestCase {
                     [ 'Accepts' => 'application/json; charset=utf-8' ],
                 ),
                 [
-                    'url'  => [
-                        'original' => 'https://example.com/',
-                        'domain'   => 'example.com',
-                        'path'     => '/',
-                        'scheme'   => 'https',
-                    ],
                     'http' => [
                         'version' => '1.1',
                         'request' => [
@@ -78,12 +72,6 @@ class EcsHttpMessageProcessorTest extends WpTestCase {
                     ),
                 ),
                 [
-                    'url'  => [
-                        'original' => 'https://example.com/',
-                        'domain'   => 'example.com',
-                        'path'     => '/',
-                        'scheme'   => 'https',
-                    ],
                     'http' => [
                         'version' => '1.1',
                         'request' => [
@@ -107,13 +95,6 @@ class EcsHttpMessageProcessorTest extends WpTestCase {
                     [ 'Accepts' => 'application/json; charset=utf-8' ],
                 ),
                 [
-                    'url'  => [
-                        'original' => 'https://example.com/test?pram1=abc&pram2=111&pram3%5B0%5D=x&pram3%5B1%5D=y&pram3%5B2%5D=z',
-                        'domain'   => 'example.com',
-                        'path'     => '/test',
-                        'query'    => 'pram1=abc&pram2=111&pram3%5B0%5D=x&pram3%5B1%5D=y&pram3%5B2%5D=z',
-                        'scheme'   => 'https',
-                    ],
                     'http' => [
                         'version' => '1.1',
                         'request' => [
@@ -140,12 +121,6 @@ class EcsHttpMessageProcessorTest extends WpTestCase {
                     ),
                 ),
                 [
-                    'url'  => [
-                        'original' => 'https://example.com/',
-                        'domain'   => 'example.com',
-                        'path'     => '/',
-                        'scheme'   => 'https',
-                    ],
                     'http' => [
                         'version' => '1.1',
                         'request' => [
