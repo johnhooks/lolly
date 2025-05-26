@@ -311,6 +311,11 @@ final class Dozuki implements LoggerInterface {
      * @return void
      */
     public function log( $level, $message, array $context = [] ): void {
+        // @todo This seems like it should be handled differently.
+        if ( ! $this->container->get( Config\Config::class )->is_logging_enabled() ) {
+            return;
+        }
+
         if ( ! $this->have_providers_loaded ) {
             $this->buffered_log_messages[] = [ $level, $message, $context ];
             return;

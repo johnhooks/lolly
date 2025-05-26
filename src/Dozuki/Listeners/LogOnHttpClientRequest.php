@@ -12,10 +12,19 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+/*
+ * @todo Investigate converting to use the Requests hooks.
+ *   - fsockopen.after_send
+ *   - requests.before_parse
+ */
+
+
 /**
- * @todo Convert this to use the Requests hooks.
- * - fsockopen.after_send
- * - requests.before_parse
+ * LogOnHttpClientRequest class.
+ *
+ * Handle logging of WP HTTP client requests and responses.
+ *
+ * @package Dozuki
  */
 class LogOnHttpClientRequest {
 
@@ -43,6 +52,7 @@ class LogOnHttpClientRequest {
         }
 
         $log_context = [
+            // @todo Should this be here?
             'url'            => $url,
             'wp_http_client' => new WpHttpClientContext(
                 $response,

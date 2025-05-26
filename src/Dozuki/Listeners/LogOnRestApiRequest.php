@@ -16,8 +16,15 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+/**
+ * LogOnRestApiRequest class.
+ *
+ * Handles logging of REST API requests and responses, capturing relevant
+ * context for debugging and analysis.
+ *
+ * @package Dozuki
+ */
 class LogOnRestApiRequest {
-
     public function __construct(
         private readonly LoggerInterface $logger
     ) {}

@@ -11,19 +11,24 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+/**
+ * WpErrorProcessor class.
+ *
+ * Transforms a `WP_Error` into an "error" field for ECS/ELK.
+ *
+ * @link https://www.elastic.co/guide/en/ecs/current/ecs-error.html
+ */
 class WpErrorProcessor implements ProcessorInterface {
     public function __invoke( LogRecord $record ): LogRecord {
         $context = $record->context;
         $extra   = $record->extra;
 
-        foreach ( $context as $key => $value ) {
+        foreach ( $context as $_ => $value ) {
             if ( ! is_wp_error( $value ) ) {
                 continue;
             }
 
-            /**
-             *@todo Capture all the error data.
-             */
+            // @todo Capture all the error data.
             if ( ! isset( $extra['error'] ) ) {
                 $extra['error'] = [
                     'code'    => $value->get_error_code(),

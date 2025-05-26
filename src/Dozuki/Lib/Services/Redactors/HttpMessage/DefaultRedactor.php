@@ -41,9 +41,11 @@ final class DefaultRedactor implements Redactors\HttpMessage {
             $url = Utils::uriFor( $url );
         }
 
-        // @todo Not a huge fan of this, but it's better than passing multiple variables around
-        // Perhaps we need a redactor that contains the state and is called with `__invoke`.
-        $context = new Context( $url, array_merge( $this->config->get_http_redactions( $url ), $redactions ) );
+        $redactions = $this->config->is_http_redactions_enabled()
+            ? array_merge( $this->config->get_http_redactions( $url ), $redactions )
+            : $redactions;
+
+        $context = new Context( $url, $redactions );
 
         if ( $message instanceof RequestInterface ) {
             return $this->redact_request( $context, $message );

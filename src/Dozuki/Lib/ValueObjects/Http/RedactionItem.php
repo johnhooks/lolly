@@ -8,6 +8,13 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+/**
+ * RedactionItem class.
+ *
+ * Represents an item to be used for redacting HTTP data.
+ *
+ * @package Dozuki
+ */
 class RedactionItem {
     /**
      * @param HttpRedactionType $type The type of HTTP redaction.
