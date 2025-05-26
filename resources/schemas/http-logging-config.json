@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "$id": "https://dozuki.zip/schemas/http-logging-config.json",
-    "title": "Dozuki log configuration.",
-    "description": "Configuration for the Dozuki WordPress logging plugin.",
+    "$id": "https://lolly.okaywp.com/schemas/http-logging-config.json",
+    "title": "Lolly log configuration.",
+    "description": "Configuration for the Lolly WordPress logging plugin.",
     "type": "object",
     "properties": {
         "version": {
@@ -10,7 +10,7 @@
             "type": "number"
         },
         "enabled": {
-            "description": "Whether the Dozuki logger is enabled.",
+            "description": "Whether the Lolly logger is enabled.",
             "type": "boolean"
         },
         "wp_rest_logging_enabled": {

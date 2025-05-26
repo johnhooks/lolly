@@ -1,1 +1,1 @@
-export const SETTINGS_KEY = 'dozuki_settings';
+export const SETTINGS_KEY = 'lolly_settings';

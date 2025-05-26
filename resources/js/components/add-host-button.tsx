@@ -15,11 +15,11 @@ import { __ } from '@wordpress/i18n';
 import { default as settingStore } from '../store';
 
 const REDACTION_TYPES = [
-    { label: __('All (*)', 'dozuki'), value: '*' },
-    { label: __('Query Params', 'dozuki'), value: 'query' },
-    { label: __('Headers', 'dozuki'), value: 'header' },
-    { label: __('Request Body', 'dozuki'), value: 'request' },
-    { label: __('Response Body', 'dozuki'), value: 'response' },
+    { label: __('All (*)', 'lolly'), value: '*' },
+    { label: __('Query Params', 'lolly'), value: 'query' },
+    { label: __('Headers', 'lolly'), value: 'header' },
+    { label: __('Request Body', 'lolly'), value: 'request' },
+    { label: __('Response Body', 'lolly'), value: 'response' },
 ];
 
 interface AddHostButtonProps {
@@ -86,7 +86,7 @@ export default function AddHostButton({
                 size={size}
                 onClick={() => setIsModalOpen(true)}
             >
-                {__('Add Host', 'dozuki')}
+                {__('Add Host', 'lolly')}
             </Button>
 
             {isModalOpen && (
@@ -137,7 +137,7 @@ function AddHostModal({ onSave, onCancel }: AddHostModalProps) {
 
     return (
         <Modal
-            title={__('Add Host Configuration', 'dozuki')}
+            title={__('Add Host Configuration', 'lolly')}
             onRequestClose={onCancel}
             size="medium"
         >
@@ -150,16 +150,16 @@ function AddHostModal({ onSave, onCancel }: AddHostModalProps) {
                             fontWeight: 600,
                         }}
                     >
-                        {__('Host Settings', 'dozuki')}
+                        {__('Host Settings', 'lolly')}
                     </h3>
                     <TextControl
-                        label={__('Host', 'dozuki')}
+                        label={__('Host', 'lolly')}
                         value={host}
                         onChange={setHost}
                         placeholder="api.example.com, *.example.com"
                         help={__(
                             'The hostname or domain pattern to match',
-                            'dozuki'
+                            'lolly'
                         )}
                         __nextHasNoMarginBottom
                     />
@@ -173,28 +173,28 @@ function AddHostModal({ onSave, onCancel }: AddHostModalProps) {
                             fontWeight: 600,
                         }}
                     >
-                        {__('First Path Configuration', 'dozuki')}
+                        {__('First Path Configuration', 'lolly')}
                     </h3>
                     <VStack spacing={3}>
                         <TextControl
-                            label={__('Path', 'dozuki')}
+                            label={__('Path', 'lolly')}
                             value={path}
                             onChange={setPath}
                             placeholder="/api/v1/users, /admin/*, /wp-json/**"
                             help={__(
                                 'The URL path or pattern to match',
-                                'dozuki'
+                                'lolly'
                             )}
                             __nextHasNoMarginBottom
                         />
 
                         <CheckboxControl
-                            label={__('Use Glob Pattern Matching', 'dozuki')}
+                            label={__('Use Glob Pattern Matching', 'lolly')}
                             checked={glob}
                             onChange={setGlob}
                             help={__(
                                 'If checked, wildcards like * and ** will be interpreted as patterns',
-                                'dozuki'
+                                'lolly'
                             )}
                             __nextHasNoMarginBottom
                         />
@@ -209,40 +209,40 @@ function AddHostModal({ onSave, onCancel }: AddHostModalProps) {
                             fontWeight: 600,
                         }}
                     >
-                        {__('First Redaction Rule', 'dozuki')}
+                        {__('First Redaction Rule', 'lolly')}
                     </h3>
                     <VStack spacing={3}>
                         <SelectControl
-                            label={__('Redaction Type', 'dozuki')}
+                            label={__('Redaction Type', 'lolly')}
                             value={redactionType}
                             options={REDACTION_TYPES}
                             onChange={setRedactionType}
                             help={__(
                                 'Choose what type of data to redact',
-                                'dozuki'
+                                'lolly'
                             )}
                             __nextHasNoMarginBottom
                         />
 
                         <TextControl
-                            label={__('Value to Match', 'dozuki')}
+                            label={__('Value to Match', 'lolly')}
                             value={redactionValue}
                             onChange={setRedactionValue}
                             placeholder="password, token, api_key, etc."
                             help={__(
                                 'The parameter/header name or content to redact',
-                                'dozuki'
+                                'lolly'
                             )}
                             __nextHasNoMarginBottom
                         />
 
                         <CheckboxControl
-                            label={__('Remove Property Entirely', 'dozuki')}
+                            label={__('Remove Property Entirely', 'lolly')}
                             checked={redactionRemove}
                             onChange={setRedactionRemove}
                             help={__(
                                 'If checked, the property will be removed completely instead of being redacted',
-                                'dozuki'
+                                'lolly'
                             )}
                             __nextHasNoMarginBottom
                         />
@@ -251,14 +251,14 @@ function AddHostModal({ onSave, onCancel }: AddHostModalProps) {
 
                 <HStack justify="right">
                     <Button variant="tertiary" onClick={onCancel}>
-                        {__('Cancel', 'dozuki')}
+                        {__('Cancel', 'lolly')}
                     </Button>
                     <Button
                         variant="primary"
                         onClick={handleSave}
                         disabled={!isValid}
                     >
-                        {__('Add Host Configuration', 'dozuki')}
+                        {__('Add Host Configuration', 'lolly')}
                     </Button>
                 </HStack>
             </VStack>

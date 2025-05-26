@@ -10,14 +10,14 @@ class ActivationCest {
         $I->loginAsAdmin();
         $I->amOnPluginsPage();
 
-        $I->seePluginActivated( 'duzuki-logger' );
+        $I->seePluginActivated( 'lolly-log' );
 
-        $I->deactivatePlugin( 'duzuki-logger' );
+        $I->deactivatePlugin( 'lolly-log' );
 
-        $I->seePluginDeactivated( 'duzuki-logger' );
+        $I->seePluginDeactivated( 'lolly-log' );
 
-        $I->activatePlugin( 'duzuki-logger' );
+        $I->activatePlugin( 'lolly-log' );
 
-        $I->seePluginActivated( 'duzuki-logger' );
+        $I->seePluginActivated( 'lolly-log' );
     }
 }

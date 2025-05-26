@@ -47,11 +47,11 @@ interface EditingRedaction {
 }
 
 const REDACTION_TYPES = [
-    { label: __('All (*)', 'dozuki'), value: '*' },
-    { label: __('Query Params', 'dozuki'), value: 'query' },
-    { label: __('Headers', 'dozuki'), value: 'header' },
-    { label: __('Request Body', 'dozuki'), value: 'request' },
-    { label: __('Response Body', 'dozuki'), value: 'response' },
+    { label: __('All (*)', 'lolly'), value: '*' },
+    { label: __('Query Params', 'lolly'), value: 'query' },
+    { label: __('Headers', 'lolly'), value: 'header' },
+    { label: __('Request Body', 'lolly'), value: 'request' },
+    { label: __('Response Body', 'lolly'), value: 'response' },
 ];
 
 export default function HttpRedactionOverview(): React.ReactNode {
@@ -89,8 +89,8 @@ export default function HttpRedactionOverview(): React.ReactNode {
                     items.push({
                         id: `${hostIndex}-${pathIndex}-${redactionIndex}`,
                         host:
-                            redactionSet.host || __('(unnamed host)', 'dozuki'),
-                        path: path.path || __('(unnamed path)', 'dozuki'),
+                            redactionSet.host || __('(unnamed host)', 'lolly'),
+                        path: path.path || __('(unnamed path)', 'lolly'),
                         glob: path.glob || false,
                         type: redaction.type,
                         value: redaction.value,
@@ -108,13 +108,13 @@ export default function HttpRedactionOverview(): React.ReactNode {
     const fields = [
         {
             id: 'host',
-            label: __('Host', 'dozuki'),
+            label: __('Host', 'lolly'),
             enableHiding: false,
             enableSorting: true,
         },
         {
             id: 'path',
-            label: __('Path', 'dozuki'),
+            label: __('Path', 'lolly'),
             enableHiding: false,
             enableSorting: true,
             render: ({ item }: { item: FlatRedactionItem }) => (
@@ -131,7 +131,7 @@ export default function HttpRedactionOverview(): React.ReactNode {
         },
         {
             id: 'type',
-            label: __('Redaction Type', 'dozuki'),
+            label: __('Redaction Type', 'lolly'),
             enableHiding: false,
             enableSorting: true,
             render: ({ item }: { item: FlatRedactionItem }) => {
@@ -141,7 +141,7 @@ export default function HttpRedactionOverview(): React.ReactNode {
         },
         {
             id: 'value',
-            label: __('Value', 'dozuki'),
+            label: __('Value', 'lolly'),
             enableHiding: false,
             enableSorting: true,
             render: ({ item }: { item: FlatRedactionItem }) => (
@@ -153,17 +153,17 @@ export default function HttpRedactionOverview(): React.ReactNode {
                         borderRadius: '3px',
                     }}
                 >
-                    {item.value || __('(empty)', 'dozuki')}
+                    {item.value || __('(empty)', 'lolly')}
                 </code>
             ),
         },
         {
             id: 'remove',
-            label: __('Remove', 'dozuki'),
+            label: __('Remove', 'lolly'),
             enableHiding: false,
             enableSorting: true,
             render: ({ item }: { item: FlatRedactionItem }) =>
-                item.remove ? __('Yes', 'dozuki') : __('No', 'dozuki'),
+                item.remove ? __('Yes', 'lolly') : __('No', 'lolly'),
         },
     ];
 
@@ -176,7 +176,7 @@ export default function HttpRedactionOverview(): React.ReactNode {
     const actions = [
         {
             id: 'edit-redaction',
-            label: __('Edit Redaction', 'dozuki'),
+            label: __('Edit Redaction', 'lolly'),
             callback: (items: FlatRedactionItem[]) => {
                 if (items.length === 1) {
                     const item = items[0];
@@ -191,7 +191,7 @@ export default function HttpRedactionOverview(): React.ReactNode {
         },
         {
             id: 'add-redaction',
-            label: __('Add Redaction to Path', 'dozuki'),
+            label: __('Add Redaction to Path', 'lolly'),
             callback: (items: FlatRedactionItem[]) => {
                 if (items.length === 1) {
                     const item = items[0];
@@ -205,7 +205,7 @@ export default function HttpRedactionOverview(): React.ReactNode {
         },
         {
             id: 'edit-path',
-            label: __('Edit Path', 'dozuki'),
+            label: __('Edit Path', 'lolly'),
             callback: (items: FlatRedactionItem[]) => {
                 if (items.length === 1) {
                     const item = items[0];
@@ -219,7 +219,7 @@ export default function HttpRedactionOverview(): React.ReactNode {
         },
         {
             id: 'add-path',
-            label: __('Add Path to Host', 'dozuki'),
+            label: __('Add Path to Host', 'lolly'),
             callback: (items: FlatRedactionItem[]) => {
                 if (items.length === 1) {
                     const item = items[0];
@@ -233,12 +233,15 @@ export default function HttpRedactionOverview(): React.ReactNode {
         },
         {
             id: 'edit-host',
-            label: __('Edit Host', 'dozuki'),
+            label: __('Edit Host', 'lolly'),
             callback: (items: FlatRedactionItem[]) => {
                 if (items.length === 1) {
                     const item = items[0];
                     const currentHost = redactionSets[item.hostIndex].host;
-                    const newHost = prompt(__('Enter new host:', 'dozuki'), currentHost);
+                    const newHost = prompt(
+                        __('Enter new host:', 'lolly'),
+                        currentHost
+                    );
                     if (newHost !== null && newHost !== currentHost) {
                         updateHost(item.hostIndex, newHost);
                     }
@@ -247,7 +250,7 @@ export default function HttpRedactionOverview(): React.ReactNode {
         },
         {
             id: 'delete',
-            label: __('Delete Redaction', 'dozuki'),
+            label: __('Delete Redaction', 'lolly'),
             isDestructive: true,
             callback: (items: FlatRedactionItem[]) => {
                 items.forEach((item) => {
@@ -342,9 +345,14 @@ export default function HttpRedactionOverview(): React.ReactNode {
                         }}
                     >
                         <p>
-                            {__('No redaction rules configured yet.', 'dozuki')}
+                            {__('No redaction rules configured yet.', 'lolly')}
                         </p>
-                        <p>{__('Click "Add Host" above to create your first redaction configuration.', 'dozuki')}</p>
+                        <p>
+                            {__(
+                                'Click "Add Host" above to create your first redaction configuration.',
+                                'lolly'
+                            )}
+                        </p>
                     </div>
                 ) : (
                     <DataViews
@@ -408,50 +416,50 @@ function RedactionEditModal({
         <Modal
             title={
                 isNew
-                    ? __('Add Redaction', 'dozuki')
-                    : __('Edit Redaction', 'dozuki')
+                    ? __('Add Redaction', 'lolly')
+                    : __('Edit Redaction', 'lolly')
             }
             onRequestClose={onCancel}
             size="medium"
         >
             <VStack spacing={4}>
                 <SelectControl
-                    label={__('Redaction Type', 'dozuki')}
+                    label={__('Redaction Type', 'lolly')}
                     value={type}
                     options={REDACTION_TYPES}
                     onChange={setType}
-                    help={__('Choose what type of data to redact', 'dozuki')}
+                    help={__('Choose what type of data to redact', 'lolly')}
                 />
 
                 <TextControl
-                    label={__('Value to Match', 'dozuki')}
+                    label={__('Value to Match', 'lolly')}
                     value={value}
                     onChange={setValue}
                     placeholder="password, token, api_key, etc."
                     help={__(
                         'The parameter/header name or content to redact',
-                        'dozuki'
+                        'lolly'
                     )}
                 />
 
                 <CheckboxControl
-                    label={__('Remove Property Entirely', 'dozuki')}
+                    label={__('Remove Property Entirely', 'lolly')}
                     checked={remove}
                     onChange={setRemove}
                     help={__(
                         'If checked, the property will be removed completely instead of being redacted',
-                        'dozuki'
+                        'lolly'
                     )}
                 />
 
                 <HStack justify="right">
                     <Button variant="tertiary" onClick={onCancel}>
-                        {__('Cancel', 'dozuki')}
+                        {__('Cancel', 'lolly')}
                     </Button>
                     <Button variant="primary" onClick={handleSave}>
                         {isNew
-                            ? __('Add Redaction', 'dozuki')
-                            : __('Save Changes', 'dozuki')}
+                            ? __('Add Redaction', 'lolly')
+                            : __('Save Changes', 'lolly')}
                     </Button>
                 </HStack>
             </VStack>
@@ -476,37 +484,37 @@ function PathEditModal({ path, onSave, onCancel, isNew }: PathEditModalProps) {
 
     return (
         <Modal
-            title={isNew ? __('Add Path', 'dozuki') : __('Edit Path', 'dozuki')}
+            title={isNew ? __('Add Path', 'lolly') : __('Edit Path', 'lolly')}
             onRequestClose={onCancel}
             size="medium"
         >
             <VStack spacing={4}>
                 <TextControl
-                    label={__('Path', 'dozuki')}
+                    label={__('Path', 'lolly')}
                     value={pathValue}
                     onChange={setPathValue}
                     placeholder="/api/v1/users, /admin/*, /wp-json/**"
-                    help={__('The URL path or pattern to match', 'dozuki')}
+                    help={__('The URL path or pattern to match', 'lolly')}
                 />
 
                 <CheckboxControl
-                    label={__('Use Glob Pattern Matching', 'dozuki')}
+                    label={__('Use Glob Pattern Matching', 'lolly')}
                     checked={globValue}
                     onChange={setGlobValue}
                     help={__(
                         'If checked, wildcards like * and ** will be interpreted as patterns',
-                        'dozuki'
+                        'lolly'
                     )}
                 />
 
                 <HStack justify="right">
                     <Button variant="tertiary" onClick={onCancel}>
-                        {__('Cancel', 'dozuki')}
+                        {__('Cancel', 'lolly')}
                     </Button>
                     <Button variant="primary" onClick={handleSave}>
                         {isNew
-                            ? __('Add Path', 'dozuki')
-                            : __('Save Changes', 'dozuki')}
+                            ? __('Add Path', 'lolly')
+                            : __('Save Changes', 'lolly')}
                     </Button>
                 </HStack>
             </VStack>

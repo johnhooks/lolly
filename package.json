@@ -1,7 +1,7 @@
 {
-    "name": "dozuki",
+    "name": "@okaywp/lolly",
     "version": "1.0.0",
-    "description": "Dozuki Logger WordPress plugin",
+    "description": "Lolly Log WordPress logging plugin",
     "main": "index.js",
     "scripts": {
         "build": "wp-scripts build",

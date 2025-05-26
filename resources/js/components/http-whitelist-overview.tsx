@@ -17,7 +17,6 @@ import {
 import { __ } from '@wordpress/i18n';
 
 import { default as settingStore } from '../store';
-import type { PathWhitelist } from '../store/types';
 
 interface FlatWhitelistItem {
     id: string;
@@ -70,9 +69,9 @@ export default function HttpWhitelistOverview(): React.ReactNode {
             whitelistSet.paths.forEach((path, pathIndex) => {
                 items.push({
                     id: `${hostIndex}-${pathIndex}`,
-                    host: whitelistSet.host || __('(unnamed host)', 'dozuki'),
+                    host: whitelistSet.host || __('(unnamed host)', 'lolly'),
                     hostGlob: whitelistSet.glob || false,
-                    path: path.path || __('(unnamed path)', 'dozuki'),
+                    path: path.path || __('(unnamed path)', 'lolly'),
                     pathGlob: path.glob || false,
                     hostIndex,
                     pathIndex,
@@ -85,7 +84,7 @@ export default function HttpWhitelistOverview(): React.ReactNode {
     const fields = [
         {
             id: 'host',
-            label: __('Host', 'dozuki'),
+            label: __('Host', 'lolly'),
             enableHiding: false,
             enableSorting: true,
             render: ({ item }: { item: FlatWhitelistItem }) => (
@@ -102,7 +101,7 @@ export default function HttpWhitelistOverview(): React.ReactNode {
         },
         {
             id: 'path',
-            label: __('Path', 'dozuki'),
+            label: __('Path', 'lolly'),
             enableHiding: false,
             enableSorting: true,
             render: ({ item }: { item: FlatWhitelistItem }) => (
@@ -125,7 +124,7 @@ export default function HttpWhitelistOverview(): React.ReactNode {
     const actions = [
         {
             id: 'edit-path',
-            label: __('Edit Path', 'dozuki'),
+            label: __('Edit Path', 'lolly'),
             callback: (items: FlatWhitelistItem[]) => {
                 if (items.length === 1) {
                     const item = items[0];
@@ -139,7 +138,7 @@ export default function HttpWhitelistOverview(): React.ReactNode {
         },
         {
             id: 'add-path',
-            label: __('Add Path to Host', 'dozuki'),
+            label: __('Add Path to Host', 'lolly'),
             callback: (items: FlatWhitelistItem[]) => {
                 if (items.length === 1) {
                     const item = items[0];
@@ -153,13 +152,13 @@ export default function HttpWhitelistOverview(): React.ReactNode {
         },
         {
             id: 'edit-host',
-            label: __('Edit Host', 'dozuki'),
+            label: __('Edit Host', 'lolly'),
             callback: (items: FlatWhitelistItem[]) => {
                 if (items.length === 1) {
                     const item = items[0];
                     const currentHost = whitelistSets[item.hostIndex].host;
                     const newHost = prompt(
-                        __('Enter new host:', 'dozuki'),
+                        __('Enter new host:', 'lolly'),
                         currentHost
                     );
                     if (newHost !== null && newHost !== currentHost) {
@@ -170,7 +169,7 @@ export default function HttpWhitelistOverview(): React.ReactNode {
         },
         {
             id: 'delete',
-            label: __('Delete Path', 'dozuki'),
+            label: __('Delete Path', 'lolly'),
             isDestructive: true,
             callback: (items: FlatWhitelistItem[]) => {
                 items.forEach((item) => {
@@ -230,12 +229,12 @@ export default function HttpWhitelistOverview(): React.ReactNode {
                         }}
                     >
                         <p>
-                            {__('No whitelist rules configured yet.', 'dozuki')}
+                            {__('No whitelist rules configured yet.', 'lolly')}
                         </p>
                         <p>
                             {__(
                                 'Click "Add Host" above to create your first whitelist configuration.',
-                                'dozuki'
+                                'lolly'
                             )}
                         </p>
                     </div>
@@ -283,40 +282,40 @@ function PathEditModal({ path, onSave, onCancel, isNew }: PathEditModalProps) {
 
     return (
         <Modal
-            title={isNew ? __('Add Path', 'dozuki') : __('Edit Path', 'dozuki')}
+            title={isNew ? __('Add Path', 'lolly') : __('Edit Path', 'lolly')}
             onRequestClose={onCancel}
             size="medium"
         >
             <VStack spacing={4}>
                 <TextControl
-                    label={__('Path', 'dozuki')}
+                    label={__('Path', 'lolly')}
                     value={pathValue}
                     onChange={setPathValue}
                     placeholder="/api/v1/users, /admin/*, /wp-json/**"
                     help={__(
                         'The URL path or pattern to match for whitelisting',
-                        'dozuki'
+                        'lolly'
                     )}
                 />
 
                 <CheckboxControl
-                    label={__('Use Glob Pattern Matching', 'dozuki')}
+                    label={__('Use Glob Pattern Matching', 'lolly')}
                     checked={globValue}
                     onChange={setGlobValue}
                     help={__(
                         'If checked, wildcards like * and ** will be interpreted as patterns',
-                        'dozuki'
+                        'lolly'
                     )}
                 />
 
                 <HStack justify="right">
                     <Button variant="tertiary" onClick={onCancel}>
-                        {__('Cancel', 'dozuki')}
+                        {__('Cancel', 'lolly')}
                     </Button>
                     <Button variant="primary" onClick={handleSave}>
                         {isNew
-                            ? __('Add Path', 'dozuki')
-                            : __('Save Changes', 'dozuki')}
+                            ? __('Add Path', 'lolly')
+                            : __('Save Changes', 'lolly')}
                     </Button>
                 </HStack>
             </VStack>

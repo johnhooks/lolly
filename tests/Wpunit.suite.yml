@@ -16,5 +16,5 @@ modules:
             domain: "%WORDPRESS_DOMAIN%"
             adminEmail: "%WORDPRESS_ADMIN_EMAIL%"
             title: "Wpunit tests"
-            plugins: ["dozuki/dozuki.php"]
+            plugins: ["lolly/lolly.php"]
             theme: ""

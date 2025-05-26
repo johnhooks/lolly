@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Wpunit\Lib\Processors;
 
 use Codeception\Attribute\DataProvider;
-use Dozuki\Lib\Processors\EcsHttpMessageProcessor;
-use Dozuki\GuzzleHttp\Psr7\Request;
-use Dozuki\GuzzleHttp\Psr7\Response;
-use Dozuki\Monolog\Processor\ProcessorInterface;
+use Lolly\Lib\Processors\EcsHttpMessageProcessor;
+use Lolly\GuzzleHttp\Psr7\Request;
+use Lolly\GuzzleHttp\Psr7\Response;
+use Lolly\Monolog\Processor\ProcessorInterface;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use Tests\Support\Concerns\BuildsLogRecords;
 

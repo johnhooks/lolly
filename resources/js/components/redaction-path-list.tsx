@@ -31,7 +31,7 @@ export default function RedactionPathList({
     return (
         <div>
             <h3 style={{ margin: 0, fontSize: '1rem' }}>
-                {__('Paths', 'dozuki')}
+                {__('Paths', 'lolly')}
             </h3>
             {paths.map((pathItem, pathIndex) => (
                 <div key={pathIndex}>
@@ -39,7 +39,7 @@ export default function RedactionPathList({
                     <VStack spacing={3} style={{ padding: '16px 0' }}>
                         <HStack>
                             <TextControl
-                                label={__('Path', 'dozuki')}
+                                label={__('Path', 'lolly')}
                                 value={pathItem.path}
                                 onChange={(value) =>
                                     updatePath(
@@ -52,7 +52,7 @@ export default function RedactionPathList({
                                 placeholder="/wp/v2/post"
                             />
                             <CheckboxControl
-                                label={__('Glob', 'dozuki')}
+                                label={__('Glob', 'lolly')}
                                 checked={pathItem.glob || false}
                                 onChange={(value) =>
                                     updatePath(
@@ -68,7 +68,7 @@ export default function RedactionPathList({
                                 variant="tertiary"
                                 onClick={() => removePath(hostIndex, pathIndex)}
                             >
-                                {__('Remove Path', 'dozuki')}
+                                {__('Remove Path', 'lolly')}
                             </Button>
                         </HStack>
 
@@ -88,7 +88,7 @@ export default function RedactionPathList({
             <CardDivider />
             <div style={{ padding: '16px 0' }}>
                 <Button variant="secondary" onClick={() => addPath(hostIndex)}>
-                    {__('Add Path', 'dozuki')}
+                    {__('Add Path', 'lolly')}
                 </Button>
             </div>
         </div>

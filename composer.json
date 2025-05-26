@@ -1,5 +1,5 @@
 {
-    "name": "dozuki/duzuki",
+    "name": "lolly/lolly",
     "description": "A WordPress plugin to log actions preformed on your WordPress website.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
@@ -41,7 +41,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Dozuki\\": "src/Dozuki/"
+            "Lolly\\": "src/Lolly/"
         }
     },
     "autoload-dev": {
@@ -83,9 +83,9 @@
     "extra": {
         "strauss": {
             "target_directory": "vendor/vendor-prefixed",
-            "namespace_prefix": "Dozuki\\",
-            "classmap_prefix": "Dozuki_",
-            "constant_prefix": "Dozuki_",
+            "namespace_prefix": "Lolly\\",
+            "classmap_prefix": "Lolly_",
+            "constant_prefix": "Lolly_",
             "delete_vendor_packages": true,
             "excluded_from_prefix": {
                 "file_patterns": [

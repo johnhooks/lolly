@@ -23,7 +23,7 @@ export default function HttpRedactionList(): React.ReactNode {
     const { updateHost, removeHost, addHost } = useDispatch(settingStore);
     return (
         <>
-            <h2>{__('HTTP Redaction Configuration', 'dozuki')}</h2>
+            <h2>{__('HTTP Redaction Configuration', 'lolly')}</h2>
             <VStack spacing={4}>
                 <Panel>
                     {redactionSets.map((redactionSet, setIndex) => (
@@ -31,14 +31,14 @@ export default function HttpRedactionList(): React.ReactNode {
                             key={setIndex}
                             title={
                                 redactionSet.host ||
-                                __('New Host Configuration', 'dozuki')
+                                __('New Host Configuration', 'lolly')
                             }
                             initialOpen={false}
                         >
                             <VStack spacing={3}>
                                 <HStack>
                                     <TextControl
-                                        label={__('Host', 'dozuki')}
+                                        label={__('Host', 'lolly')}
                                         value={redactionSet.host}
                                         onChange={(value) =>
                                             updateHost(setIndex, value)
@@ -50,7 +50,7 @@ export default function HttpRedactionList(): React.ReactNode {
                                         variant="tertiary"
                                         onClick={() => removeHost(setIndex)}
                                     >
-                                        {__('Remove Host', 'dozuki')}
+                                        {__('Remove Host', 'lolly')}
                                     </Button>
                                 </HStack>
 
@@ -63,7 +63,7 @@ export default function HttpRedactionList(): React.ReactNode {
                     ))}
                 </Panel>
                 <Button variant="secondary" onClick={addHost}>
-                    {__('Add Host Configuration', 'dozuki')}
+                    {__('Add Host Configuration', 'lolly')}
                 </Button>
             </VStack>
         </>

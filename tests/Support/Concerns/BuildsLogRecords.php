@@ -3,8 +3,8 @@
 namespace Tests\Support\Concerns;
 
 use DateTimeImmutable;
-use Dozuki\Monolog\Level;
-use Dozuki\Monolog\LogRecord;
+use Lolly\Monolog\Level;
+use Lolly\Monolog\LogRecord;
 
 trait BuildsLogRecords {
     /**

@@ -1,10 +1,10 @@
 parameters:
     level: 6
     bootstrapFiles:
-        - dozuki.php
+        - lolly.php
 
     paths:
-        - dozuki.php
+        - lolly.php
         - src
 
     scanFiles:
@@ -13,6 +13,6 @@ parameters:
     ignoreErrors:
         -
             messages:
-                - '#Method Dozuki::[a-z]+\(\) has parameter \$context with no value type specified in iterable type array.#'
-                - '#Parameter \#[1-2] \$message \(string\) of method Dozuki::[a-z]+\(\) should be contravariant with parameter#'
-            path: dozuki.php
+                - '#Method Lolly::[a-z]+\(\) has parameter \$context with no value type specified in iterable type array.#'
+                - '#Parameter \#[1-2] \$message \(string\) of method Lolly::[a-z]+\(\) should be contravariant with parameter#'
+            path: lolly.php

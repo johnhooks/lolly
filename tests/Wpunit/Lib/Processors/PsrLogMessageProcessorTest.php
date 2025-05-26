@@ -6,10 +6,10 @@ namespace Tests\Wpunit\Lib\Processors;
 
 use Codeception\Attribute\DataProvider;
 use DateTimeImmutable;
-use Dozuki\Lib\Processors\PsrLogMessageProcessor;
-use Dozuki\Monolog\Level;
-use Dozuki\Monolog\LogRecord;
-use Dozuki\Monolog\Processor\ProcessorInterface;
+use Lolly\Lib\Processors\PsrLogMessageProcessor;
+use Lolly\Monolog\Level;
+use Lolly\Monolog\LogRecord;
+use Lolly\Monolog\Processor\ProcessorInterface;
 use Exception;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use Tests\Support\Concerns\BuildsLogRecords;
@@ -190,7 +190,7 @@ class PsrLogMessageProcessorTest extends WPTestCase {
                 },
             ],
             'log_record_object'        => [
-                '[object Dozuki\Monolog\LogRecord]',
+                '[object Lolly\Monolog\LogRecord]',
                 new LogRecord(
                     datetime: new DateTimeImmutable( 'now' ),
                     channel: 'test',

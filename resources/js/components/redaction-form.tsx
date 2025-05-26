@@ -21,11 +21,11 @@ interface RedactionFormProps {
 }
 
 const REDACTION_TYPES = [
-    { label: __('All (*)', 'dozuki'), value: '*' },
-    { label: __('Query Params', 'dozuki'), value: 'query' },
-    { label: __('Headers', 'dozuki'), value: 'header' },
-    { label: __('Request Body', 'dozuki'), value: 'request' },
-    { label: __('Response Body', 'dozuki'), value: 'response' },
+    { label: __('All (*)', 'lolly'), value: '*' },
+    { label: __('Query Params', 'lolly'), value: 'query' },
+    { label: __('Headers', 'lolly'), value: 'header' },
+    { label: __('Request Body', 'lolly'), value: 'request' },
+    { label: __('Response Body', 'lolly'), value: 'response' },
 ];
 
 export default function RedactionForm({
@@ -59,12 +59,12 @@ export default function RedactionForm({
     if (redactions.length === 0) {
         return (
             <div>
-                <h4>{__('Redactions', 'dozuki')}</h4>
+                <h4>{__('Redactions', 'lolly')}</h4>
                 <p style={{ fontStyle: 'italic', color: '#666' }}>
-                    {__('No redactions configured.', 'dozuki')}
+                    {__('No redactions configured.', 'lolly')}
                 </p>
                 <Button variant="secondary" onClick={addRedaction}>
-                    {__('Add Redaction', 'dozuki')}
+                    {__('Add Redaction', 'lolly')}
                 </Button>
             </div>
         );
@@ -72,7 +72,7 @@ export default function RedactionForm({
 
     return (
         <div>
-            <h4>{__('Redactions', 'dozuki')}</h4>
+            <h4>{__('Redactions', 'lolly')}</h4>
             <table
                 style={{
                     width: '100%',
@@ -90,7 +90,7 @@ export default function RedactionForm({
                                 fontWeight: 600,
                             }}
                         >
-                            {__('Type', 'dozuki')}
+                            {__('Type', 'lolly')}
                         </th>
                         <th
                             style={{
@@ -100,7 +100,7 @@ export default function RedactionForm({
                                 fontWeight: 600,
                             }}
                         >
-                            {__('Value', 'dozuki')}
+                            {__('Value', 'lolly')}
                         </th>
                         <th
                             style={{
@@ -110,7 +110,7 @@ export default function RedactionForm({
                                 fontWeight: 600,
                             }}
                         >
-                            {__('Remove', 'dozuki')}
+                            {__('Remove', 'lolly')}
                         </th>
                         <th
                             style={{
@@ -121,7 +121,7 @@ export default function RedactionForm({
                                 width: '100px',
                             }}
                         >
-                            {__('Actions', 'dozuki')}
+                            {__('Actions', 'lolly')}
                         </th>
                     </tr>
                 </thead>
@@ -207,7 +207,7 @@ export default function RedactionForm({
                                         removeRedaction(redactionIndex)
                                     }
                                 >
-                                    {__('Remove', 'dozuki')}
+                                    {__('Remove', 'lolly')}
                                 </Button>
                             </td>
                         </tr>
@@ -215,7 +215,7 @@ export default function RedactionForm({
                 </tbody>
             </table>
             <Button variant="secondary" onClick={addRedaction}>
-                {__('Add Redaction', 'dozuki')}
+                {__('Add Redaction', 'lolly')}
             </Button>
         </div>
     );

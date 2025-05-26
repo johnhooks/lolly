@@ -1,4 +1,4 @@
-=== Dozuki Log ===
+=== Lolly Log ===
 Contributors: bitmachia
 Tags: logging, http, monitoring, debugging, developer-tools
 Requires at least: 6.6
@@ -12,7 +12,7 @@ Advanced HTTP request/response logging and monitoring for WordPress with configu
 
 == Description ==
 
-Dozuki Logger is a comprehensive logging solution for WordPress that captures and monitors HTTP requests, REST API calls, and other critical application events. The plugin provides detailed logging capabilities with built-in data redaction features to protect sensitive information.
+Lolly Log is a comprehensive logging solution for WordPress that captures and monitors HTTP requests, REST API calls, and other critical application events. The plugin provides detailed logging capabilities with built-in data redaction features to protect sensitive information.
 
 = Key Features =
 
@@ -43,9 +43,9 @@ The plugin includes sophisticated redaction capabilities to protect sensitive in
 
 == Installation ==
 
-1. Upload the `dozuki` folder to the `/wp-content/plugins/` directory
+1. Upload the `lolly` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Go to 'Settings' > 'Dozuki Log' to configure logging options
+3. Go to 'Settings' > 'Lolly Log' to configure logging options
 4. Set up your redaction rules and host whitelist as needed
 
 == Frequently Asked Questions ==
@@ -87,7 +87,7 @@ The plugin uses the Elastic Common Schema (ECS) format for structured logging, m
 == Upgrade Notice ==
 
 = 0.1.0 =
-Initial release of Dozuki Logger with comprehensive HTTP logging and data protection features.
+Initial release of Lolly Logger with comprehensive HTTP logging and data protection features.
 
 == Developer Notes ==
 

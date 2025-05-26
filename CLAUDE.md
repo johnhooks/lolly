@@ -16,7 +16,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Run specific test**: `php vendor/bin/codecept run Unit:TestName`
 
 ## Code Style Guidelines
-- **Namespaces**: Use `Dozuki` namespace with subnamespaces for components (`Dozuki\Lib`, `Dozuki\Log`)
+- **Namespaces**: Use `Lolly` namespace with subnamespaces for components (`Lolly\Lib`, `Lolly\Log`)
 - **Class Names**: PascalCase (e.g., `Redactor`, `LogOnCentralVerbRequest`)
 - **Method Names**: snake_case (e.g., `handle()`, `handle_request()`)
 - **Variables**: snake_case (e.g., `$post_id`, `$tool_name`)

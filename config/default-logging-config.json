@@ -1,5 +1,5 @@
 {
-    "$schema": "https://dozuki.zip/schemas/http-logging-config.json",
+    "$schema": "https://lolly.okaywp.com/schemas/http-logging-config.json",
     "version": 1,
     "enabled": false,
     "http_redactions_enabled": true,

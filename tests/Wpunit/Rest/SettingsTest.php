@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Wpunit\Rest;
 
-use Dozuki\Config\Config;
+use Lolly\Config\Config;
 use lucatume\WPBrowser\TestCase\WPRestApiTestCase;
 use WP_REST_Request;
 
@@ -19,7 +19,7 @@ class SettingsTest extends WPRestApiTestCase {
         do_action( 'rest_api_init' );
 
         // Create a temporary log directory for testing.
-        $log_dir = sys_get_temp_dir() . '/dozuki_test_logs';
+        $log_dir = sys_get_temp_dir() . '/lolly_test_logs';
         if ( ! is_dir( $log_dir ) ) {
             mkdir( $log_dir, 0755, true );
         }
@@ -31,10 +31,10 @@ class SettingsTest extends WPRestApiTestCase {
     public function tearDown(): void {
         parent::tearDown();
 
-        delete_option( 'dozuki_settings' );
+        delete_option( 'lolly_settings' );
 
         // Clean up temporary log directory.
-        $log_dir = sys_get_temp_dir() . '/dozuki_test_logs';
+        $log_dir = sys_get_temp_dir() . '/lolly_test_logs';
         if ( is_dir( $log_dir ) ) {
             array_map( 'unlink', glob( "$log_dir/*" ) );
             rmdir( $log_dir );
@@ -51,7 +51,7 @@ class SettingsTest extends WPRestApiTestCase {
         $this->assertNotEmpty( $routes['/wp/v2/settings'] );
 
         $registered_settings = get_registered_settings();
-        $this->assertArrayHasKey( 'dozuki_settings', $registered_settings );
+        $this->assertArrayHasKey( 'lolly_settings', $registered_settings );
     }
 
     public function testNonAdminCannotAccessEndpoint(): void {
@@ -73,24 +73,24 @@ class SettingsTest extends WPRestApiTestCase {
         $data = $response->get_data();
 
         $this->assertIsArray( $data );
-        $this->assertArrayHasKey( 'dozuki_settings', $data );
+        $this->assertArrayHasKey( 'lolly_settings', $data );
 
-        $dozuki_data = $data['dozuki_settings'];
-        $this->assertIsArray( $dozuki_data );
-        $this->assertArrayHasKey( 'enabled', $dozuki_data );
-        $this->assertArrayHasKey( 'http_redactions_enabled', $dozuki_data );
-        $this->assertArrayHasKey( 'http_redactions', $dozuki_data );
-        $this->assertArrayHasKey( 'http_whitelist', $dozuki_data );
+        $lolly_data = $data['lolly_settings'];
+        $this->assertIsArray( $lolly_data );
+        $this->assertArrayHasKey( 'enabled', $lolly_data );
+        $this->assertArrayHasKey( 'http_redactions_enabled', $lolly_data );
+        $this->assertArrayHasKey( 'http_redactions', $lolly_data );
+        $this->assertArrayHasKey( 'http_whitelist', $lolly_data );
 
-        $this->assertFalse( $dozuki_data['enabled'] );
-        $this->assertTrue( $dozuki_data['http_redactions_enabled'] );
-        $this->assertIsArray( $dozuki_data['http_redactions'] );
-        $this->assertIsArray( $dozuki_data['http_whitelist'] );
+        $this->assertFalse( $lolly_data['enabled'] );
+        $this->assertTrue( $lolly_data['http_redactions_enabled'] );
+        $this->assertIsArray( $lolly_data['http_redactions'] );
+        $this->assertIsArray( $lolly_data['http_whitelist'] );
     }
 
     public function testCanUpdateSettings(): void {
         $test_settings = [
-            'dozuki_settings' => [
+            'lolly_settings' => [
                 'version'                        => 1,
                 'enabled'                        => true,
                 'wp_rest_logging_enabled'        => false,
@@ -129,7 +129,7 @@ class SettingsTest extends WPRestApiTestCase {
         $this->assertEquals( 200, $response->get_status() );
 
         $data = $response->get_data();
-        $this->assertArrayHasKey( 'dozuki_settings', $data );
+        $this->assertArrayHasKey( 'lolly_settings', $data );
 
         $get_request  = new WP_REST_Request( 'GET', '/wp/v2/settings' );
         $get_response = rest_do_request( $get_request );
@@ -137,27 +137,27 @@ class SettingsTest extends WPRestApiTestCase {
         $this->assertEquals( 200, $get_response->get_status() );
 
         $settings        = $get_response->get_data();
-        $dozuki_settings = $settings['dozuki_settings'];
+        $lolly_settings = $settings['lolly_settings'];
 
-        $this->assertTrue( $dozuki_settings['enabled'] );
-        $this->assertFalse( $dozuki_settings['wp_rest_logging_enabled'] );
-        $this->assertFalse( $dozuki_settings['http_redactions_enabled'] );
-        $this->assertTrue( $dozuki_settings['http_whitelist_enabled'] );
-        $this->assertCount( 1, $dozuki_settings['http_redactions'] );
-        $this->assertEquals( 'example.com', $dozuki_settings['http_redactions'][0]['host'] );
-        $this->assertCount( 1, $dozuki_settings['http_whitelist'] );
-        $this->assertEquals( 'api.example.org', $dozuki_settings['http_whitelist'][0]['host'] );
+        $this->assertTrue( $lolly_settings['enabled'] );
+        $this->assertFalse( $lolly_settings['wp_rest_logging_enabled'] );
+        $this->assertFalse( $lolly_settings['http_redactions_enabled'] );
+        $this->assertTrue( $lolly_settings['http_whitelist_enabled'] );
+        $this->assertCount( 1, $lolly_settings['http_redactions'] );
+        $this->assertEquals( 'example.com', $lolly_settings['http_redactions'][0]['host'] );
+        $this->assertCount( 1, $lolly_settings['http_whitelist'] );
+        $this->assertEquals( 'api.example.org', $lolly_settings['http_whitelist'][0]['host'] );
     }
 
     public function testSchemaIsProperlyDefined(): void {
         $registered_settings = get_registered_settings();
-        $dozuki_setting      = $registered_settings['dozuki_settings'];
+        $lolly_setting      = $registered_settings['lolly_settings'];
 
-        $this->assertIsArray( $dozuki_setting );
-        $this->assertArrayHasKey( 'show_in_rest', $dozuki_setting );
-        $this->assertArrayHasKey( 'schema', $dozuki_setting['show_in_rest'] );
+        $this->assertIsArray( $lolly_setting );
+        $this->assertArrayHasKey( 'show_in_rest', $lolly_setting );
+        $this->assertArrayHasKey( 'schema', $lolly_setting['show_in_rest'] );
 
-        $schema = $dozuki_setting['show_in_rest']['schema'];
+        $schema = $lolly_setting['show_in_rest']['schema'];
         $this->assertIsArray( $schema );
         $this->assertArrayHasKey( 'properties', $schema );
         $this->assertArrayHasKey( 'enabled', $schema['properties'] );

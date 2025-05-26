@@ -43,7 +43,7 @@ module.exports = {
         "@wordpress/i18n-text-domain": [
             "error",
             {
-                "allowedTextDomain": ["dozuki"]
+                "allowedTextDomain": ["lolly"]
             }
         ],
         "jsx-no-target-blank": "off",

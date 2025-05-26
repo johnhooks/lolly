@@ -73,7 +73,7 @@ export default function AddWhitelistHostButton({
                 size={size}
                 onClick={() => setIsModalOpen(true)}
             >
-                {__('Add Host', 'dozuki')}
+                {__('Add Host', 'lolly')}
             </Button>
 
             {isModalOpen && (
@@ -118,7 +118,7 @@ function AddWhitelistHostModal({
 
     return (
         <Modal
-            title={__('Add Whitelist Host Configuration', 'dozuki')}
+            title={__('Add Whitelist Host Configuration', 'lolly')}
             onRequestClose={onCancel}
             size="medium"
         >
@@ -131,17 +131,17 @@ function AddWhitelistHostModal({
                             fontWeight: 600,
                         }}
                     >
-                        {__('Host Settings', 'dozuki')}
+                        {__('Host Settings', 'lolly')}
                     </h3>
                     <VStack spacing={3}>
                         <TextControl
-                            label={__('Host', 'dozuki')}
+                            label={__('Host', 'lolly')}
                             value={host}
                             onChange={setHost}
                             placeholder="api.example.com, *.example.com"
                             help={__(
                                 'The hostname or domain pattern to match for whitelisting',
-                                'dozuki'
+                                'lolly'
                             )}
                             __nextHasNoMarginBottom
                         />
@@ -149,13 +149,13 @@ function AddWhitelistHostModal({
                         <CheckboxControl
                             label={__(
                                 'Use Host Glob Pattern Matching',
-                                'dozuki'
+                                'lolly'
                             )}
                             checked={hostGlob}
                             onChange={setHostGlob}
                             help={__(
                                 'If checked, wildcards like * will be interpreted as patterns for the host',
-                                'dozuki'
+                                'lolly'
                             )}
                             __nextHasNoMarginBottom
                         />
@@ -170,17 +170,17 @@ function AddWhitelistHostModal({
                             fontWeight: 600,
                         }}
                     >
-                        {__('First Path Configuration', 'dozuki')}
+                        {__('First Path Configuration', 'lolly')}
                     </h3>
                     <VStack spacing={3}>
                         <TextControl
-                            label={__('Path', 'dozuki')}
+                            label={__('Path', 'lolly')}
                             value={path}
                             onChange={setPath}
                             placeholder="/api/v1/users, /admin/*, /wp-json/**"
                             help={__(
                                 'The URL path or pattern to match for whitelisting',
-                                'dozuki'
+                                'lolly'
                             )}
                             __nextHasNoMarginBottom
                         />
@@ -188,13 +188,13 @@ function AddWhitelistHostModal({
                         <CheckboxControl
                             label={__(
                                 'Use Path Glob Pattern Matching',
-                                'dozuki'
+                                'lolly'
                             )}
                             checked={pathGlob}
                             onChange={setPathGlob}
                             help={__(
                                 'If checked, wildcards like * and ** will be interpreted as patterns for the path',
-                                'dozuki'
+                                'lolly'
                             )}
                             __nextHasNoMarginBottom
                         />
@@ -203,14 +203,14 @@ function AddWhitelistHostModal({
 
                 <HStack justify="right">
                     <Button variant="tertiary" onClick={onCancel}>
-                        {__('Cancel', 'dozuki')}
+                        {__('Cancel', 'lolly')}
                     </Button>
                     <Button
                         variant="primary"
                         onClick={handleSave}
                         disabled={!isValid}
                     >
-                        {__('Add Host Configuration', 'dozuki')}
+                        {__('Add Host Configuration', 'lolly')}
                     </Button>
                 </HStack>
             </VStack>

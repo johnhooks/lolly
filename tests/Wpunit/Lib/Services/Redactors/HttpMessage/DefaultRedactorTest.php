@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Tests\Wpunit\Lib\Services\Redactors\HttpMessage;
 
 use Codeception\Attribute\DataProvider;
-use Dozuki\GuzzleHttp\Psr7\Request;
-use Dozuki\GuzzleHttp\Psr7\Response;
-use Dozuki\GuzzleHttp\Psr7\Utils;
-use Dozuki\Lib\Contracts\Redactors\Config;
-use Dozuki\Lib\Enums\HttpRedactionType;
-use Dozuki\Lib\Services\Redactors\HttpMessage\DefaultRedactor;
-use Dozuki\Lib\ValueObjects\Http\RedactionItem;
-use Dozuki\Psr\Http\Message\MessageInterface;
-use Dozuki\Psr\Http\Message\RequestInterface;
-use Dozuki\Psr\Http\Message\UriInterface;
+use Lolly\GuzzleHttp\Psr7\Request;
+use Lolly\GuzzleHttp\Psr7\Response;
+use Lolly\GuzzleHttp\Psr7\Utils;
+use Lolly\Lib\Contracts\Redactors\Config;
+use Lolly\Lib\Enums\HttpRedactionType;
+use Lolly\Lib\Services\Redactors\HttpMessage\DefaultRedactor;
+use Lolly\Lib\ValueObjects\Http\RedactionItem;
+use Lolly\Psr\Http\Message\MessageInterface;
+use Lolly\Psr\Http\Message\RequestInterface;
+use Lolly\Psr\Http\Message\UriInterface;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
 class DefaultRedactorTest extends WpTestCase {

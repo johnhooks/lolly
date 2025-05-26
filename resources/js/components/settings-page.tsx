@@ -50,7 +50,7 @@ export default function SettingsPage(): React.ReactNode {
 
     return (
         <VStack spacing={4}>
-            <h1>{__('Dozuki Log Settings', 'dozuki')}</h1>
+            <h1>{__('Lolly Log Settings', 'lolly')}</h1>
             {message && (
                 <Notice
                     status={message.type}
@@ -63,22 +63,22 @@ export default function SettingsPage(): React.ReactNode {
             <Card>
                 <CardHeader>
                     <h2 style={{ margin: 0 }}>
-                        {__('Main Settings', 'dozuki')}
+                        {__('Main Settings', 'lolly')}
                     </h2>
                 </CardHeader>
                 <CardBody>
                     <VStack spacing={4}>
                         <ToggleControl
-                            label={__('Enable', 'dozuki')}
+                            label={__('Enable', 'lolly')}
                             checked={settings.enabled}
                             onChange={(value: boolean) =>
                                 updateSetting('enabled', value)
                             }
-                            help={__('Enable Dozuki logging.', 'dozuki')}
+                            help={__('Enable Lolly logging.', 'lolly')}
                             __nextHasNoMarginBottom
                         />
                         <ToggleControl
-                            label={__('REST API Logging', 'dozuki')}
+                            label={__('REST API Logging', 'lolly')}
                             checked={settings.wp_rest_logging_enabled}
                             onChange={(value: boolean) =>
                                 updateSetting('wp_rest_logging_enabled', value)
@@ -86,12 +86,12 @@ export default function SettingsPage(): React.ReactNode {
                             disabled={!isEnabled}
                             help={__(
                                 'Enable WordPress REST API logging.',
-                                'dozuki'
+                                'lolly'
                             )}
                             __nextHasNoMarginBottom
                         />
                         <ToggleControl
-                            label={__('HTTP Client Logging', 'dozuki')}
+                            label={__('HTTP Client Logging', 'lolly')}
                             checked={settings.wp_http_client_logging_enabled}
                             onChange={(value: boolean) =>
                                 updateSetting(
@@ -102,12 +102,12 @@ export default function SettingsPage(): React.ReactNode {
                             disabled={!isEnabled}
                             help={__(
                                 'Enable WordPress HTTP client logging.',
-                                'dozuki'
+                                'lolly'
                             )}
                             __nextHasNoMarginBottom
                         />
                         <ToggleControl
-                            label={__('HTTP Redactions', 'dozuki')}
+                            label={__('HTTP Redactions', 'lolly')}
                             checked={settings.http_redactions_enabled}
                             onChange={(value: boolean) =>
                                 updateSetting('http_redactions_enabled', value)
@@ -115,12 +115,12 @@ export default function SettingsPage(): React.ReactNode {
                             disabled={!isEnabled}
                             help={__(
                                 'Enable the HTTP Redactions feature.',
-                                'dozuki'
+                                'lolly'
                             )}
                             __nextHasNoMarginBottom
                         />
                         <ToggleControl
-                            label={__('HTTP Whitelist', 'dozuki')}
+                            label={__('HTTP Whitelist', 'lolly')}
                             checked={settings.http_whitelist_enabled}
                             onChange={(value: boolean) =>
                                 updateSetting('http_whitelist_enabled', value)
@@ -128,7 +128,7 @@ export default function SettingsPage(): React.ReactNode {
                             disabled={!isEnabled}
                             help={__(
                                 'Enable the HTTP Whitelist feature.',
-                                'dozuki'
+                                'lolly'
                             )}
                             __nextHasNoMarginBottom
                         />
@@ -141,7 +141,7 @@ export default function SettingsPage(): React.ReactNode {
                     <CardHeader>
                         <HStack justify="space-between">
                             <h2 style={{ margin: 0 }}>
-                                {__('HTTP Redaction Settings', 'dozuki')}
+                                {__('HTTP Redaction Settings', 'lolly')}
                             </h2>
                             <AddHostButton />
                         </HStack>
@@ -155,7 +155,7 @@ export default function SettingsPage(): React.ReactNode {
                     <CardHeader>
                         <HStack justify="space-between">
                             <h2 style={{ margin: 0 }}>
-                                {__('HTTP Whitelist Settings', 'dozuki')}
+                                {__('HTTP Whitelist Settings', 'lolly')}
                             </h2>
                             <AddWhitelistHostButton />
                         </HStack>
@@ -171,7 +171,7 @@ export default function SettingsPage(): React.ReactNode {
                     disabled={isSaving}
                     onClick={handleSave}
                 >
-                    {__('Save Settings', 'dozuki')}
+                    {__('Save Settings', 'lolly')}
                 </Button>
             </HStack>
         </VStack>

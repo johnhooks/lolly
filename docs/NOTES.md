@@ -1,10 +1,23 @@
-# NOTES.md
+# Lolly Log NOTES.md
 
 ## Ideas
 
 - HTTP Collectors for WP HTTP Client and WP REST Requests capture the request, but a Processor transforms them into PSR7 format which another Processor transforms into the Esc Field format. This would allow sharing logic between Laravel and WordPress logging setups.
 
   This seems like a good idea, thought the PSR-7 interface has a lot of requirements that are unnecessary for the purposes of logging.
+
+### Redactions using JSON Pointers
+
+JSON Pointers don't support wildcards, though if this plugin were to support JSON Pointers,
+would it be crazy to support wildcards in the JSON Pointers?
+
+JSON Path seems a bit more complex that is necessary.
+
+Could we support something like this?
+
+```
+["response" => ["users.*.password"]]
+```
 
 ### Capturing errors
 
