@@ -39,10 +39,12 @@ class WpRestApiProcessor implements ProcessorInterface {
                 continue;
             }
 
-            $context['url']          ??= new Uri( wp_guess_url() );
+            $raw_url = $value->url;
+
+            $context['url']          ??= new Uri( $raw_url );
             $context['http_request'] ??= new Request(
                 $value->request->get_method(),
-                wp_guess_url(),
+                $raw_url,
                 $value->request->get_headers(),
                 $value->request->get_body(),
             );

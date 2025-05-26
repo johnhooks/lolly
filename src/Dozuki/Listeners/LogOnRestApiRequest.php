@@ -42,11 +42,11 @@ class LogOnRestApiRequest {
         // Perhaps the URL should be built from a combination of the WP_REST_Request data
         // like path, in combination with `get_rest_url`.
         $log_context = [
-            'url'         => Lib::get_full_request_url(),
             'wp_rest_api' => new WpRestApiContext(
                 $result,
                 $server,
                 $request,
+                Lib::get_full_request_url(),
             ),
         ];
 

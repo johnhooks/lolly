@@ -52,8 +52,6 @@ class LogOnHttpClientRequest {
         }
 
         $log_context = [
-            // @todo Should this be here?
-            'url'            => $url,
             'wp_http_client' => new WpHttpClientContext(
                 $response,
                 $context,
