@@ -138,7 +138,7 @@ class Config implements RedactorConfig, WhitelistConfig {
      * @inheritDoc
      */
     public function is_whitelist_enabled(): bool {
-        return $this->http_logging_config['whitelist_enabled'] ?? false;
+        return $this->http_logging_config['http_whitelist_enabled'] ?? false;
     }
 
     /**
@@ -158,6 +158,10 @@ class Config implements RedactorConfig, WhitelistConfig {
             ) {
                 foreach ( $current['paths'] as $current_path ) {
                     $glob = $current_path['glob'] ?? false;
+
+                    if ( $current_path['path'] === '*' ) {
+                        return true;
+                    }
 
                     if (
                         ( $glob && str_starts_with( $path, $current_path['path'] ) ) ||

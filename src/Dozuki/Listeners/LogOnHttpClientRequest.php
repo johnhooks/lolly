@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dozuki\Listeners;
 
+use Dozuki\Lib\Contracts\Whitelist;
 use Dozuki\ValueObjects\WpHttpClientContext;
 use Dozuki\Psr\Log\LoggerInterface;
 use WP_Error;
@@ -29,6 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class LogOnHttpClientRequest {
 
     public function __construct(
+        private readonly Whitelist\Config $config,
         private readonly LoggerInterface $logger,
     ) {}
 
@@ -50,6 +52,13 @@ class LogOnHttpClientRequest {
         if ( $url === trailingslashit( get_site_url() ) ) {
             return;
         }
+
+        if ( $this->config->is_whitelist_enabled() ) {
+            if ( ! $this->config->is_http_url_whitelisted( $url ) ) {
+                return;
+            }
+        }
+
 
         $log_context = [
             'wp_http_client' => new WpHttpClientContext(

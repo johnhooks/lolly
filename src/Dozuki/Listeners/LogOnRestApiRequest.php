@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dozuki\Listeners;
 
-use Dozuki\Lib;
+use Dozuki\Lib\Contracts\Whitelist;
 use Dozuki\ValueObjects\WpRestApiContext;
 use Dozuki\Psr\Log\LoggerInterface;
 use WP_Error;
@@ -26,6 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class LogOnRestApiRequest {
     public function __construct(
+        private readonly Whitelist\Config $config,
         private readonly LoggerInterface $logger
     ) {}
 
@@ -41,12 +42,20 @@ class LogOnRestApiRequest {
     public function handle( $result, $server, $request ) {
         // Perhaps the URL should be built from a combination of the WP_REST_Request data
         // like path, in combination with `get_rest_url`.
+        $url = \Dozuki\Lib::get_full_request_url();
+
+        if ( $this->config->is_whitelist_enabled() ) {
+            if ( ! $this->config->is_http_url_whitelisted( $url ) ) {
+                return $result;
+            }
+        }
+
         $log_context = [
             'wp_rest_api' => new WpRestApiContext(
                 $result,
                 $server,
                 $request,
-                Lib::get_full_request_url(),
+                $url,
             ),
         ];
 
