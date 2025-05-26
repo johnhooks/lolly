@@ -30,6 +30,7 @@ class DefaultRedactorTest extends WpTestCase {
         $url     = 'https://example.com/api/test';
         $request = new Request( 'GET', $url );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->with( $this->isInstanceOf( UriInterface::class ) )
@@ -47,6 +48,7 @@ class DefaultRedactorTest extends WpTestCase {
         $url     = 'https://example.com/api/test';
         $request = new Request( 'GET', $url );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( [] );
@@ -60,6 +62,7 @@ class DefaultRedactorTest extends WpTestCase {
         $uri     = Utils::uriFor( 'https://example.com/api/test' );
         $request = new Request( 'GET', $uri );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( [] );
@@ -73,6 +76,7 @@ class DefaultRedactorTest extends WpTestCase {
     public function test_it_redacts_query_parameters( string $url, array $redactions, string $expected_query ): void {
         $request = new Request( 'GET', $url );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -87,6 +91,7 @@ class DefaultRedactorTest extends WpTestCase {
         $url     = 'https://example.com/api/test';
         $request = new Request( 'GET', $url, $headers );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -102,6 +107,7 @@ class DefaultRedactorTest extends WpTestCase {
         $headers = [ 'Content-Type' => $content_type ];
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -117,6 +123,7 @@ class DefaultRedactorTest extends WpTestCase {
         $headers  = [ 'Content-Type' => $content_type ];
         $response = new Response( 200, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -132,6 +139,7 @@ class DefaultRedactorTest extends WpTestCase {
         $body    = '{"invalid": json}';
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $redactions = [ new RedactionItem( HttpRedactionType::Request, 'password' ) ];
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
@@ -146,6 +154,7 @@ class DefaultRedactorTest extends WpTestCase {
         $url     = 'https://example.com/api/test';
         $message = $this->createMock( MessageInterface::class );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( [] );
@@ -159,6 +168,7 @@ class DefaultRedactorTest extends WpTestCase {
     public function test_it_applies_always_redaction_to_all_types( string $url, array $headers, string $body, array $redactions, array $expected ): void {
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -176,6 +186,7 @@ class DefaultRedactorTest extends WpTestCase {
         $headers = [ 'Content-Type' => 'application/json' ];
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -191,6 +202,7 @@ class DefaultRedactorTest extends WpTestCase {
         $headers = [ 'Content-Type' => 'application/json' ];
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -207,6 +219,7 @@ class DefaultRedactorTest extends WpTestCase {
         $body    = '{"valid": "' . "\xc3\x28" . '"}';
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $redactions = [ new RedactionItem( HttpRedactionType::Request, 'valid' ) ];
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
@@ -224,6 +237,7 @@ class DefaultRedactorTest extends WpTestCase {
         $headers = [ 'Content-Type' => $content_type ];
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -239,6 +253,7 @@ class DefaultRedactorTest extends WpTestCase {
         $headers = [ 'Content-Type' => 'application/json' ];
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -253,6 +268,7 @@ class DefaultRedactorTest extends WpTestCase {
         $url     = 'https://example.com/api/test';
         $request = new Request( 'GET', $url, $headers );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -266,6 +282,7 @@ class DefaultRedactorTest extends WpTestCase {
     public function test_it_handles_query_parameters_with_no_values( string $url, array $redactions, string $expected_query ): void {
         $request = new Request( 'GET', $url );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -279,6 +296,7 @@ class DefaultRedactorTest extends WpTestCase {
     public function test_it_handles_query_parameters_with_special_characters( string $url, array $redactions, string $expected_query ): void {
         $request = new Request( 'GET', $url );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -294,6 +312,7 @@ class DefaultRedactorTest extends WpTestCase {
         $headers = [ 'Content-Type' => $content_type ];
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -307,6 +326,7 @@ class DefaultRedactorTest extends WpTestCase {
     public function test_it_handles_url_edge_cases( string $url, array $redactions, string $expected_query ): void {
         $request = new Request( 'GET', $url );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -321,6 +341,7 @@ class DefaultRedactorTest extends WpTestCase {
         $url      = 'https://example.com/api/test';
         $response = new Response( 200, $headers, 'response body' );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -334,6 +355,7 @@ class DefaultRedactorTest extends WpTestCase {
     public function test_it_handles_mixed_redaction_types( string $url, array $headers, string $body, array $redactions, array $expected ): void {
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $redactions );
@@ -349,6 +371,7 @@ class DefaultRedactorTest extends WpTestCase {
     public function test_it_accepts_additional_redactions( string $url, array $headers, string $body, array $config_redactions, array $additional_redactions, array $expected ): void {
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $config_redactions );
@@ -366,6 +389,7 @@ class DefaultRedactorTest extends WpTestCase {
         $body    = '{"data":"content"}';
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $config_redactions = [ new RedactionItem( HttpRedactionType::Query, 'param' ) ];
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
@@ -387,6 +411,7 @@ class DefaultRedactorTest extends WpTestCase {
         $body    = '{"data":"content"}';
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( [] );
@@ -402,6 +427,7 @@ class DefaultRedactorTest extends WpTestCase {
     public function test_it_handles_redaction_precedence_correctly( string $url, array $headers, string $body, array $config_redactions, array $additional_redactions, array $expected ): void {
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( $config_redactions );
@@ -417,6 +443,7 @@ class DefaultRedactorTest extends WpTestCase {
     public function test_it_handles_additional_redactions_for_all_types( string $url, array $headers, string $body, array $additional_redactions, array $expected ): void {
         $request = new Request( 'POST', $url, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( [] );
@@ -437,6 +464,7 @@ class DefaultRedactorTest extends WpTestCase {
         $body     = '{"token":"secret","data":"public"}';
         $response = new Response( 200, $headers, $body );
 
+        $this->mock_http_redactions_enabled();
         $this->config->expects( $this->once() )
             ->method( 'get_http_redactions' )
             ->willReturn( [] );
@@ -536,46 +564,52 @@ class DefaultRedactorTest extends WpTestCase {
 
     protected function body_redaction_provider(): iterable {
         return [
-            'no_redactions_json'                      => [
+            'no_redactions_json'                        => [
                 'application/json',
                 '{"username":"user","password":"secret"}',
                 [],
                 '{"username":"user","password":"secret"}',
             ],
-            'redact_specific_json_key'                => [
+            'redact_specific_json_key'                  => [
                 'application/json',
                 '{"username":"user","password":"secret"}',
                 [ new RedactionItem( HttpRedactionType::Request, 'password' ) ],
                 '{"username":"user","password":"redacted"}',
             ],
-            'redact_all_json_content'                 => [
+            'redact_all_json_content'                   => [
                 'application/json',
                 '{"username":"user","password":"secret"}',
                 [ new RedactionItem( HttpRedactionType::Request, '*' ) ],
                 '"redacted"',
             ],
-            'remove_all_json_content'                 => [
+            'remove_all_json_content'                   => [
                 'application/json',
                 '{"username":"user","password":"secret"}',
                 [ new RedactionItem( HttpRedactionType::Request, '*', true ) ],
                 '',
             ],
-            'redact_form_encoded_body'                => [
+            'redact_form_encoded_body'                  => [
                 'application/x-www-form-urlencoded',
                 'username=user&password=secret',
                 [ new RedactionItem( HttpRedactionType::Request, 'password' ) ],
                 'username=user&password=redacted',
             ],
-            'redact_all_form_encoded_content'         => [
+            'redact_all_form_encoded_content'           => [
                 'application/x-www-form-urlencoded',
                 'username=user&password=secret',
                 [ new RedactionItem( HttpRedactionType::Request, '*' ) ],
                 'redacted=1',
             ],
-            'non_json_non_form_content_gets_redacted' => [
+            'non_json_non_form_content_is_not_redacted' => [
                 'text/plain',
                 'This is plain text content',
                 [ new RedactionItem( HttpRedactionType::Request, 'anything' ) ],
+                'This is plain text content',
+            ],
+            'non_json_non_form_content_is_redacted'     => [
+                'text/plain',
+                'This is plain text content',
+                [ new RedactionItem( HttpRedactionType::Request, '*' ) ],
                 'redacted',
             ],
         ];
@@ -690,19 +724,19 @@ class DefaultRedactorTest extends WpTestCase {
 
     protected function empty_body_provider(): iterable {
         return [
-            'empty_json_body'      => [
+            'empty_json_body_skipped' => [
                 'application/json',
                 '',
                 [ new RedactionItem( HttpRedactionType::Request, 'anything' ) ],
-                '"JSON decode error: Syntax error"',
+                '',
             ],
-            'empty_form_body'      => [
+            'empty_form_body'         => [
                 'application/x-www-form-urlencoded',
                 '',
                 [ new RedactionItem( HttpRedactionType::Request, 'anything' ) ],
                 '',
             ],
-            'whitespace_only_body' => [
+            'whitespace_only_body'    => [
                 'application/json',
                 '   ',
                 [ new RedactionItem( HttpRedactionType::Request, 'anything' ) ],
@@ -797,19 +831,19 @@ class DefaultRedactorTest extends WpTestCase {
                 'text/html',
                 '<html><body><div class="password">secret</div></body></html>',
                 [ new RedactionItem( HttpRedactionType::Request, 'password' ) ],
-                'redacted',
+                '<html><body><div class="password">secret</div></body></html>',
             ],
             'xml_content_not_redacted'      => [
                 'application/xml',
                 '<?xml version="1.0"?><root><password>secret</password></root>',
                 [ new RedactionItem( HttpRedactionType::Request, 'password' ) ],
-                'redacted',
+                '<?xml version="1.0"?><root><password>secret</password></root>',
             ],
             'text_xml_content_not_redacted' => [
                 'text/xml',
                 '<?xml version="1.0"?><data><secret>hidden</secret></data>',
                 [ new RedactionItem( HttpRedactionType::Request, 'secret' ) ],
-                'redacted',
+                '<?xml version="1.0"?><data><secret>hidden</secret></data>',
             ],
         ];
     }
@@ -1072,5 +1106,11 @@ class DefaultRedactorTest extends WpTestCase {
                 ],
             ],
         ];
+    }
+
+    private function mock_http_redactions_enabled() {
+        $this->config->expects( $this->once() )
+            ->method( 'is_http_redactions_enabled' )
+            ->willReturn( true );
     }
 }
