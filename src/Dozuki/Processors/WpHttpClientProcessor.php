@@ -72,16 +72,14 @@ class WpHttpClientProcessor implements ProcessorInterface {
             );
 
             if ( is_array( $value->response ) ) {
-                $status       = isset( $value->response['response']['code'] ) && is_int( $value->response['response']['code'] )
+                $status = isset( $value->response['response']['code'] ) && is_int( $value->response['response']['code'] )
                     ? $value->response['response']['code']
                     : 500;
-                $content_type = $value->response['headers']['Content-Type'] ?? '';
-                $include_body = ! str_contains( $content_type, 'text/html' );
 
                 $context['http_response'] ??= new Response(
                     $status,
                     $value->response['headers']->getAll(),
-                    $include_body && isset( $value->response['body'] )
+                    isset( $value->response['body'] )
                         ? $value->response['body']
                         : null,
                 );
