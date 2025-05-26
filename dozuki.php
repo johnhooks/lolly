@@ -3,14 +3,18 @@
 declare(strict_types=1);
 
 /*
- * Plugin Name: Duzuki Logger
+ * Plugin Name: Duzuki Log
  * Plugin URI: http://okaywp.com/duzuki/
  * Description: A logging plugin.
- * Author: John Hooks
- * Version: 1.0.0
- * Author URI: http://johnhooks.io/
+ * Version: 0.1.0
  * Requires at least: 6.5
  * Requires PHP: 8.1
+ * Author: bitmachina
+ * Author URI: http://johnhooks.io/
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: dozuki
+ * Domain Path: /languages
 */
 
 // Exit if accessed directly.
@@ -27,6 +31,9 @@ use Dozuki\Config;
 use Dozuki\Lib\Services\Redactors;
 use Dozuki\Listeners;
 use Dozuki\Log;
+use Dozuki\lucatume\DI52\Builders\BuilderInterface;
+use Dozuki\lucatume\DI52\Builders\ValueBuilder;
+use Dozuki\lucatume\DI52\ServiceProvider;
 use Dozuki\Plugin\Activator;
 use Dozuki\Plugin\Uninstaller;
 use Dozuki\lucatume\DI52\Container;
@@ -37,14 +44,44 @@ require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/vendor/vendor-prefixed/autoload.php';
 
 /**
- * @method void bind(string $abstract, mixed $concrete) Binds an interface, a class or a string slug to a concrete.
- * @method mixed has(string $abstract) Returns true if the container can return an entry for the given identifier.
- *         Returns false otherwise.
- * @method mixed get(string $abstract) Finds an entry of the container by its identifier and returns it.
- * @method mixed make(string $abstract) Returns an instance of the class or object bound to an interface, class or
- *         string slug if any, else it will try to automagically resolve the object to a usable instance.
- * @method void setContainer(Container $container) Sets the container instance the plugin should use as a Service
- *         Locator.
+ * Dozuki class.
+ *
+ * The core API for interaction with the Dozuki Log plugin.
+ *
+ * @method mixed setVar(string $key, mixed $value) Sets a value in the container.
+ * @method void offsetSet(mixed $offset, mixed $value) Sets a value in the container using array access.
+ * @method mixed singleton(string $id, mixed $implementation = null, array $afterBuildMethods = null) Binds an implementation to an interface, a class or a string slug that should be built only once.
+ * @method mixed getVar(string $key, mixed $default = null) Returns a value from the container.
+ * @method mixed offsetGet(mixed $offset) Returns a value from the container using array access.
+ * @method mixed get(string $id) Finds an entry of the container by its identifier and returns it.
+ * @method mixed make(string $id) Returns an instance of the class or object bound to an interface, class or string slug if any, else it will try to automagically resolve the object to a usable instance.
+ * @method bool offsetExists(mixed $offset) Returns whether a value exists in the container using array access.
+ * @method bool has(string $id) Returns true if the container can return an entry for the given identifier. Returns false otherwise.
+ * @method void tag(array $implementationsArray, string $tag) Tags an array of implementations with a tag.
+ * @method array tagged(string $tag) Returns an array of bound implementations tagged with a specific tag.
+ * @method bool hasTag(string $tag) Returns whether a tag exists in the container.
+ * @method bool classIsInstantiable(string $class) Returns whether a class is instantiable or not.
+ * @method void checkClassIsInstantiatable(string $class) Checks if a class is instantiable and throws an exception if not.
+ * @method mixed register(string $serviceProviderClass, string $alias = null) Registers a service provider in the container.
+ * @method Closure getDeferredProviderMakeClosure(ServiceProvider $provider, string $id) Returns a closure that will build an instance of the specified class using the specified provider.
+ * @method void bind(string $id, mixed $implementation = null, array $afterBuildMethods = null) Binds an interface, a class or a string slug to a concrete implementation.
+ * @method void singletonDecorators(string $id, array $decorators, array $afterBuildMethods = null, bool $afterBuildAll = false) Binds a chain of decorators to an interface, a class or a string slug that should be built only once.
+ * @method BuilderInterface getDecoratorBuilder(array $decorators, string $id, array $afterBuildMethods = null, bool $afterBuildAll = false) Returns a decorator builder for the specified decorators.
+ * @method void bindDecorators(string $id, array $decorators, array $afterBuildMethods = null, bool $afterBuildAll = false) Binds a chain of decorators to an interface, a class or a string slug.
+ * @method void offsetUnset(mixed $offset) Unsets a value in the container using array access.
+ * @method Container when(string $class) Returns a condition builder for the specified class.
+ * @method Container needs(string $id) Returns a condition builder for the specified id.
+ * @method void give(mixed $implementation) Binds an implementation to a condition.
+ * @method mixed callback(string $id, string $method) Returns a callback for the specified id and method.
+ * @method bool isStaticMethod(mixed $object, string $method) Returns whether a method is static or not.
+ * @method mixed instance(string $id, array $buildArgs = [], array $afterBuildMethods = null) Returns an instance of the specified class.
+ * @method ValueBuilder protect(mixed $value) Returns a value builder for the specified value.
+ * @method ServiceProvider getProvider(string $providerId) Returns a service provider instance.
+ * @method bool isBound(string $id) Returns whether an id is bound in the container.
+ * @method void setExceptionMask(int $maskThrowables) Sets the exception mask for the container.
+ * @method Container bindThis() Binds the container itself to the Container class.
+ *
+ * @package Dozuki
  */
 final class Dozuki implements LoggerInterface {
     private Container $container;

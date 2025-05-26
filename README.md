@@ -1,6 +1,6 @@
-# Dozuki WordPress Plugin
+# Dozuki Log WordPress Plugin
 
-A logging and HTTP request redaction plugin for WordPress.
+A Ecs/Elk compatible logging plugin for WordPress.
 
 ## Development
 
@@ -32,7 +32,7 @@ See the CLAUDE.md file for PHP development instructions.
 
 ## Admin Settings
 
-The plugin provides an admin interface to configure logging and redaction settings. Navigate to "Dozuki Logger" in the WordPress admin menu to access these settings.
+The plugin provides an admin interface to configure logging and redaction settings. Navigate to "Dozuki Log" in the WordPress admin menu to access these settings.
 
 ### Available Settings
 
