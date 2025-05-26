@@ -1,4 +1,4 @@
-Dozuki Log, a WordPress plugin.
+Lolly Log, a WordPress plugin.
 Copyright (C) 2023  The Contributors
 
 This program is free software: you can redistribute it and/or modify

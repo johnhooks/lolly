@@ -1,4 +1,4 @@
-# Dozuki Log WordPress Plugin
+# Lolly Log WordPress Plugin
 
 A Ecs/Elk compatible logging plugin for WordPress.
 
