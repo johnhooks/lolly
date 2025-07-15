@@ -70,6 +70,44 @@ class SettingsPage {
             $asset['version'],
             true
         );
+
+        $schema_path = plugin_dir_path( LOLLY_PLUGIN_FILE ) . 'resources/schemas/http-logging-config.json';
+        $schema_data = null;
+
+        if ( file_exists( $schema_path ) ) {
+            $schema_json = file_get_contents( $schema_path );
+            if ( $schema_json !== false ) {
+                $schema_data = json_decode( $schema_json, true );
+            }
+        }
+
+        // Preload the settings endpoint response.
+        $preload_paths = [
+            '/wp/v2/settings',
+        ];
+
+        $preload_data = array_reduce(
+            $preload_paths,
+            'rest_preload_api_request',
+            []
+        );
+
+        // Add inline script to configure apiFetch preloading middleware
+        wp_add_inline_script(
+            'wp-api-fetch',
+            sprintf( 'wp.apiFetch.use( wp.apiFetch.createPreloadingMiddleware( %s ) );', wp_json_encode( $preload_data ) ),
+            'after'
+        );
+
+        wp_localize_script(
+            'lolly-admin-scripts',
+            'lolly',
+            [
+                'schema' => $schema_data,
+                // @todo Double check if this is already performed.
+                'nonce'  => wp_create_nonce( 'wp_rest' ),
+            ]
+        );
     }
 
     /**
