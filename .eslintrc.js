@@ -85,7 +85,8 @@ module.exports = {
         {
             "files": "**/*.ts?(x)",
             "rules": {
-                "no-unused-vars": "off"
+                "no-unused-vars": "off",
+                "jsdoc/require-param": "off"
             }
         }
     ],

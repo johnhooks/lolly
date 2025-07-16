@@ -5,7 +5,7 @@ import reducer from './reducer';
 import resolvers from './resolvers';
 import selectors from './selectors';
 
-const STORE_NAME = 'lolly/settings';
+const STORE_NAME = 'lolly/settings-old';
 
 // @todo Resolvers should have matching selectors, and not combined with the actions.
 // Combine actions and resolvers
