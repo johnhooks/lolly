@@ -41,6 +41,7 @@ function edits(state: EditsState, action: Action): EditsState {
             return {
                 ...state,
                 edits: {
+                    ...state.edits,
                     ...action.edits,
                 },
             };

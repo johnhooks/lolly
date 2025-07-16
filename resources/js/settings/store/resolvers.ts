@@ -4,7 +4,7 @@ import { __ } from '@wordpress/i18n';
 import { SETTINGS_KEY } from '../../constants';
 import type { Settings } from '../../store/types';
 import { WpRestApiError } from '../../types';
-import { isWpRestApiError } from '../../utils';
+import { isWpRestApiError, forwardResolver } from '../../utils';
 
 import type { SettingsThunk } from './types';
 
@@ -57,3 +57,5 @@ export const getSettings =
             });
         }
     };
+
+export const getEditedSettings = forwardResolver('getSettings');

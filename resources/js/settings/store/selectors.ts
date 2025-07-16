@@ -1,3 +1,5 @@
+import { createSelector } from '@wordpress/data';
+
 import type { Settings, WpRestApiError } from '../../types';
 
 import { State } from './types';
@@ -17,6 +19,18 @@ export function isSaving(state: State): boolean {
 export function getEdits(state: State): Partial<Settings> {
     return state.edits.edits;
 }
+
+export const getEditedSettings = createSelector(
+    (state: State): Settings | undefined => {
+        const settings = getSettings(state);
+        if (!settings) {
+            return undefined;
+        }
+        const edits = getEdits(state);
+        return { ...settings, ...edits };
+    },
+    (state: State) => [state.settings.settings, state.edits.edits]
+);
 
 export function getEditsForProperty<K extends keyof Settings>(
     state: State,

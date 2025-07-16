@@ -140,3 +140,17 @@ export function getErrorMessage(error: unknown): string {
 export function isObject(value: unknown): value is Record<string, unknown> {
     return typeof value === 'object' && value !== null;
 }
+
+/**
+ * Higher-order function which forwards the resolution to another resolver with the same arguments.
+ *
+ * @param {string} resolverName forwarded resolver.
+ *
+ * @return {Function} Enhanced resolver.
+ */
+export function forwardResolver(resolverName: string): any {
+    return (...args: any) =>
+        async ({ resolveSelect }: { resolveSelect: any }) => {
+            await resolveSelect[resolverName](...args);
+        };
+}
