@@ -18,7 +18,7 @@ import { store as settingStore } from '../settings/store';
 export default function SettingsPage(): React.ReactNode {
     const { settings, isSaving, editError } = useSelect(
         (select) => ({
-            settings: select(settingStore).getSettings(),
+            settings: select(settingStore).getEditedSettings(),
             isSaving: select(settingStore).isSaving(),
             editError: select(settingStore).getEditError(),
         }),
