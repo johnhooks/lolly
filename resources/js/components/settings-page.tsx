@@ -11,39 +11,24 @@ import {
     __experimentalVStack as VStack,
 } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
-import { SETTINGS_KEY } from '../constants';
-import { default as settingStore } from '../store';
-
-import AddHostButton from './add-host-button';
-import AddWhitelistHostButton from './add-whitelist-host-button';
-import HttpRedactionOverview from './http-redaction-overview';
-import HttpWhitelistOverview from './http-whitelist-overview';
+import { store as settingStore } from '../settings/store';
 
 export default function SettingsPage(): React.ReactNode {
-    const { settings, isSaving, message, isEnabled } = useSelect(
+    const { settings, isSaving, editError } = useSelect(
         (select) => ({
-            settings: select(settingStore).getSettings(),
+            settings: select(settingStore).getEditedSettings(),
             isSaving: select(settingStore).isSaving(),
-            message: select(settingStore).getMessage(),
-            isEnabled: select(settingStore).isEnabled(),
+            editError: select(settingStore).getEditError(),
         }),
         []
     );
 
-    const { loadSettings, saveSettings, updateSetting, setMessage } =
-        useDispatch(settingStore);
+    const { editSetting, saveEditedSettings } = useDispatch(settingStore);
 
-    useEffect(() => {
-        loadSettings(SETTINGS_KEY);
-    }, [loadSettings]);
-
-    const handleSave = (): void => {
-        saveSettings(SETTINGS_KEY);
-    };
-
+    // Note: The Lolly settings are preloaded, though still has to go through
+    // resolution because `apiFetch` returns a promise.
     if (!settings) {
         return null;
     }
@@ -51,13 +36,9 @@ export default function SettingsPage(): React.ReactNode {
     return (
         <VStack spacing={4}>
             <h1>{__('Lolly Log Settings', 'lolly')}</h1>
-            {message && (
-                <Notice
-                    status={message.type}
-                    isDismissible={true}
-                    onRemove={() => setMessage(null)}
-                >
-                    {message.content}
+            {editError && (
+                <Notice status="error" isDismissible={true}>
+                    {editError.message}
                 </Notice>
             )}
             <Card>
@@ -72,7 +53,7 @@ export default function SettingsPage(): React.ReactNode {
                             label={__('Enable', 'lolly')}
                             checked={settings.enabled}
                             onChange={(value: boolean) =>
-                                updateSetting('enabled', value)
+                                editSetting('enabled', value)
                             }
                             help={__('Enable Lolly logging.', 'lolly')}
                             __nextHasNoMarginBottom
@@ -81,9 +62,9 @@ export default function SettingsPage(): React.ReactNode {
                             label={__('REST API Logging', 'lolly')}
                             checked={settings.wp_rest_logging_enabled}
                             onChange={(value: boolean) =>
-                                updateSetting('wp_rest_logging_enabled', value)
+                                editSetting('wp_rest_logging_enabled', value)
                             }
-                            disabled={!isEnabled}
+                            disabled={!settings.enabled}
                             help={__(
                                 'Enable WordPress REST API logging.',
                                 'lolly'
@@ -94,12 +75,12 @@ export default function SettingsPage(): React.ReactNode {
                             label={__('HTTP Client Logging', 'lolly')}
                             checked={settings.wp_http_client_logging_enabled}
                             onChange={(value: boolean) =>
-                                updateSetting(
+                                editSetting(
                                     'wp_http_client_logging_enabled',
                                     value
                                 )
                             }
-                            disabled={!isEnabled}
+                            disabled={!settings.enabled}
                             help={__(
                                 'Enable WordPress HTTP client logging.',
                                 'lolly'
@@ -110,9 +91,9 @@ export default function SettingsPage(): React.ReactNode {
                             label={__('HTTP Redactions', 'lolly')}
                             checked={settings.http_redactions_enabled}
                             onChange={(value: boolean) =>
-                                updateSetting('http_redactions_enabled', value)
+                                editSetting('http_redactions_enabled', value)
                             }
-                            disabled={!isEnabled}
+                            disabled={!settings.enabled}
                             help={__(
                                 'Enable the HTTP Redactions feature.',
                                 'lolly'
@@ -123,9 +104,9 @@ export default function SettingsPage(): React.ReactNode {
                             label={__('HTTP Whitelist', 'lolly')}
                             checked={settings.http_whitelist_enabled}
                             onChange={(value: boolean) =>
-                                updateSetting('http_whitelist_enabled', value)
+                                editSetting('http_whitelist_enabled', value)
                             }
-                            disabled={!isEnabled}
+                            disabled={!settings.enabled}
                             help={__(
                                 'Enable the HTTP Whitelist feature.',
                                 'lolly'
@@ -136,40 +117,12 @@ export default function SettingsPage(): React.ReactNode {
                 </CardBody>
             </Card>
 
-            {isEnabled && settings.http_redactions_enabled && (
-                <Card>
-                    <CardHeader>
-                        <HStack justify="space-between">
-                            <h2 style={{ margin: 0 }}>
-                                {__('HTTP Redaction Settings', 'lolly')}
-                            </h2>
-                            <AddHostButton />
-                        </HStack>
-                    </CardHeader>
-                    <HttpRedactionOverview />
-                </Card>
-            )}
-
-            {isEnabled && settings.http_whitelist_enabled && (
-                <Card>
-                    <CardHeader>
-                        <HStack justify="space-between">
-                            <h2 style={{ margin: 0 }}>
-                                {__('HTTP Whitelist Settings', 'lolly')}
-                            </h2>
-                            <AddWhitelistHostButton />
-                        </HStack>
-                    </CardHeader>
-                    <HttpWhitelistOverview />
-                </Card>
-            )}
-
             <HStack>
                 <Button
                     isPrimary
                     isBusy={isSaving}
                     disabled={isSaving}
-                    onClick={handleSave}
+                    onClick={saveEditedSettings}
                 >
                     {__('Save Settings', 'lolly')}
                 </Button>
