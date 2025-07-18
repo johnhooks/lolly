@@ -47,6 +47,10 @@ export const saveEditedSettings =
 
         const combined = { ...select.getSettings(), ...edits };
 
+        dispatch({
+            type: 'SAVE_SETTINGS_RECORD_START',
+        });
+
         try {
             const response = await apiFetch<Record<string, unknown>>({
                 path: '/wp/v2/settings',
