@@ -2,9 +2,31 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Structure
+## Project Overview
 
-- Create Jobs for encapsulating units of work.
+Lolly Log is an ECS (Elastic Common Schema) compatible HTTP request/response logging plugin for WordPress. It logs WordPress REST API requests and WP HTTP Client outbound requests with configurable redaction to protect sensitive data.
+
+## Architecture
+
+```
+src/Lolly/
+├── Admin/           # Settings page UI
+├── Config/          # Configuration loading, validation, settings registration
+├── Lib/
+│   ├── Contracts/   # Interfaces for redactors and whitelist
+│   ├── Enums/       # HttpRedactionType enum
+│   ├── Processors/  # ECS formatting, redaction processing
+│   ├── Services/    # Redactor implementations
+│   └── ValueObjects/# Data structures (RedactionItem, etc.)
+├── Listeners/       # HTTP event listeners (REST API, HTTP Client)
+├── Log/             # Logger factory (Monolog)
+└── Processors/      # WordPress-specific processors
+```
+
+Key patterns:
+- **Listeners** capture HTTP events and delegate to processors
+- **Processors** transform log records (ECS format, redaction)
+- **Config** manages settings via WordPress options with JSON Schema validation
 
 ## Commands
 
@@ -16,18 +38,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Run specific test**: `php vendor/bin/codecept run Unit:TestName`
 
 ## Code Style Guidelines
-- **Namespaces**: Use `Lolly` namespace with subnamespaces for components (`Lolly\Lib`, `Lolly\Log`)
-- **Class Names**: PascalCase (e.g., `Redactor`, `LogOnCentralVerbRequest`)
-- **Method Names**: snake_case (e.g., `handle()`, `handle_request()`)
-- **Variables**: snake_case (e.g., `$post_id`, `$tool_name`)
-- **Returns**: WordPress conventions with `\WP_Error` for failures
-- **Type Annotations**: Use PHPDoc for parameters and return types
-- **Error Handling**: Return WordPress error objects with descriptive messages
-- **Documentation**: Include docblocks for classes and methods
-- **JS/TS**: WordPress ESLint plugin with custom import order rules
-- **Imports**: Group imports (PHP: alphabetical, JS: grouped by builtin/external/parent/sibling)
-- **Files**: One class per file, filename should match class name
-- **Types**: Do not use strict typing in PHP.
+
+### PHP
+- **Namespaces**: `Lolly` with subnamespaces (`Lolly\Lib`, `Lolly\Log`)
+- **Classes**: PascalCase (`Redactor`, `LogOnCentralVerbRequest`)
+- **Methods/Variables**: snake_case (`handle_request()`, `$post_id`)
+- **Returns**: `\WP_Error` for failures, follow WordPress conventions
+- **Types**: PHPDoc annotations, no strict typing
+- **Files**: One class per file, filename matches class name
+
+### JS/TS
+- **Variables/Functions**: camelCase (`handleChange`, `editSettings`)
+- **Components**: PascalCase (`ConfigEditor`, `SettingsPage`)
+- **Imports**: Grouped by builtin/external/parent/sibling with blank lines between
+- **Linting**: WordPress ESLint plugin with Prettier
 
 ## Testing
 
@@ -49,14 +73,7 @@ Commands:
 ./vendor/bin/codecept run Wpunit:SettingsTest --no-ansi
 ```
 
-## Resources
+## Commits
 
-WordPress is installed locally in the `tests/_wordpress` directory, it should be prioritized
-when searching for APIs used by this project.
+Use the `/commit` slash command. We use Graphite (`gt create`) for stacked PRs. Conventional commits without emoji, 80 char body lines.
 
-## Helpful Links
-
-- **WordPress Plugin Handbook:** https://make.wordpress.org/core/handbook/plugins/
-- **WordPress Coding Standards:** https://make.wordpress.org/core/handbook/best-practices/coding-standards/php/
-- **WordPress REST API Handbook:** https://developer.wordpress.org/rest-api/
-- **WP-CLI Documentation:** https://wp-cli.com/docs/
