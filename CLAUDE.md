@@ -55,22 +55,22 @@ Key patterns:
 
 ## Testing
 
-Run unit tests with `php vendor/bin/codecept run`. Use Codeception for all tests. Prefer
-using `$I->see()` style of methods over asserts.
+Use Codeception with slic (Docker-based).
 
-Commands:
+Run from the parent directory (`~/Projects`):
 ```bash
-# Run all tests
-./vendor/bin/codecept run --no-ansi
+slic here                        # Point slic at plugins directory
+slic use lolly                   # Select this plugin
+slic composer install            # Install dependencies
+slic composer strauss            # Build prefixed dependencies
+slic airplane-mode on            # Block external HTTP requests
+slic run Wpunit                  # Run tests
+slic run Wpunit:SettingsTest     # Run specific test
 
-# Run unit tests only
-./vendor/bin/codecept run Wpunit --no-ansi
-
-# Run end to end tests only
-./vendor/bin/codecept run EndToEnd --no-ansi
-
-# Run a specific test
-./vendor/bin/codecept run Wpunit:SettingsTest --no-ansi
+# Drop into slic shell for debugging
+slic shell
+cd /var/www/html/wp-content/plugins/lolly
+vendor/bin/codecept run Wpunit
 ```
 
 ## Commits

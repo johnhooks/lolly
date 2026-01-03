@@ -46,9 +46,6 @@
     },
     "autoload-dev": {
         "psr-4": {
-
-            "Tests\\EndToEnd\\": "tests/EndToEnd",
-            "Tests\\Integration\\": "tests/Integration",
             "Tests\\Support\\": "tests/Support",
             "Tests\\Wpunit\\": "tests/Wpunit"
         }
@@ -86,7 +83,7 @@
             "namespace_prefix": "Lolly\\",
             "classmap_prefix": "Lolly_",
             "constant_prefix": "Lolly_",
-            "delete_vendor_packages": true,
+            "delete_vendor_packages": false,
             "excluded_from_prefix": {
                 "file_patterns": [
                     "/symfony\\/polyfill-(.*)/"

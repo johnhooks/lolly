@@ -1,0 +1,63 @@
+name: Configure Automated Tests
+description: Installs and configures slic for testing
+
+runs:
+    using: 'composite'
+    steps:
+
+        - name: Checkout slic
+          uses: actions/checkout@v4
+          with:
+            repository: stellarwp/slic
+            ref: main
+            path: slic
+            fetch-depth: 1
+
+        - name: Set up slic env vars
+          shell: bash
+          run: |
+            echo "SLIC_BIN=${GITHUB_WORKSPACE}/slic/slic" >> $GITHUB_ENV
+            echo "SLIC_WP_DIR=${GITHUB_WORKSPACE}/slic/_wordpress" >> $GITHUB_ENV
+            echo "SLIC_PHP_VERSION=8.1" >> $GITHUB_ENV
+
+        - name: Set run context for slic
+          shell: bash
+          run: echo "SLIC=1" >> $GITHUB_ENV && echo "CI=1" >> $GITHUB_ENV
+
+        - name: Start ssh-agent
+          shell: bash
+          run: |
+            mkdir -p "${HOME}/.ssh";
+            ssh-agent -a /tmp/ssh_agent.sock;
+
+        - name: Export SSH_AUTH_SOCK env var
+          shell: bash
+          run: echo "SSH_AUTH_SOCK=/tmp/ssh_agent.sock" >> $GITHUB_ENV
+
+        - name: Set up slic for CI
+          shell: bash
+          run: |
+            cd ${GITHUB_WORKSPACE}/..
+            ${SLIC_BIN} here
+            ${SLIC_BIN} interactive off
+            ${SLIC_BIN} build-prompt off
+            ${SLIC_BIN} build-subdir off
+            ${SLIC_BIN} xdebug off
+            ${SLIC_BIN} debug on
+            ${SLIC_BIN} info
+            ${SLIC_BIN} config
+
+        - name: Init the WordPress container
+          shell: bash
+          run: |
+              ${SLIC_BIN} wp core update --version=6.7.1 --force
+              ${SLIC_BIN} wp core update-db
+              ${SLIC_BIN} airplane-mode on
+              ${SLIC_BIN} wp core version
+
+        - name: Set up lolly
+          shell: bash
+          run: |
+            ${SLIC_BIN} use lolly
+            ${SLIC_BIN} composer install
+            ${SLIC_BIN} composer strauss
