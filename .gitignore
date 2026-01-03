@@ -1,7 +1,6 @@
 /vendor/
 /bin/*.phar
 /tests/_wordpress
-/tests/Support/Data/dump.sql
 /tests/Support/_generated/
 node_modules
 build
