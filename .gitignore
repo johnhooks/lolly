@@ -2,6 +2,7 @@
 /bin/*.phar
 /tests/_wordpress
 /tests/Support/Data/dump.sql
+/tests/Support/_generated/
 node_modules
 build
 .cache/
@@ -10,3 +11,4 @@ build
 .vscode/
 
 **/.claude/settings.local.json
+**/.wip/
