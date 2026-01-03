@@ -4,7 +4,8 @@
 /tests/Support/_generated/
 node_modules
 build
-.cache/
+.cache/*
+!.cache/.gitkeep
 .phpunit.result.cache
 .idea/
 .vscode/
