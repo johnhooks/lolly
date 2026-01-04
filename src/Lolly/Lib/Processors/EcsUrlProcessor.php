@@ -54,6 +54,9 @@ class EcsUrlProcessor implements ProcessorInterface {
         return $record->with( context: $context, extra: $extra );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function format_url( UriInterface $uri ): array {
         $result = [
             'original' => (string) $uri,

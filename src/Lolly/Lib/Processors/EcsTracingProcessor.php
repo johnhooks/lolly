@@ -49,7 +49,7 @@ class EcsTracingProcessor implements ProcessorInterface, ResettableInterface {
         $this->uid = $this->generate_uid( strlen( $this->uid ) );
     }
 
-    private function generate_uid( $length ): string {
+    private function generate_uid( int $length ): string {
         return substr( hash( 'md5', uniqid( '', true ) ), 0, $length );
     }
 }

@@ -69,6 +69,9 @@ class EcsHttpMessageProcessor implements ProcessorInterface {
         return $record->with( context: $context, extra: $extra );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function format_request( RequestInterface $request ): array {
         $result = [
             'method'  => strtolower( $request->getMethod() ),
@@ -93,6 +96,9 @@ class EcsHttpMessageProcessor implements ProcessorInterface {
         return $result;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function format_response( ResponseInterface $response ): array {
         $result = [
             'status_code' => $response->getStatusCode(),

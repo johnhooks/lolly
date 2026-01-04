@@ -212,8 +212,8 @@ final class Lolly implements LoggerInterface {
     /**
      * System is unusable.
      *
-     * @param string|Stringable $message
-     * @param array             $context
+     * @param string|Stringable    $message
+     * @param array<string, mixed> $context
      *
      * @return void
      *
@@ -229,8 +229,8 @@ final class Lolly implements LoggerInterface {
      * Example: Entire website down, database unavailable, etc. This should
      * trigger the SMS alerts and wake you up.
      *
-     * @param string|Stringable $message
-     * @param array             $context
+     * @param string|Stringable    $message
+     * @param array<string, mixed> $context
      *
      * @return void
      *
@@ -245,8 +245,8 @@ final class Lolly implements LoggerInterface {
      *
      * Example: Application component unavailable, unexpected exception.
      *
-     * @param string|Stringable $message
-     * @param array             $context
+     * @param string|Stringable    $message
+     * @param array<string, mixed> $context
      *
      * @return void
      *
@@ -260,8 +260,8 @@ final class Lolly implements LoggerInterface {
      * Runtime errors that do not require immediate action but should typically
      * be logged and monitored.
      *
-     * @param string|Stringable $message
-     * @param array             $context
+     * @param string|Stringable    $message
+     * @param array<string, mixed> $context
      *
      * @return void
      *
@@ -277,8 +277,8 @@ final class Lolly implements LoggerInterface {
      * Example: Use of deprecated APIs, poor use of an API, undesirable things
      * that are not necessarily wrong.
      *
-     * @param string|Stringable $message
-     * @param array             $context
+     * @param string|Stringable    $message
+     * @param array<string, mixed> $context
      *
      * @return void
      *
@@ -291,14 +291,14 @@ final class Lolly implements LoggerInterface {
     /**
      * Normal but significant events.
      *
-     * @param string $message
-     * @param array  $context
+     * @param string|Stringable    $message
+     * @param array<string, mixed> $context
      *
      * @return void
      *
      * @since 0.1.0
      */
-    public function notice( $message, array $context = [] ): void {
+    public function notice( string|Stringable $message, array $context = [] ): void {
         $this->log( LogLevel::NOTICE, $message, $context );
     }
 
@@ -307,8 +307,8 @@ final class Lolly implements LoggerInterface {
      *
      * Example: User logs in, SQL logs.
      *
-     * @param string|Stringable $message
-     * @param array             $context
+     * @param string|Stringable    $message
+     * @param array<string, mixed> $context
      *
      * @return void
      *
@@ -321,8 +321,8 @@ final class Lolly implements LoggerInterface {
     /**
      * Detailed debug information.
      *
-     * @param string|Stringable $message
-     * @param array             $context
+     * @param string|Stringable    $message
+     * @param array<string, mixed> $context
      *
      * @return void
      *
@@ -335,9 +335,9 @@ final class Lolly implements LoggerInterface {
     /**
      * Logs with an arbitrary level.
      *
-     * @param mixed             $level
-     * @param string|Stringable $message
-     * @param array             $context
+     * @param mixed                $level
+     * @param string|Stringable    $message
+     * @param array<string, mixed> $context
      *
      * @return void
      *

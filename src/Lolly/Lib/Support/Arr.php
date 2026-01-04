@@ -60,16 +60,16 @@ class Arr {
     /**
      * Flatten a multi-dimensional associative array with dots.
      *
-     * @param iterable $array
-     * @param string   $prepend
+     * @param iterable<mixed> $array
+     * @param string          $prepend
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public static function dot( iterable $array, string $prepend = '' ): array {
         $results = [];
 
         foreach ( $array as $key => $value ) {
-            if ( is_array( $value ) && ! empty( $value ) ) {
+            if ( is_array( $value ) && count( $value ) > 0 ) {
                 $results = array_merge( $results, static::dot( $value, $prepend . $key . '.' ) );
             } else {
                 $results[ $prepend . $key ] = $value;
@@ -82,8 +82,8 @@ class Arr {
     /**
      * Determine if the given key exists in the provided array.
      *
-     * @param ArrayAccess|array $array
-     * @param string|int|float  $key
+     * @param ArrayAccess<array-key, mixed>|array<array-key, mixed> $array
+     * @param string|int|float                                      $key
      *
      * @return bool
      */
@@ -124,9 +124,9 @@ class Arr {
     /**
      * Get an item from an array using "dot" notation.
      *
-     * @param ArrayAccess|array $array
-     * @param string|int|null   $key
-     * @param mixed             $default
+     * @param ArrayAccess<array-key, mixed>|array<array-key, mixed> $array
+     * @param string|int|null                                       $key
+     * @param mixed                                                 $default
      *
      * @return mixed
      */
@@ -165,8 +165,8 @@ class Arr {
     /**
      * Whether a list contains a match to a predicate function.
      *
-     * @param array    $array
-     * @param callable $predicate
+     * @param array<mixed> $array
+     * @param callable     $predicate
      *
      * @return bool
      */
@@ -175,15 +175,15 @@ class Arr {
     }
 
     /**
-     * Whether a list contains a match to a predicate function.
+     * Whether a list does not contain a match to a predicate function.
      *
-     * @param array    $array
-     * @param callable $predicate
+     * @param array<mixed> $array
+     * @param callable     $predicate
      *
      * @return bool
      */
     public static function doesnt_contain( array $array, callable $predicate ): bool {
-        return ! static::find( $array, $predicate );
+        return static::find( $array, $predicate ) === null;
     }
 
     /**

@@ -293,11 +293,11 @@ final class DefaultRedactor implements Redactors\HttpMessage {
     /**
      * Recursively redact keys from an associative array.
      *
-     * @param array               $data
-     * @param list<RedactionItem> $redactions
-     * @param bool                $is_query
+     * @param array<string, mixed> $data
+     * @param list<RedactionItem>  $redactions
+     * @param bool                 $is_query
      *
-     * @return array|string The redacted data.
+     * @return array<string, mixed> The redacted data.
      */
     private function redact_keys(
         array $data,
