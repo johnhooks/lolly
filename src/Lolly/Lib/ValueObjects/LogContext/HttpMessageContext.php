@@ -30,11 +30,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 class HttpMessageContext {
 
     /**
-     * @param Uri           $url
-     * @param Request       $request
-     * @param Response|null $response
-     * @param array|null    $request_body The parsed request body.
-     * @param array|null    $response_body The parsed response body.
+     * @param Uri                       $url
+     * @param Request                   $request
+     * @param Response|null             $response
+     * @param array<string, mixed>|null $request_body The parsed request body.
+     * @param array<string, mixed>|null $response_body The parsed response body.
      */
     public function __construct(
         readonly public Uri $url,

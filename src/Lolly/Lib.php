@@ -20,9 +20,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Lib {
     public static function get_full_request_url(): string {
         global $wp;
-        $protocol    = isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        $protocol = isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- Intentionally unsanitized for logging.
-        $host        = $_SERVER['HTTP_HOST'] ?? null;
+        $host = $_SERVER['HTTP_HOST'] ?? null;
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- Intentionally unsanitized for logging.
         $request_uri = $_SERVER['REQUEST_URI'] ?? null;
 
@@ -34,13 +34,13 @@ class Lib {
     }
 
     /**
-     * Load and decoce a JSON file.
+     * Load and decode a JSON file.
      *
      * @param string $path
      *
-     * @return array|WP_Error
+     * @return array<string, mixed>|WP_Error
      */
-    public static function load_json_file( string $path ) {
+    public static function load_json_file( string $path ): array|WP_Error {
         if ( file_exists( $path ) ) {
             $raw = file_get_contents( $path );
 

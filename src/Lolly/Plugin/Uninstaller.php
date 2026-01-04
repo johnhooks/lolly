@@ -10,7 +10,6 @@ declare( strict_types=1 );
 namespace Lolly\Plugin;
 
 use Lolly\Config\Config;
-use Lolly\lucatume\DI52\Container;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -33,19 +32,14 @@ final class Uninstaller {
      */
     private static ?self $instance = null;
 
-    /**
-     * @param  Container $container The container.
-     */
-    private function __construct(
-        private readonly Container $container
-    ) {}
+    private function __construct() {}
 
     /**
      * Get the singleton instance.
      */
     public static function instance(): self {
         if ( self::$instance === null ) {
-            self::$instance = new self( lolly()->get_container() );
+            self::$instance = new self();
         }
 
         return self::$instance;

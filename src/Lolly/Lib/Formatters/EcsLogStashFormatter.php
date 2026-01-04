@@ -159,11 +159,11 @@ class EcsLogStashFormatter extends NormalizerFormatter {
     /**
      * Checks if the context should be removed from the LogStash message.
      *
-     * @param array  $record
-     * @param string $key
-     * @param mixed  $value
-     *
      * A context is removed if it is duplicated by an extra field.
+     *
+     * @param array<string, mixed> $record
+     * @param string               $key
+     * @param mixed                $value
      */
     protected function should_remove_context( array $record, string $key, mixed $value ): bool {
         if (

@@ -10,9 +10,11 @@ parameters:
     scanFiles:
         - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
 
+    # Treat PHPDoc types as uncertain to allow defensive runtime checks.
+    treatPhpDocTypesAsCertain: false
+
     ignoreErrors:
+        # LoggerInterface uses array, we use array<string, mixed> for clarity.
         -
-            messages:
-                - '#Method Lolly::[a-z]+\(\) has parameter \$context with no value type specified in iterable type array.#'
-                - '#Parameter \#[1-2] \$message \(string\) of method Lolly::[a-z]+\(\) should be contravariant with parameter#'
-            path: lolly.php
+            identifier: method.childParameterType
+            path: src/Lolly/Lolly.php

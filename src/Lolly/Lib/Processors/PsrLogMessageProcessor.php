@@ -81,7 +81,8 @@ class PsrLogMessageProcessor implements ProcessorInterface {
 
         if ( is_object( $context ) ) {
             if ( property_exists( $context, $key ) ) {
-                $value = $context->{$key};
+                /** @var mixed $value */
+                $value = $context->{$key}; // @phpstan-ignore-line Variable property access.
 
                 if ( $next === null ) {
                     return $this->interpolate( $value );
@@ -108,7 +109,7 @@ class PsrLogMessageProcessor implements ProcessorInterface {
         return '[undefined]';
     }
 
-    private function interpolate( $value ): string {
+    private function interpolate( mixed $value ): string {
         if ( is_object( $value ) ) {
             if ( $value instanceof Throwable ) {
                 return $value->getMessage();

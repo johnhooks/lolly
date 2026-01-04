@@ -35,7 +35,7 @@ class LogOnRestApiRequest {
      *
      * @param WP_REST_Response|WP_Error|mixed $result  Result to send to the client. Usually a `WP_REST_Response`.
      * @param WP_REST_Server                  $server  Server instance.
-     * @param WP_REST_Request                 $request Request used to generate the response.
+     * @param WP_REST_Request<array<mixed>>   $request Request used to generate the response.
      *
      * @return WP_REST_Response|WP_Error|mixed
      */

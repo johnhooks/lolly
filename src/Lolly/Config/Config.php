@@ -103,6 +103,7 @@ class Config implements RedactorConfig, WhitelistConfig {
      * Whether the logging feature is enabled.
      */
     public function is_logging_enabled(): bool {
+        // @phpstan-ignore-next-line
         if ( defined( 'LOLLY_LOG_DISABLED' ) && LOLLY_LOG_DISABLED === true ) {
             return false;
         }
@@ -291,7 +292,9 @@ class Config implements RedactorConfig, WhitelistConfig {
      * @return HttpLoggingConfig|WP_Error
      */
     public function load_config_schema(): array|WP_Error {
-        $schema_path = trailingslashit( LOLLY_PLUGIN_DIR ) . 'resources/schemas/http-logging-config.json';
+        /** @var string $plugin_dir */
+        $plugin_dir  = LOLLY_PLUGIN_DIR;
+        $schema_path = trailingslashit( $plugin_dir ) . 'resources/schemas/http-logging-config.json';
         $schema      = \Lolly\Lib::load_json_file( $schema_path );
 
         if ( is_wp_error( $schema ) ) {
@@ -301,19 +304,6 @@ class Config implements RedactorConfig, WhitelistConfig {
         }
 
         return $schema;
-    }
-
-    /**
-     * Get the initialized Http logging config.
-     *
-     * @return HttpLoggingConfig|WP_Error
-     */
-    private function get_config(): array|WP_Error {
-        if ( $this->http_logging_config === null ) {
-            return new WP_Error( 'lolly.config.not_initialized', __( 'Lolly Log failed to load the configuration.', 'lolly' ) );
-        }
-
-        return $this->http_logging_config;
     }
 
     public function register_settings(): void {
@@ -375,8 +365,10 @@ class Config implements RedactorConfig, WhitelistConfig {
      * @return HttpLoggingConfig|WP_Error
      */
     private function load_default_config(): array|WP_Error {
-        $path   = trailingslashit( LOLLY_PLUGIN_DIR ) . 'config/default-logging-config.json';
-        $config = \Lolly\Lib::load_json_file( $path );
+        /** @var string $plugin_dir */
+        $plugin_dir = LOLLY_PLUGIN_DIR;
+        $path       = trailingslashit( $plugin_dir ) . 'config/default-logging-config.json';
+        $config     = \Lolly\Lib::load_json_file( $path );
 
         if ( $config instanceof WP_Error ) {
             $config->add( 'lolly.config', __( 'Lolly Log failed to load the default configuration.', 'lolly' ) );
