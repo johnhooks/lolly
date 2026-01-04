@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Wpunit suite bootstrap file.
  *
  * This file is loaded AFTER the suite modules are initialized, WordPress, plugins and themes are loaded.

@@ -19,9 +19,9 @@ class SettingsPage {
     public const MENU_SLUG = 'lolly-settings';
 
     /**
-     * Add admin menu page
+     * Add admin menu page.
      */
-    public function add_admin_menu() {
+    public function add_admin_menu(): void {
         add_options_page(
             __( 'Lolly Log Settings', 'lolly' ),
             __( 'Lolly Log', 'lolly' ),
@@ -32,9 +32,11 @@ class SettingsPage {
     }
 
     /**
-     * Enqueue admin scripts and styles
+     * Enqueue admin scripts and styles.
+     *
+     * @param string $hook The current admin page hook.
      */
-    public function enqueue_assets( $hook ) {
+    public function enqueue_assets( string $hook ): void {
         if ( 'settings_page_lolly-settings' !== $hook ) {
             return;
         }
@@ -92,7 +94,7 @@ class SettingsPage {
             []
         );
 
-        // Add inline script to configure apiFetch preloading middleware
+        // Add inline script to configure apiFetch preloading middleware.
         wp_add_inline_script(
             'wp-api-fetch',
             sprintf( 'wp.apiFetch.use( wp.apiFetch.createPreloadingMiddleware( %s ) );', wp_json_encode( $preload_data ) ),
@@ -111,9 +113,9 @@ class SettingsPage {
     }
 
     /**
-     * Render settings page
+     * Render settings page.
      */
-    public function render_settings_page() {
+    public function render_settings_page(): void {
         ?>
         <div class="wrap">
             <div id="lolly-settings"></div>

@@ -21,7 +21,9 @@ class Lib {
     public static function get_full_request_url(): string {
         global $wp;
         $protocol    = isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- Intentionally unsanitized for logging.
         $host        = $_SERVER['HTTP_HOST'] ?? null;
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- Intentionally unsanitized for logging.
         $request_uri = $_SERVER['REQUEST_URI'] ?? null;
 
         if ( $host && $request_uri ) {

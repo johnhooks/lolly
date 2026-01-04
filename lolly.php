@@ -50,7 +50,7 @@ require __DIR__ . '/vendor/vendor-prefixed/autoload.php';
  * @package Lolly
  * @since 0.1.0
  */
-function lolly( string $abstract = null ): mixed {
+function lolly( ?string $abstract = null ): mixed {
     static $instance = null;
 
     if ( $instance === null ) {

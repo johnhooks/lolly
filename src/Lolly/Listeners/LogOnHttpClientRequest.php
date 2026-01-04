@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-/*
+/**
  * @todo Investigate converting to use the Requests hooks.
  *   - fsockopen.after_send
  *   - requests.before_parse
@@ -58,7 +58,6 @@ class LogOnHttpClientRequest {
                 return;
             }
         }
-
 
         $log_context = [
             'wp_http_client' => new WpHttpClientContext(
