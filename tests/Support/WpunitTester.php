@@ -44,7 +44,7 @@ class WpunitTester extends \Codeception\Actor {
     /**
      * Create a test user with a specific role and log them in
      *
-     * @param string $role The user role
+     * @param string $role The user role.
      * @return \WP_User The created user
      */
     public function login_as_role( string $role = 'subscriber' ) {

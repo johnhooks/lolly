@@ -14,8 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// The logging redaction to merge into this system is
-// ["query" => ['user']]
+// The logging redaction to merge into this system is ["query" => ['user']].
 
 /**
  * Config class.
@@ -338,8 +337,8 @@ class Config implements RedactorConfig, WhitelistConfig {
                 'type'         => 'object',
                 'description'  => esc_html__( 'The Lolly logging configuration.', 'lolly' ),
                 // We don't need this right now, but I need to remember it is here.
-                // It will provide the lolly_settings value from the request.
-                // 'sanitize_callback' => [$this, 'sanitize_setting'],
+                // It will provide the lolly_settings value from the request:
+                // 'sanitize_callback' => [$this, 'sanitize_setting'].
                 'default'      => [
                     'version'                        => 1,
                     'enabled'                        => false,

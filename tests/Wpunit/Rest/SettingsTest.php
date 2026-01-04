@@ -136,7 +136,7 @@ class SettingsTest extends WPRestApiTestCase {
 
         $this->assertEquals( 200, $get_response->get_status() );
 
-        $settings        = $get_response->get_data();
+        $settings       = $get_response->get_data();
         $lolly_settings = $settings['lolly_settings'];
 
         $this->assertTrue( $lolly_settings['enabled'] );
@@ -151,7 +151,7 @@ class SettingsTest extends WPRestApiTestCase {
 
     public function testSchemaIsProperlyDefined(): void {
         $registered_settings = get_registered_settings();
-        $lolly_setting      = $registered_settings['lolly_settings'];
+        $lolly_setting       = $registered_settings['lolly_settings'];
 
         $this->assertIsArray( $lolly_setting );
         $this->assertArrayHasKey( 'show_in_rest', $lolly_setting );
