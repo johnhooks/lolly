@@ -1,0 +1,71 @@
+name: lolly
+recipe: wordpress
+config:
+  php: "8.1"
+  via: nginx
+  database: mariadb:10.6
+  webroot: .
+  xdebug: true
+
+proxy:
+  appserver_nginx:
+    - lolly.lndo.site
+
+services:
+  appserver:
+    build_as_root:
+      - rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && pkill -o -USR2 php-fpm || true
+    overrides:
+      volumes:
+        - "./tmp/wordpress:/app"
+        - "./:/app/wp-content/plugins/lolly"
+        - "./tmp/logs:/var/log/lolly"
+      environment:
+        PHP_IDE_CONFIG: serverName=lolly
+        XDEBUG_SESSION_START: lando
+
+  database:
+    portforward: 4501
+
+  mailhog:
+    type: mailhog
+    hogfrom:
+      - appserver
+
+tooling:
+  xdebug-on:
+    service: appserver
+    description: Enable XDebug
+    cmd: docker-php-ext-enable xdebug && pkill -o -USR2 php-fpm && echo "XDebug enabled"
+    user: root
+
+  xdebug-off:
+    service: appserver
+    description: Disable XDebug
+    cmd: rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && pkill -o -USR2 php-fpm && echo "XDebug disabled"
+    user: root
+
+  install-wp:
+    service: appserver
+    description: Download and install WordPress with admin/password
+    cmd: /app/wp-content/plugins/lolly/bin/install-wp.sh
+
+  composer:
+    service: appserver
+    dir: /app/wp-content/plugins/lolly
+    cmd: /usr/local/bin/composer
+
+  phpcs:
+    service: appserver
+    dir: /app/wp-content/plugins/lolly
+    cmd: vendor/bin/phpcs
+
+  phpstan:
+    service: appserver
+    dir: /app/wp-content/plugins/lolly
+    cmd: vendor/bin/phpstan
+
+events:
+  post-start:
+    - appserver: /app/wp-content/plugins/lolly/bin/install-wp.sh
+
