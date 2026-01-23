@@ -2,5 +2,3 @@ build
 node_modules
 vendor
 tmp
-*.config.js
-.eslintrc.js

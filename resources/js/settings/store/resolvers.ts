@@ -2,8 +2,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 
 import { SETTINGS_KEY } from '../../constants';
-import type { Settings } from '../../store/types';
-import { WpRestApiError } from '../../types';
+import type { Settings, WpRestApiError } from '../../types';
 import { isWpRestApiError, forwardResolver } from '../../utils';
 
 import type { SettingsThunk } from './types';

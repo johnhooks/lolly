@@ -3,9 +3,8 @@ import {
     ReduxStoreConfig,
 } from '@wordpress/data/build-types/redux-store';
 
-import { Settings } from '../../store/types';
 import type { Thunk } from '../../thunk';
-import { WpRestApiError } from '../../types';
+import type { Settings, WpRestApiError } from '../../types';
 
 import * as actions from './actions';
 import * as selectors from './selectors';
