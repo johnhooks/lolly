@@ -12,3 +12,6 @@ build
 
 **/.claude/settings.local.json
 **/.wip/
+
+# Lando
+/tmp/

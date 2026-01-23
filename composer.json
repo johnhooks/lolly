@@ -34,6 +34,7 @@
         "lucatume/wp-browser": "^4.5"
     },
     "config": {
+        "autoloader-suffix": "Lolly",
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "phpstan/extension-installer": true
@@ -51,6 +52,12 @@
         }
     },
     "scripts": {
+        "post-install-cmd": [
+            "@strauss"
+        ],
+        "post-update-cmd": [
+            "@strauss"
+        ],
         "analyse": [
             "@php vendor/bin/phpstan analyse --memory-limit=4G --no-progress --no-interaction --ansi"
         ],

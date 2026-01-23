@@ -1,11 +1,12 @@
+.cache/
+.claude/
 .git/
 .github/
 bin/
 docs/
 node_modules/
 tests/
-.cache
-.claude
+tmp/
 .distignore
 .editorconfig
 .gitignore
