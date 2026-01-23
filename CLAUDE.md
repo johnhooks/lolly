@@ -28,14 +28,34 @@ Key patterns:
 - **Processors** transform log records (ECS format, redaction)
 - **Config** manages settings via WordPress options with JSON Schema validation
 
+## Local Development
+
+Use Lando for local WordPress development:
+
+```bash
+lando start              # Start WordPress environment
+lando install-wp         # Install WordPress (runs automatically on start)
+lando xdebug-on          # Enable XDebug
+lando xdebug-off         # Disable XDebug
+lando composer install   # Install PHP dependencies
+lando phpcs              # Run PHP code sniffer
+lando phpstan            # Run static analysis
+```
+
+Site runs at https://lolly.lndo.site (admin/password).
+
+Logs are written to `./tmp/logs/` for easy IDE access. WordPress debug log goes to `./tmp/logs/debug.log`, plugin logs to `./tmp/logs/lolly.log`.
+
 ## Commands
 
-- **Lint PHP**: `composer run lint` or `@php vendor/bin/phpcs -s`
-- **Fix PHP**: `composer run lint:fix` or `php vendor/bin/phpcbf`
-- **Analyze PHP**: `composer run analyse` or `php vendor/bin/phpstan analyse --memory-limit=4G --no-progress --no-interaction --ansi`
-- **Tests**: `php vendor/bin/codecept run`
-- **Run specific suite**: `php vendor/bin/codecept run Unit`
-- **Run specific test**: `php vendor/bin/codecept run Unit:TestName`
+- **Lint PHP**: `composer run lint` or `vendor/bin/phpcs -s`
+- **Fix PHP**: `composer run lint:fix` or `vendor/bin/phpcbf`
+- **Analyze PHP**: `composer run analyse` or `vendor/bin/phpstan analyse --memory-limit=4G`
+- **Tests**: `vendor/bin/codecept run`
+- **Run specific suite**: `vendor/bin/codecept run Unit`
+- **Run specific test**: `vendor/bin/codecept run Unit:TestName`
+
+Pre-commit hooks run automatically via lint-staged: PHP syntax check, phpcs, phpstan for PHP files; wp-scripts for JS/TS/CSS.
 
 ## Code Style Guidelines
 
@@ -55,7 +75,7 @@ Key patterns:
 
 ## Testing
 
-Use Codeception with slic (Docker-based).
+Use Codeception with slic (Docker-based). Lando is for development; slic is for running tests.
 
 Run from the parent directory (`~/Projects`):
 ```bash
