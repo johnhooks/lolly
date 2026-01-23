@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     invalidateResolution,
     invalidateResolutionForStore,
@@ -48,7 +49,7 @@ export type PromisifiedSelectorsOf<S> =
           }
         : never;
 
-type PromisifySelectorOf<F extends Function> = F extends (
+type PromisifySelectorOf<F extends (...args: any[]) => any> = F extends (
     ...args: infer P
 ) => infer R
     ? (...args: P) => Promise<R>
@@ -132,7 +133,7 @@ export type ThunkArgs<
 export type Thunk<
     A extends Action,
     S extends StoreDescriptor<AnyConfig>,
-    T extends unknown = void,
+    T = void,
 > =
     T extends Awaited<infer R>
         ? (args: ThunkArgs<A, S>) => Promise<R>
