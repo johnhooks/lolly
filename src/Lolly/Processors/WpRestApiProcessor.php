@@ -79,7 +79,7 @@ class WpRestApiProcessor implements ProcessorInterface {
                 );
 
                 if ( $value->result->is_error() ) {
-                    if ( ! $context['wp_error'] ) {
+                    if ( ! isset( $context['wp_error'] ) ) {
                         $context['wp_error'] = $value->result->as_error();
                     }
                 }

@@ -95,6 +95,15 @@ class Config implements RedactorConfig, WhitelistConfig {
         }
     }
 
+    /**
+     * Reload the configuration from the database.
+     *
+     * Useful when settings have been updated and the cached config needs to be refreshed.
+     */
+    public function reload(): void {
+        $this->http_logging_config = $this->load();
+    }
+
     public function get_log_dir_path(): string {
         return $this->log_dir_path;
     }
