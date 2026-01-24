@@ -7,6 +7,15 @@
     "wp_rest_logging_enabled": true,
     "wp_http_client_logging_enabled": true,
     "wp_user_event_logging_enabled": true,
+    "wp_auth_logging_enabled": true,
+    "wp_auth_logging_config": {
+        "login": true,
+        "logout": true,
+        "login_failed": false,
+        "password_changed": true,
+        "app_password_created": true,
+        "app_password_deleted": true
+    },
     "http_redactions": [
         {
             "host": "*",

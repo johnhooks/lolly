@@ -49,14 +49,25 @@ if ( ! defined( 'ABSPATH' ) ) {
  *      glob?: bool
  * }
  *
+ * @phpstan-type AuthLoggingConfig array{
+ *      login?: bool,
+ *      logout?: bool,
+ *      login_failed?: bool,
+ *      password_changed?: bool,
+ *      app_password_created?: bool,
+ *      app_password_deleted?: bool
+ * }
+ *
  * @phpstan-type HttpLoggingConfig array{
- *      verion: int,
+ *      version: int,
  *      enabled: bool,
  *      http_redactions_enabled: bool,
  *      http_whitelist_enabled: bool,
  *      wp_rest_logging_enabled: bool,
  *      wp_http_client_logging_enabled: bool,
  *      wp_user_event_logging_enabled: bool,
+ *      wp_auth_logging_enabled: bool,
+ *      wp_auth_logging_config: AuthLoggingConfig,
  *      http_redactions: array<HttpHostRedactions>,
  *      http_whitelist: array<HttpHostWhitelist>,
  *  }
@@ -152,6 +163,83 @@ class Config implements RedactorConfig, WhitelistConfig {
         }
 
         return $this->http_logging_config['wp_user_event_logging_enabled'] ?? false;
+    }
+
+    /**
+     * Whether authentication event logging is enabled.
+     */
+    public function is_wp_auth_logging_enabled(): bool {
+        if ( ! $this->is_logging_enabled() ) {
+            return false;
+        }
+
+        return $this->http_logging_config['wp_auth_logging_enabled'] ?? false;
+    }
+
+    /**
+     * Whether login event logging is enabled.
+     */
+    public function is_auth_login_logging_enabled(): bool {
+        if ( ! $this->is_wp_auth_logging_enabled() ) {
+            return false;
+        }
+
+        return $this->http_logging_config['wp_auth_logging_config']['login'] ?? true;
+    }
+
+    /**
+     * Whether logout event logging is enabled.
+     */
+    public function is_auth_logout_logging_enabled(): bool {
+        if ( ! $this->is_wp_auth_logging_enabled() ) {
+            return false;
+        }
+
+        return $this->http_logging_config['wp_auth_logging_config']['logout'] ?? true;
+    }
+
+    /**
+     * Whether login failure event logging is enabled.
+     */
+    public function is_auth_login_failed_logging_enabled(): bool {
+        if ( ! $this->is_wp_auth_logging_enabled() ) {
+            return false;
+        }
+
+        return $this->http_logging_config['wp_auth_logging_config']['login_failed'] ?? false;
+    }
+
+    /**
+     * Whether password changed event logging is enabled.
+     */
+    public function is_auth_password_changed_logging_enabled(): bool {
+        if ( ! $this->is_wp_auth_logging_enabled() ) {
+            return false;
+        }
+
+        return $this->http_logging_config['wp_auth_logging_config']['password_changed'] ?? true;
+    }
+
+    /**
+     * Whether application password created event logging is enabled.
+     */
+    public function is_auth_app_password_created_logging_enabled(): bool {
+        if ( ! $this->is_wp_auth_logging_enabled() ) {
+            return false;
+        }
+
+        return $this->http_logging_config['wp_auth_logging_config']['app_password_created'] ?? true;
+    }
+
+    /**
+     * Whether application password deleted event logging is enabled.
+     */
+    public function is_auth_app_password_deleted_logging_enabled(): bool {
+        if ( ! $this->is_wp_auth_logging_enabled() ) {
+            return false;
+        }
+
+        return $this->http_logging_config['wp_auth_logging_config']['app_password_deleted'] ?? true;
     }
 
     /**
@@ -356,6 +444,15 @@ class Config implements RedactorConfig, WhitelistConfig {
                     'wp_rest_logging_enabled'        => true,
                     'wp_http_client_logging_enabled' => true,
                     'wp_user_event_logging_enabled'  => true,
+                    'wp_auth_logging_enabled'        => true,
+                    'wp_auth_logging_config'         => [
+                        'login'                => true,
+                        'logout'               => true,
+                        'login_failed'         => false,
+                        'password_changed'     => true,
+                        'app_password_created' => true,
+                        'app_password_deleted' => true,
+                    ],
                     'http_redactions_enabled'        => true,
                     'http_whitelist_enabled'         => false,
                     'http_redactions'                => [],

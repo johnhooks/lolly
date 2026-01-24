@@ -25,6 +25,48 @@
             "description": "Whether user event logging is enabled (creation, deletion, role changes).",
             "type": "boolean"
         },
+        "wp_auth_logging_enabled": {
+            "description": "Whether authentication event logging is enabled (login, logout, password changes).",
+            "type": "boolean"
+        },
+        "wp_auth_logging_config": {
+            "description": "Configuration for individual authentication events to log.",
+            "type": "object",
+            "properties": {
+                "login": {
+                    "description": "Log successful user logins.",
+                    "type": "boolean"
+                },
+                "logout": {
+                    "description": "Log user logouts.",
+                    "type": "boolean"
+                },
+                "login_failed": {
+                    "description": "Log failed login attempts.",
+                    "type": "boolean"
+                },
+                "password_changed": {
+                    "description": "Log password changes and resets.",
+                    "type": "boolean"
+                },
+                "app_password_created": {
+                    "description": "Log application password creation.",
+                    "type": "boolean"
+                },
+                "app_password_deleted": {
+                    "description": "Log application password deletion.",
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "login",
+                "logout",
+                "login_failed",
+                "password_changed",
+                "app_password_created",
+                "app_password_deleted"
+            ]
+        },
         "http_redactions_enabled": {
             "description": "Whether the HTTP logging redaction feature is enabled.",
             "type": "boolean"
@@ -144,6 +186,8 @@
         "wp_rest_logging_enabled",
         "wp_http_client_logging_enabled",
         "wp_user_event_logging_enabled",
+        "wp_auth_logging_enabled",
+        "wp_auth_logging_config",
         "http_redactions",
         "http_whitelist"
     ]

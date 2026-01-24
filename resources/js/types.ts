@@ -26,12 +26,24 @@ export interface HttpWhitelistSet {
     glob?: boolean;
 }
 
+export interface AuthLoggingConfig {
+    login: boolean;
+    logout: boolean;
+    login_failed: boolean;
+    password_changed: boolean;
+    app_password_created: boolean;
+    app_password_deleted: boolean;
+}
+
 export interface Settings {
     enabled: boolean;
     http_redactions_enabled: boolean;
     http_whitelist_enabled: boolean;
     wp_rest_logging_enabled: boolean;
     wp_http_client_logging_enabled: boolean;
+    wp_user_event_logging_enabled: boolean;
+    wp_auth_logging_enabled: boolean;
+    wp_auth_logging_config: AuthLoggingConfig;
     http_redactions: HttpRedactionSet[];
     http_whitelist: HttpWhitelistSet[];
 }

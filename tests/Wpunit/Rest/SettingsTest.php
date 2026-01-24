@@ -96,6 +96,15 @@ class SettingsTest extends WPRestApiTestCase {
                 'wp_rest_logging_enabled'        => false,
                 'wp_http_client_logging_enabled' => false,
                 'wp_user_event_logging_enabled'  => false,
+                'wp_auth_logging_enabled'        => true,
+                'wp_auth_logging_config'         => [
+                    'login'                => true,
+                    'logout'               => false,
+                    'login_failed'         => true,
+                    'password_changed'     => true,
+                    'app_password_created' => false,
+                    'app_password_deleted' => true,
+                ],
                 'http_redactions_enabled'        => false,
                 'http_whitelist_enabled'         => true,
                 'http_redactions'                => [
@@ -148,6 +157,14 @@ class SettingsTest extends WPRestApiTestCase {
         $this->assertEquals( 'example.com', $lolly_settings['http_redactions'][0]['host'] );
         $this->assertCount( 1, $lolly_settings['http_whitelist'] );
         $this->assertEquals( 'api.example.org', $lolly_settings['http_whitelist'][0]['host'] );
+
+        $this->assertTrue( $lolly_settings['wp_auth_logging_enabled'] );
+        $this->assertIsArray( $lolly_settings['wp_auth_logging_config'] );
+        $this->assertTrue( $lolly_settings['wp_auth_logging_config']['login'] );
+        $this->assertFalse( $lolly_settings['wp_auth_logging_config']['logout'] );
+        $this->assertTrue( $lolly_settings['wp_auth_logging_config']['login_failed'] );
+        $this->assertFalse( $lolly_settings['wp_auth_logging_config']['app_password_created'] );
+        $this->assertTrue( $lolly_settings['wp_auth_logging_config']['app_password_deleted'] );
     }
 
     public function testSchemaIsProperlyDefined(): void {
