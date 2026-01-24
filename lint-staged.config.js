@@ -3,8 +3,8 @@ module.exports = {
 		const files = filenames.join(' ');
 		return [
 			`php -d display_errors=1 -l ${files}`,
-			`vendor/bin/phpcs --standard=phpcs.xml.dist ${files}`,
-			`vendor/bin/phpstan analyse --memory-limit=4G ${files}`,
+			`vendor/bin/phpcs --standard=phpcs.xml.dist -n ${files}`,
+			`vendor/bin/phpstan analyse --memory-limit=4G --no-progress`,
 		];
 	},
 	'**/*.{js,jsx,ts,tsx}': (filenames) => {

@@ -62,7 +62,7 @@
             "@php vendor/bin/phpstan analyse --memory-limit=4G --no-progress --no-interaction --ansi"
         ],
         "lint": [
-            "@php vendor/bin/phpcs -d memory_limit=2G -s -n"
+            "@php vendor/bin/phpcs -d memory_limit=2G -s"
         ],
         "lint:fix": [
             "@php vendor/bin/phpcbf -d memory_limit=2G"
