@@ -48,6 +48,8 @@ class LogOnRestApiRequestTest extends WPTestCase {
     public function _after(): void {
         $_SERVER = $this->originalServer;
 
+        remove_all_filters( 'rest_post_dispatch' );
+
         parent::_after();
     }
 

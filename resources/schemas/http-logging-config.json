@@ -21,6 +21,10 @@
             "description": "Whether the WordPress HTTP client logging feature is enabled.",
             "type": "boolean"
         },
+        "wp_user_event_logging_enabled": {
+            "description": "Whether user event logging is enabled (creation, deletion, role changes).",
+            "type": "boolean"
+        },
         "http_redactions_enabled": {
             "description": "Whether the HTTP logging redaction feature is enabled.",
             "type": "boolean"
@@ -62,7 +66,13 @@
                                             "type": {
                                                 "description": "The HTTP redaction type.",
                                                 "type": "string",
-                                                "enum": ["*", "query", "header", "request", "response"]
+                                                "enum": [
+                                                    "*",
+                                                    "query",
+                                                    "header",
+                                                    "request",
+                                                    "response"
+                                                ]
                                             },
                                             "value": {
                                                 "description": "The value to match a redaction target property.",
@@ -73,10 +83,7 @@
                                                 "type": "boolean"
                                             }
                                         },
-                                        "required": [
-                                            "type",
-                                            "value"
-                                        ]
+                                        "required": ["type", "value"]
                                     }
                                 },
                                 "glob": {
@@ -84,10 +91,7 @@
                                     "type": "boolean"
                                 }
                             },
-                            "required": [
-                                "path",
-                                "redactions"
-                            ]
+                            "required": ["path", "redactions"]
                         }
                     }
                 }
@@ -120,9 +124,7 @@
                                     "type": "boolean"
                                 }
                             },
-                            "required": [
-                                "path"
-                            ]
+                            "required": ["path"]
                         }
                     },
                     "glob": {
@@ -130,9 +132,7 @@
                         "type": "boolean"
                     }
                 },
-                "required": [
-                    "host"
-                ]
+                "required": ["host"]
             }
         }
     },
@@ -143,6 +143,7 @@
         "http_whitelist_enabled",
         "wp_rest_logging_enabled",
         "wp_http_client_logging_enabled",
+        "wp_user_event_logging_enabled",
         "http_redactions",
         "http_whitelist"
     ]

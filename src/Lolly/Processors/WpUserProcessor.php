@@ -27,7 +27,7 @@ class WpUserProcessor implements ProcessorInterface {
         $extra   = $record->extra;
 
         foreach ( $context as $key => $value ) {
-            if ( $value instanceof Wp_User && $value->exists() ) {
+            if ( $value instanceof WP_User && $value->exists() ) {
                 $user_fields = [
                     'id' => $value->ID,
                 ];

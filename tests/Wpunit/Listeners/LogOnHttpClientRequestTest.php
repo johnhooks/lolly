@@ -35,6 +35,12 @@ class LogOnHttpClientRequestTest extends WPTestCase {
         );
     }
 
+    public function _after(): void {
+        remove_all_actions( 'http_api_debug' );
+
+        parent::_after();
+    }
+
     public function testLogsSuccessfulHttpRequest(): void {
         $response = $this->buildResponse( 200, '{"success": true}' );
 

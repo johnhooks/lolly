@@ -24,9 +24,6 @@ class Lolly extends Module {
     public function _after( TestInterface $test ): void {
         delete_option( Config::OPTION_SLUG );
 
-        remove_all_actions( 'http_api_debug' );
-        remove_all_filters( 'rest_post_dispatch' );
-
         if ( $this->loggerFaked ) {
             $this->restoreLogger();
         }
@@ -78,6 +75,7 @@ class Lolly extends Module {
             'enabled'                        => false,
             'wp_http_client_logging_enabled' => false,
             'wp_rest_logging_enabled'        => false,
+            'wp_user_event_logging_enabled'  => false,
             'http_redactions_enabled'        => false,
             'http_whitelist_enabled'         => false,
             'http_redactions'                => [],
