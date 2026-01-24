@@ -25,18 +25,11 @@ class Provider extends ServiceProvider {
      * @var class-string[]
      */
     public array $provides = [
-        LogOnCentralVerbRequest::class,
         LogOnHttpClientRequest::class,
         LogOnRestApiRequest::class,
     ];
 
     public function register() {
-        // @todo This should be configured by the solid-dev-tools plugin.
-        add_action( 'solid_central_verb_request', $this->container->callback( LogOnCentralVerbRequest::class, 'handle_request' ) );
-        add_action( 'solid_central_verb_response', $this->container->callback( LogOnCentralVerbRequest::class, 'handle_response' ) );
-        // The priority should cause this shutdown action to run after the `shutdown` of `ithemes-sync`.
-        add_action( 'shutdown', $this->container->callback( LogOnCentralVerbRequest::class, 'shutdown' ), 11 );
-
         if ( $this->config->is_wp_http_client_logging_enabled() ) {
             add_action( 'http_api_debug', $this->container->callback( LogOnHttpClientRequest::class, 'handle' ), 999, 5 );
         }
@@ -45,7 +38,6 @@ class Provider extends ServiceProvider {
             add_filter( 'rest_post_dispatch', $this->container->callback( LogOnRestApiRequest::class, 'handle' ), 999, 3 );
         }
 
-        $this->container->singleton( LogOnCentralVerbRequest::class, LogOnCentralVerbRequest::class );
         $this->container->bind( LogOnHttpClientRequest::class, LogOnHttpClientRequest::class );
         $this->container->bind( LogOnRestApiRequest::class, LogOnRestApiRequest::class );
     }
