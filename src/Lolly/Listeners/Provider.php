@@ -27,6 +27,11 @@ class Provider extends ServiceProvider {
     public array $provides = [
         LogOnHttpClientRequest::class,
         LogOnRestApiRequest::class,
+        LogOnUserCreated::class,
+        LogOnUserDeleted::class,
+        LogOnUserRoleAdded::class,
+        LogOnUserRoleChanged::class,
+        LogOnUserRoleRemoved::class,
     ];
 
     public function register() {
@@ -38,7 +43,20 @@ class Provider extends ServiceProvider {
             add_filter( 'rest_post_dispatch', $this->container->callback( LogOnRestApiRequest::class, 'handle' ), 999, 3 );
         }
 
+        if ( $this->config->is_wp_user_event_logging_enabled() ) {
+            add_action( 'user_register', $this->container->callback( LogOnUserCreated::class, 'handle' ), 10, 2 );
+            add_action( 'delete_user', $this->container->callback( LogOnUserDeleted::class, 'handle' ), 10, 3 );
+            add_action( 'add_user_role', $this->container->callback( LogOnUserRoleAdded::class, 'handle' ), 10, 2 );
+            add_action( 'set_user_role', $this->container->callback( LogOnUserRoleChanged::class, 'handle' ), 10, 3 );
+            add_action( 'remove_user_role', $this->container->callback( LogOnUserRoleRemoved::class, 'handle' ), 10, 2 );
+        }
+
         $this->container->bind( LogOnHttpClientRequest::class, LogOnHttpClientRequest::class );
         $this->container->bind( LogOnRestApiRequest::class, LogOnRestApiRequest::class );
+        $this->container->bind( LogOnUserCreated::class, LogOnUserCreated::class );
+        $this->container->bind( LogOnUserDeleted::class, LogOnUserDeleted::class );
+        $this->container->bind( LogOnUserRoleAdded::class, LogOnUserRoleAdded::class );
+        $this->container->bind( LogOnUserRoleChanged::class, LogOnUserRoleChanged::class );
+        $this->container->bind( LogOnUserRoleRemoved::class, LogOnUserRoleRemoved::class );
     }
 }

@@ -56,6 +56,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *      http_whitelist_enabled: bool,
  *      wp_rest_logging_enabled: bool,
  *      wp_http_client_logging_enabled: bool,
+ *      wp_user_event_logging_enabled: bool,
  *      http_redactions: array<HttpHostRedactions>,
  *      http_whitelist: array<HttpHostWhitelist>,
  *  }
@@ -140,6 +141,17 @@ class Config implements RedactorConfig, WhitelistConfig {
         }
 
         return $this->http_logging_config['wp_http_client_logging_enabled'] ?? false;
+    }
+
+    /**
+     * Whether user event logging is enabled.
+     */
+    public function is_wp_user_event_logging_enabled(): bool {
+        if ( ! $this->is_logging_enabled() ) {
+            return false;
+        }
+
+        return $this->http_logging_config['wp_user_event_logging_enabled'] ?? false;
     }
 
     /**
@@ -343,6 +355,7 @@ class Config implements RedactorConfig, WhitelistConfig {
                     'enabled'                        => false,
                     'wp_rest_logging_enabled'        => true,
                     'wp_http_client_logging_enabled' => true,
+                    'wp_user_event_logging_enabled'  => true,
                     'http_redactions_enabled'        => true,
                     'http_whitelist_enabled'         => false,
                     'http_redactions'                => [],

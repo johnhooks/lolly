@@ -28,7 +28,7 @@ class WpunitTester extends \Codeception\Actor {
      *
      * @return \WP_User The created user
      */
-    public function login_as_admin() {
+    public function loginAsAdmin() {
         $user_id = $this->factory()->user->create(
             [
                 'role' => 'administrator',
@@ -47,7 +47,7 @@ class WpunitTester extends \Codeception\Actor {
      * @param string $role The user role.
      * @return \WP_User The created user
      */
-    public function login_as_role( string $role = 'subscriber' ) {
+    public function loginAsRole( string $role = 'subscriber' ) {
         $user_id = $this->factory()->user->create(
             [
                 'role' => $role,

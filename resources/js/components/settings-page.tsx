@@ -88,6 +88,22 @@ export default function SettingsPage(): React.ReactNode {
                             __nextHasNoMarginBottom
                         />
                         <ToggleControl
+                            label={__('User Event Logging', 'lolly')}
+                            checked={settings.wp_user_event_logging_enabled}
+                            onChange={(value: boolean) =>
+                                editSetting(
+                                    'wp_user_event_logging_enabled',
+                                    value
+                                )
+                            }
+                            disabled={!settings.enabled}
+                            help={__(
+                                'Log user creation, deletion, and role changes.',
+                                'lolly'
+                            )}
+                            __nextHasNoMarginBottom
+                        />
+                        <ToggleControl
                             label={__('HTTP Redactions', 'lolly')}
                             checked={settings.http_redactions_enabled}
                             onChange={(value: boolean) =>

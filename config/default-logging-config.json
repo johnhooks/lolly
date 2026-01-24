@@ -6,6 +6,7 @@
     "http_whitelist_enabled": false,
     "wp_rest_logging_enabled": true,
     "wp_http_client_logging_enabled": true,
+    "wp_user_event_logging_enabled": true,
     "http_redactions": [
         {
             "host": "*",
@@ -13,14 +14,18 @@
                 {
                     "path": "*",
                     "redactions": [
-                        {"type": "*", "value": "password"},
-                        {"type": "*", "value": "password_confirm"},
-                        {"type": "*", "value": "password_confirmation"},
-                        {"type": "*", "value": "api_key"},
-                        {"type": "*", "value": "apikey"},
-                        {"type": "*", "value": "hash"},
-                        {"type": "header", "value": "cookie", "remove": true},
-                        {"type": "header", "value": "authorization", "remove": true}
+                        { "type": "*", "value": "password" },
+                        { "type": "*", "value": "password_confirm" },
+                        { "type": "*", "value": "password_confirmation" },
+                        { "type": "*", "value": "api_key" },
+                        { "type": "*", "value": "apikey" },
+                        { "type": "*", "value": "hash" },
+                        { "type": "header", "value": "cookie", "remove": true },
+                        {
+                            "type": "header",
+                            "value": "authorization",
+                            "remove": true
+                        }
                     ]
                 }
             ]
@@ -31,7 +36,7 @@
                 {
                     "path": "/news/feed/",
                     "redactions": [
-                        {"type": "response", "value": "*", "remove": true}
+                        { "type": "response", "value": "*", "remove": true }
                     ]
                 }
             ]
@@ -42,50 +47,50 @@
                 {
                     "path": "/core/checksums/",
                     "redactions": [
-                        {"type": "response", "value": "*", "remove": true}
+                        { "type": "response", "value": "*", "remove": true }
                     ],
                     "glob": true
                 },
                 {
                     "path": "/core/version-check/",
                     "redactions": [
-                        {"type": "query", "value": "*", "remove": true},
-                        {"type": "response", "value": "*", "remove": true}
+                        { "type": "query", "value": "*", "remove": true },
+                        { "type": "response", "value": "*", "remove": true }
                     ],
                     "glob": true
                 },
                 {
                     "path": "/plugins/info/",
                     "redactions": [
-                        {"type": "response", "value": "*", "remove": true}
+                        { "type": "response", "value": "*", "remove": true }
                     ],
                     "glob": true
                 },
                 {
                     "path": "/plugins/update-check/",
                     "redactions": [
-                        {"type": "response", "value": "*", "remove": true}
+                        { "type": "response", "value": "*", "remove": true }
                     ],
                     "glob": true
                 },
                 {
                     "path": "/themes/info/",
                     "redactions": [
-                        {"type": "response", "value": "*", "remove": true}
+                        { "type": "response", "value": "*", "remove": true }
                     ],
                     "glob": true
                 },
                 {
                     "path": "/themes/update-check/",
                     "redactions": [
-                        {"type": "response", "value": "*", "remove": true}
+                        { "type": "response", "value": "*", "remove": true }
                     ],
                     "glob": true
                 },
                 {
                     "path": "/translations/core/",
                     "redactions": [
-                        {"type": "response", "value": "*", "remove": true}
+                        { "type": "response", "value": "*", "remove": true }
                     ],
                     "glob": true
                 }
@@ -97,7 +102,7 @@
                 {
                     "path": "/feed/",
                     "redactions": [
-                        {"type": "response", "value": "*", "remove": true}
+                        { "type": "response", "value": "*", "remove": true }
                     ]
                 }
             ]

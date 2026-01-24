@@ -14,7 +14,7 @@ class SettingsTest extends WPRestApiTestCase {
     public function setUp(): void {
         parent::setUp();
 
-        $this->tester->login_as_admin();
+        $this->tester->loginAsAdmin();
 
         do_action( 'rest_api_init' );
 
@@ -56,7 +56,7 @@ class SettingsTest extends WPRestApiTestCase {
 
     public function testNonAdminCannotAccessEndpoint(): void {
         $this->tester->logout();
-        $this->tester->login_as_role( 'subscriber' );
+        $this->tester->loginAsRole( 'subscriber' );
 
         $request  = new WP_REST_Request( 'GET', '/wp/v2/settings' );
         $response = rest_do_request( $request );
@@ -95,6 +95,7 @@ class SettingsTest extends WPRestApiTestCase {
                 'enabled'                        => true,
                 'wp_rest_logging_enabled'        => false,
                 'wp_http_client_logging_enabled' => false,
+                'wp_user_event_logging_enabled'  => false,
                 'http_redactions_enabled'        => false,
                 'http_whitelist_enabled'         => true,
                 'http_redactions'                => [
