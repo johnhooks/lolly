@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Wpunit\Listeners;
+namespace Tests\Wpunit\Listeners\HttpListener;
 
-use Lolly\Listeners\LogOnRestApiRequest;
+use Lolly\Listeners\HttpListener;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use Tests\Support\WpunitTester;
 use WP_Error;
@@ -14,7 +14,7 @@ use WP_REST_Response;
 /**
  * @property WpunitTester $tester
  */
-class LogOnRestApiRequestTest extends WPTestCase {
+class RestRequestTest extends WPTestCase {
     private const TEST_ROUTE = '/wp/v2/posts';
 
     /**
@@ -30,8 +30,8 @@ class LogOnRestApiRequestTest extends WPTestCase {
 
         $this->tester->updateSettings(
             [
-                'enabled'                 => true,
-                'wp_rest_logging_enabled' => true,
+                'enabled'         => true,
+                'wp_rest_logging' => [ 'enabled' => true ],
             ]
         );
 
@@ -39,7 +39,7 @@ class LogOnRestApiRequestTest extends WPTestCase {
 
         add_filter(
             'rest_post_dispatch',
-            lolly()->callback( LogOnRestApiRequest::class, 'handle' ),
+            lolly()->callback( HttpListener::class, 'on_rest_request' ),
             999,
             3
         );
@@ -86,13 +86,15 @@ class LogOnRestApiRequestTest extends WPTestCase {
     public function testRespectsWhitelistWhenEnabled(): void {
         $this->tester->updateSettings(
             [
-                'enabled'                 => true,
-                'wp_rest_logging_enabled' => true,
-                'http_whitelist_enabled'  => true,
-                'http_whitelist'          => [
-                    [
-                        'host'  => 'allowed.example.com',
-                        'paths' => [ [ 'path' => '*' ] ],
+                'enabled'         => true,
+                'wp_rest_logging' => [ 'enabled' => true ],
+                'http_whitelist'  => [
+                    'enabled' => true,
+                    'rules'   => [
+                        [
+                            'host'  => 'allowed.example.com',
+                            'paths' => [ [ 'path' => '*' ] ],
+                        ],
                     ],
                 ],
             ]

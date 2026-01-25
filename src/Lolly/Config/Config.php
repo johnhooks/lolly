@@ -49,7 +49,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  *      glob?: bool
  * }
  *
+ * @phpstan-type FeatureConfig array{
+ *      enabled: bool
+ * }
+ *
  * @phpstan-type AuthLoggingConfig array{
+ *      enabled: bool,
  *      login?: bool,
  *      logout?: bool,
  *      login_failed?: bool,
@@ -58,18 +63,25 @@ if ( ! defined( 'ABSPATH' ) ) {
  *      app_password_deleted?: bool
  * }
  *
+ * @phpstan-type HttpRedactionsConfig array{
+ *      enabled: bool,
+ *      rules?: array<HttpHostRedactions>
+ * }
+ *
+ * @phpstan-type HttpWhitelistConfig array{
+ *      enabled: bool,
+ *      rules?: array<HttpHostWhitelist>
+ * }
+ *
  * @phpstan-type HttpLoggingConfig array{
  *      version: int,
  *      enabled: bool,
- *      http_redactions_enabled: bool,
- *      http_whitelist_enabled: bool,
- *      wp_rest_logging_enabled: bool,
- *      wp_http_client_logging_enabled: bool,
- *      wp_user_event_logging_enabled: bool,
- *      wp_auth_logging_enabled: bool,
- *      wp_auth_logging_config: AuthLoggingConfig,
- *      http_redactions: array<HttpHostRedactions>,
- *      http_whitelist: array<HttpHostWhitelist>,
+ *      wp_rest_logging: FeatureConfig,
+ *      wp_http_client_logging: FeatureConfig,
+ *      wp_user_event_logging: FeatureConfig,
+ *      wp_auth_logging: AuthLoggingConfig,
+ *      http_redactions: HttpRedactionsConfig,
+ *      http_whitelist: HttpWhitelistConfig,
  *  }
  *
  * @package Lolly
@@ -140,7 +152,7 @@ class Config implements RedactorConfig, WhitelistConfig {
             return false;
         }
 
-        return $this->http_logging_config['wp_rest_logging_enabled'] ?? false;
+        return $this->http_logging_config['wp_rest_logging']['enabled'] ?? false;
     }
 
     /**
@@ -151,7 +163,7 @@ class Config implements RedactorConfig, WhitelistConfig {
             return false;
         }
 
-        return $this->http_logging_config['wp_http_client_logging_enabled'] ?? false;
+        return $this->http_logging_config['wp_http_client_logging']['enabled'] ?? false;
     }
 
     /**
@@ -162,7 +174,7 @@ class Config implements RedactorConfig, WhitelistConfig {
             return false;
         }
 
-        return $this->http_logging_config['wp_user_event_logging_enabled'] ?? false;
+        return $this->http_logging_config['wp_user_event_logging']['enabled'] ?? false;
     }
 
     /**
@@ -173,7 +185,7 @@ class Config implements RedactorConfig, WhitelistConfig {
             return false;
         }
 
-        return $this->http_logging_config['wp_auth_logging_enabled'] ?? false;
+        return $this->http_logging_config['wp_auth_logging']['enabled'] ?? false;
     }
 
     /**
@@ -184,7 +196,7 @@ class Config implements RedactorConfig, WhitelistConfig {
             return false;
         }
 
-        return $this->http_logging_config['wp_auth_logging_config']['login'] ?? true;
+        return $this->http_logging_config['wp_auth_logging']['login'] ?? true;
     }
 
     /**
@@ -195,7 +207,7 @@ class Config implements RedactorConfig, WhitelistConfig {
             return false;
         }
 
-        return $this->http_logging_config['wp_auth_logging_config']['logout'] ?? true;
+        return $this->http_logging_config['wp_auth_logging']['logout'] ?? true;
     }
 
     /**
@@ -206,7 +218,7 @@ class Config implements RedactorConfig, WhitelistConfig {
             return false;
         }
 
-        return $this->http_logging_config['wp_auth_logging_config']['login_failed'] ?? false;
+        return $this->http_logging_config['wp_auth_logging']['login_failed'] ?? false;
     }
 
     /**
@@ -217,7 +229,7 @@ class Config implements RedactorConfig, WhitelistConfig {
             return false;
         }
 
-        return $this->http_logging_config['wp_auth_logging_config']['password_changed'] ?? true;
+        return $this->http_logging_config['wp_auth_logging']['password_changed'] ?? true;
     }
 
     /**
@@ -228,7 +240,7 @@ class Config implements RedactorConfig, WhitelistConfig {
             return false;
         }
 
-        return $this->http_logging_config['wp_auth_logging_config']['app_password_created'] ?? true;
+        return $this->http_logging_config['wp_auth_logging']['app_password_created'] ?? true;
     }
 
     /**
@@ -239,25 +251,26 @@ class Config implements RedactorConfig, WhitelistConfig {
             return false;
         }
 
-        return $this->http_logging_config['wp_auth_logging_config']['app_password_deleted'] ?? true;
+        return $this->http_logging_config['wp_auth_logging']['app_password_deleted'] ?? true;
     }
 
     /**
      * @inheritDoc
      */
     public function is_whitelist_enabled(): bool {
-        return $this->http_logging_config['http_whitelist_enabled'] ?? false;
+        return $this->http_logging_config['http_whitelist']['enabled'] ?? false;
     }
 
     /**
      * @inheritDoc
      */
     public function is_http_url_whitelisted( UriInterface|string $url ): bool {
-        $url  = $url instanceof Uri ? $url : new Uri( $url );
-        $host = $url->getHost();
-        $path = $url->getPath();
+        $url   = $url instanceof Uri ? $url : new Uri( $url );
+        $host  = $url->getHost();
+        $path  = $url->getPath();
+        $rules = $this->http_logging_config['http_whitelist']['rules'] ?? [];
 
-        foreach ( $this->http_logging_config['http_whitelist'] as $current ) {
+        foreach ( $rules as $current ) {
             $glob = $current['glob'] ?? false;
 
             if (
@@ -288,21 +301,22 @@ class Config implements RedactorConfig, WhitelistConfig {
      * @inheritDoc
      */
     public function is_http_redactions_enabled(): bool {
-        return $this->http_logging_config['http_redactions_enabled'] ?? false;
+        return $this->http_logging_config['http_redactions']['enabled'] ?? false;
     }
 
     /**
      * @inheritDoc
      */
     public function get_http_redactions( UriInterface|string $url ): array {
-        $url  = $url instanceof Uri ? $url : new Uri( $url );
-        $host = $url->getHost();
-        $path = $url->getPath();
+        $url   = $url instanceof Uri ? $url : new Uri( $url );
+        $host  = $url->getHost();
+        $path  = $url->getPath();
+        $rules = $this->http_logging_config['http_redactions']['rules'] ?? [];
 
         /** @var array<HttpHostRedactions> $redaction_sets */
         $redaction_sets = [];
 
-        foreach ( $this->http_logging_config['http_redactions'] as $current ) {
+        foreach ( $rules as $current ) {
             if ( $current['host'] === '*' || $current['host'] === $host ) {
                 $redaction_sets[] = $current;
             }
@@ -413,56 +427,6 @@ class Config implements RedactorConfig, WhitelistConfig {
         }
 
         return $schema;
-    }
-
-    public function register_settings(): void {
-        $schema = $this->load_config_schema();
-
-        if ( is_wp_error( $schema ) ) {
-            lolly()->error(
-                '[Lolly] Failed to register settings.',
-                [
-                    'wp_error' => $schema,
-                ]
-            );
-
-            return;
-        }
-
-        register_setting(
-            self::OPTION_SLUG,
-            self::OPTION_SLUG,
-            [
-                'type'         => 'object',
-                'description'  => esc_html__( 'The Lolly logging configuration.', 'lolly' ),
-                // We don't need this right now, but I need to remember it is here.
-                // It will provide the lolly_settings value from the request:
-                // 'sanitize_callback' => [$this, 'sanitize_setting'].
-                'default'      => [
-                    'version'                        => 1,
-                    'enabled'                        => false,
-                    'wp_rest_logging_enabled'        => true,
-                    'wp_http_client_logging_enabled' => true,
-                    'wp_user_event_logging_enabled'  => true,
-                    'wp_auth_logging_enabled'        => true,
-                    'wp_auth_logging_config'         => [
-                        'login'                => true,
-                        'logout'               => true,
-                        'login_failed'         => false,
-                        'password_changed'     => true,
-                        'app_password_created' => true,
-                        'app_password_deleted' => true,
-                    ],
-                    'http_redactions_enabled'        => true,
-                    'http_whitelist_enabled'         => false,
-                    'http_redactions'                => [],
-                    'http_whitelist'                 => [],
-                ],
-                'show_in_rest' => [
-                    'schema' => $schema,
-                ],
-            ]
-        );
     }
 
     /**

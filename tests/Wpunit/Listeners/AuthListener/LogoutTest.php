@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Tests\Wpunit\Listeners;
+namespace Tests\Wpunit\Listeners\AuthListener;
 
-use Lolly\Listeners\LogOnUserLogin;
+use Lolly\Listeners\AuthListener;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use Tests\Support\WpunitTester;
 
 /**
  * @property WpunitTester $tester
  */
-class LogOnUserLoginTest extends WPTestCase {
+class LogoutTest extends WPTestCase {
     public function _before(): void {
         parent::_before();
 
         $this->tester->updateSettings(
             [
-                'enabled'                 => true,
-                'wp_auth_logging_enabled' => true,
-                'wp_auth_logging_config'  => [
+                'enabled'         => true,
+                'wp_auth_logging' => [
+                    'enabled'              => true,
                     'login'                => true,
                     'logout'               => true,
                     'login_failed'         => false,
@@ -31,37 +31,35 @@ class LogOnUserLoginTest extends WPTestCase {
         );
 
         add_action(
-            'wp_login',
-            lolly()->callback( LogOnUserLogin::class, 'handle' ),
+            'wp_logout',
+            lolly()->callback( AuthListener::class, 'on_logout' ),
             10,
-            2
+            1
         );
     }
 
     public function _after(): void {
-        remove_all_actions( 'wp_login' );
+        remove_all_actions( 'wp_logout' );
 
         parent::_after();
     }
 
-    public function testLogsUserLogin(): void {
+    public function testLogsUserLogout(): void {
         $user_id = self::factory()->user->create( [ 'role' => 'subscriber' ] );
-        $user    = get_userdata( $user_id );
 
         $this->tester->fakeLogger();
 
-        do_action( 'wp_login', $user->user_login, $user );
+        do_action( 'wp_logout', $user_id );
 
-        $this->tester->seeLogMessage( 'User logged in.', 'info' );
+        $this->tester->seeLogMessage( 'User logged out.', 'info' );
     }
 
     public function testCapturesTargetUserId(): void {
         $user_id = self::factory()->user->create( [ 'role' => 'editor' ] );
-        $user    = get_userdata( $user_id );
 
         $this->tester->fakeLogger();
 
-        do_action( 'wp_login', $user->user_login, $user );
+        do_action( 'wp_logout', $user_id );
 
         $records = $this->tester->grabLogRecords();
         $this->assertCount( 1, $records );
@@ -74,14 +72,13 @@ class LogOnUserLoginTest extends WPTestCase {
 
     public function testCapturesActorInExtra(): void {
         $user_id = self::factory()->user->create( [ 'role' => 'subscriber' ] );
-        $user    = get_userdata( $user_id );
 
-        // Simulate the logged in user.
+        // Simulate the logged in user who is logging out.
         wp_set_current_user( $user_id );
 
         $this->tester->fakeLogger();
 
-        do_action( 'wp_login', $user->user_login, $user );
+        do_action( 'wp_logout', $user_id );
 
         $records = $this->tester->grabLogRecords();
         $this->assertCount( 1, $records );

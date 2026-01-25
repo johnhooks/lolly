@@ -1,0 +1,122 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "https://lolly.okaywp.com/schemas/settings.json",
+    "title": "Lolly Settings",
+    "description": "Global settings for the Lolly WordPress logging plugin.",
+    "type": "object",
+    "properties": {
+        "version": {
+            "description": "The settings schema version number.",
+            "type": "integer",
+            "default": 1
+        },
+        "enabled": {
+            "description": "Whether the Lolly logger is enabled.",
+            "type": "boolean",
+            "default": false
+        },
+        "wp_rest_logging": {
+            "description": "WordPress REST API logging settings.",
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "description": "Whether REST API logging is enabled.",
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "additionalProperties": false
+        },
+        "wp_http_client_logging": {
+            "description": "WordPress HTTP client logging settings.",
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "description": "Whether HTTP client logging is enabled.",
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "additionalProperties": false
+        },
+        "wp_user_event_logging": {
+            "description": "User event logging settings (creation, deletion, role changes).",
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "description": "Whether user event logging is enabled.",
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "additionalProperties": false
+        },
+        "wp_auth_logging": {
+            "description": "Authentication event logging settings.",
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "description": "Whether authentication event logging is enabled.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "login": {
+                    "description": "Log successful user logins.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "logout": {
+                    "description": "Log user logouts.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "login_failed": {
+                    "description": "Log failed login attempts.",
+                    "type": "boolean",
+                    "default": false
+                },
+                "password_changed": {
+                    "description": "Log password changes and resets.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "app_password_created": {
+                    "description": "Log application password creation.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "app_password_deleted": {
+                    "description": "Log application password deletion.",
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "additionalProperties": false
+        },
+        "http_redactions": {
+            "description": "HTTP redaction settings.",
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "description": "Whether HTTP redactions are enabled.",
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "additionalProperties": false
+        },
+        "http_whitelist": {
+            "description": "HTTP whitelist settings.",
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "description": "Whether HTTP whitelist is enabled.",
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "additionalProperties": false
+}

@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Tests\Wpunit\Listeners;
+namespace Tests\Wpunit\Listeners\AuthListener;
 
-use Lolly\Listeners\LogOnApplicationPasswordCreated;
+use Lolly\Listeners\AuthListener;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use Tests\Support\WpunitTester;
 
 /**
  * @property WpunitTester $tester
  */
-class LogOnApplicationPasswordCreatedTest extends WPTestCase {
+class AppPasswordDeletedTest extends WPTestCase {
     public function _before(): void {
         parent::_before();
 
         $this->tester->updateSettings(
             [
-                'enabled'                 => true,
-                'wp_auth_logging_enabled' => true,
-                'wp_auth_logging_config'  => [
+                'enabled'         => true,
+                'wp_auth_logging' => [
+                    'enabled'              => true,
                     'login'                => true,
                     'logout'               => true,
                     'login_failed'         => false,
@@ -31,20 +31,20 @@ class LogOnApplicationPasswordCreatedTest extends WPTestCase {
         );
 
         add_action(
-            'wp_create_application_password',
-            lolly()->callback( LogOnApplicationPasswordCreated::class, 'handle' ),
+            'wp_delete_application_password',
+            lolly()->callback( AuthListener::class, 'on_app_password_deleted' ),
             10,
-            3
+            2
         );
     }
 
     public function _after(): void {
-        remove_all_actions( 'wp_create_application_password' );
+        remove_all_actions( 'wp_delete_application_password' );
 
         parent::_after();
     }
 
-    public function testLogsApplicationPasswordCreated(): void {
+    public function testLogsApplicationPasswordDeleted(): void {
         $user_id = self::factory()->user->create( [ 'role' => 'subscriber' ] );
         $item    = [
             'uuid' => wp_generate_uuid4(),
@@ -53,21 +53,21 @@ class LogOnApplicationPasswordCreatedTest extends WPTestCase {
 
         $this->tester->fakeLogger();
 
-        do_action( 'wp_create_application_password', $user_id, $item, 'unhashed_password' );
+        do_action( 'wp_delete_application_password', $user_id, $item );
 
-        $this->tester->seeLogMessage( 'Application password created.', 'info' );
+        $this->tester->seeLogMessage( 'Application password deleted.', 'info' );
     }
 
     public function testCapturesTargetUserIdAndAppInfo(): void {
         $user_id = self::factory()->user->create( [ 'role' => 'editor' ] );
         $item    = [
             'uuid' => wp_generate_uuid4(),
-            'name' => 'My Test Application',
+            'name' => 'Deleted Application',
         ];
 
         $this->tester->fakeLogger();
 
-        do_action( 'wp_create_application_password', $user_id, $item, 'unhashed_password' );
+        do_action( 'wp_delete_application_password', $user_id, $item );
 
         $records = $this->tester->grabLogRecords();
         $this->assertCount( 1, $records );
@@ -78,30 +78,7 @@ class LogOnApplicationPasswordCreatedTest extends WPTestCase {
         $this->assertEquals( $user_id, $context['target_user']['id'] );
         $this->assertArrayHasKey( 'app_name', $context );
         $this->assertArrayHasKey( 'app_uuid', $context );
-        $this->assertEquals( 'My Test Application', $context['app_name'] );
-    }
-
-    public function testDoesNotLogUnhashedPassword(): void {
-        $user_id = self::factory()->user->create( [ 'role' => 'subscriber' ] );
-        $item    = [
-            'uuid' => wp_generate_uuid4(),
-            'name' => 'Test App',
-        ];
-
-        $this->tester->fakeLogger();
-
-        do_action( 'wp_create_application_password', $user_id, $item, 'secret_password_value' );
-
-        $records = $this->tester->grabLogRecords();
-        $this->assertCount( 1, $records );
-
-        $context = $records[0]->context;
-        $this->assertArrayNotHasKey( 'password', $context );
-        $this->assertArrayNotHasKey( 'new_password', $context );
-
-        // Ensure the password isn't sneaking in anywhere.
-        $serialized = serialize( $context );
-        $this->assertStringNotContainsString( 'secret_password_value', $serialized );
+        $this->assertEquals( 'Deleted Application', $context['app_name'] );
     }
 
     public function testCapturesActorInExtra(): void {
@@ -114,7 +91,7 @@ class LogOnApplicationPasswordCreatedTest extends WPTestCase {
 
         $this->tester->fakeLogger();
 
-        do_action( 'wp_create_application_password', $user_id, $item, 'unhashed_password' );
+        do_action( 'wp_delete_application_password', $user_id, $item );
 
         $records = $this->tester->grabLogRecords();
         $this->assertCount( 1, $records );

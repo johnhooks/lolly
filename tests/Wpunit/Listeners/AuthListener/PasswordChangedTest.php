@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Tests\Wpunit\Listeners;
+namespace Tests\Wpunit\Listeners\AuthListener;
 
-use Lolly\Listeners\LogOnPasswordChanged;
+use Lolly\Listeners\AuthListener;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use Tests\Support\WpunitTester;
 
 /**
  * @property WpunitTester $tester
  */
-class LogOnPasswordChangedTest extends WPTestCase {
+class PasswordChangedTest extends WPTestCase {
     public function _before(): void {
         parent::_before();
 
         $this->tester->updateSettings(
             [
-                'enabled'                 => true,
-                'wp_auth_logging_enabled' => true,
-                'wp_auth_logging_config'  => [
+                'enabled'         => true,
+                'wp_auth_logging' => [
+                    'enabled'              => true,
                     'login'                => true,
                     'logout'               => true,
                     'login_failed'         => false,
@@ -32,14 +32,14 @@ class LogOnPasswordChangedTest extends WPTestCase {
 
         add_action(
             'after_password_reset',
-            lolly()->callback( LogOnPasswordChanged::class, 'handle_password_reset' ),
+            lolly()->callback( AuthListener::class, 'on_password_reset' ),
             10,
             1
         );
 
         add_action(
             'profile_update',
-            lolly()->callback( LogOnPasswordChanged::class, 'handle_profile_update' ),
+            lolly()->callback( AuthListener::class, 'on_profile_update' ),
             10,
             3
         );

@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace Tests\Wpunit\Listeners;
+namespace Tests\Wpunit\Listeners\UserListener;
 
-use Lolly\Listeners\LogOnUserRoleAdded;
+use Lolly\Listeners\UserListener;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use Tests\Support\WpunitTester;
 
 /**
  * @property WpunitTester $tester
  */
-class LogOnUserRoleAddedTest extends WPTestCase {
+class RoleAddedTest extends WPTestCase {
     public function _before(): void {
         parent::_before();
 
         $this->tester->updateSettings(
             [
-                'enabled'                       => true,
-                'wp_user_event_logging_enabled' => true,
+                'enabled'               => true,
+                'wp_user_event_logging' => [ 'enabled' => true ],
             ]
         );
 
         add_action(
             'add_user_role',
-            lolly()->callback( LogOnUserRoleAdded::class, 'handle' ),
+            lolly()->callback( UserListener::class, 'on_role_added' ),
             10,
             2
         );

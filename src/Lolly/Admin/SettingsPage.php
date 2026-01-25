@@ -73,19 +73,9 @@ class SettingsPage {
             true
         );
 
-        $schema_path = plugin_dir_path( LOLLY_PLUGIN_FILE ) . 'resources/schemas/http-logging-config.json';
-        $schema_data = null;
-
-        if ( file_exists( $schema_path ) ) {
-            $schema_json = file_get_contents( $schema_path );
-            if ( $schema_json !== false ) {
-                $schema_data = json_decode( $schema_json, true );
-            }
-        }
-
         // Preload the settings endpoint response.
         $preload_paths = [
-            '/wp/v2/settings',
+            '/lolly/v1/settings',
         ];
 
         $preload_data = array_reduce(
@@ -105,9 +95,7 @@ class SettingsPage {
             'lolly-admin-scripts',
             'lolly',
             [
-                'schema' => $schema_data,
-                // @todo Double check if this is already performed.
-                'nonce'  => wp_create_nonce( 'wp_rest' ),
+                'nonce' => wp_create_nonce( 'wp_rest' ),
             ]
         );
     }
