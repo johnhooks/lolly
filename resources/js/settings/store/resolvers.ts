@@ -1,7 +1,6 @@
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 
-import { SETTINGS_KEY } from '../../constants';
 import type { Settings, WpRestApiError } from '../../types';
 import { isWpRestApiError, forwardResolver } from '../../utils';
 
@@ -11,27 +10,9 @@ export const getSettings =
     (): SettingsThunk =>
     async ({ dispatch }) => {
         try {
-            const response = await apiFetch<Record<string, unknown>>({
-                path: '/wp/v2/settings',
+            const settings = await apiFetch<Settings>({
+                path: '/lolly/v1/settings',
             });
-
-            // We don't have to validate the server response here... do we?
-            const settings = response?.[SETTINGS_KEY] as Settings | undefined;
-
-            if (!settings) {
-                dispatch({
-                    type: 'FETCH_SETTINGS_FAILED',
-                    error: {
-                        code: 'lolly.fetch-settings-failed',
-                        message: __(
-                            'Failed to fetch Lolly settings, the server response is missing the Lolly settings value.',
-                            'lolly'
-                        ),
-                    },
-                });
-
-                return;
-            }
 
             dispatch({
                 type: 'FETCH_SETTINGS_FINISHED',
@@ -48,8 +29,6 @@ export const getSettings =
                       ),
                   };
 
-            // @todo Should we just throw the error here? We could catch it in an error boundary.
-            // Could be handy if we want to use `useSuspenseSelect`.
             dispatch({
                 type: 'FETCH_SETTINGS_FAILED',
                 error,

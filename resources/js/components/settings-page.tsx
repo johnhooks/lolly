@@ -14,15 +14,20 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
 import { store as settingStore } from '../settings/store';
-import type { AuthLoggingConfig } from '../types';
+import type { AuthLoggingConfig, FeatureConfig } from '../types';
 
 const defaultAuthConfig: AuthLoggingConfig = {
+    enabled: true,
     login: true,
     logout: true,
     login_failed: false,
     password_changed: true,
     app_password_created: true,
     app_password_deleted: true,
+};
+
+const defaultFeatureConfig: FeatureConfig = {
+    enabled: true,
 };
 
 export default function SettingsPage(): React.ReactNode {
@@ -37,16 +42,29 @@ export default function SettingsPage(): React.ReactNode {
 
     const { editSetting, saveEditedSettings } = useDispatch(settingStore);
 
-    const editAuthConfig = useCallback(
+    const editFeature = useCallback(
+        (key: string, enabled: boolean) => {
+            const current =
+                settings?.[key as keyof typeof settings] ??
+                defaultFeatureConfig;
+            editSetting(key, {
+                ...(typeof current === 'object' ? current : {}),
+                enabled,
+            });
+        },
+        [settings, editSetting]
+    );
+
+    const editAuthSetting = useCallback(
         (key: keyof AuthLoggingConfig, value: boolean) => {
             const currentConfig =
-                settings?.wp_auth_logging_config ?? defaultAuthConfig;
-            editSetting('wp_auth_logging_config', {
+                settings?.wp_auth_logging ?? defaultAuthConfig;
+            editSetting('wp_auth_logging', {
                 ...currentConfig,
                 [key]: value,
             });
         },
-        [settings?.wp_auth_logging_config, editSetting]
+        [settings?.wp_auth_logging, editSetting]
     );
 
     // Note: The Lolly settings are preloaded, though still has to go through
@@ -55,9 +73,8 @@ export default function SettingsPage(): React.ReactNode {
         return null;
     }
 
-    const authConfig = settings.wp_auth_logging_config ?? defaultAuthConfig;
-    const authEventsDisabled =
-        !settings.enabled || !settings.wp_auth_logging_enabled;
+    const authConfig = settings.wp_auth_logging ?? defaultAuthConfig;
+    const authEventsDisabled = !settings.enabled || !authConfig.enabled;
 
     return (
         <VStack spacing={4}>
@@ -86,9 +103,9 @@ export default function SettingsPage(): React.ReactNode {
                         />
                         <ToggleControl
                             label={__('REST API Logging', 'lolly')}
-                            checked={settings.wp_rest_logging_enabled}
+                            checked={settings.wp_rest_logging?.enabled ?? true}
                             onChange={(value: boolean) =>
-                                editSetting('wp_rest_logging_enabled', value)
+                                editFeature('wp_rest_logging', value)
                             }
                             disabled={!settings.enabled}
                             help={__(
@@ -99,12 +116,11 @@ export default function SettingsPage(): React.ReactNode {
                         />
                         <ToggleControl
                             label={__('HTTP Client Logging', 'lolly')}
-                            checked={settings.wp_http_client_logging_enabled}
+                            checked={
+                                settings.wp_http_client_logging?.enabled ?? true
+                            }
                             onChange={(value: boolean) =>
-                                editSetting(
-                                    'wp_http_client_logging_enabled',
-                                    value
-                                )
+                                editFeature('wp_http_client_logging', value)
                             }
                             disabled={!settings.enabled}
                             help={__(
@@ -115,12 +131,11 @@ export default function SettingsPage(): React.ReactNode {
                         />
                         <ToggleControl
                             label={__('User Event Logging', 'lolly')}
-                            checked={settings.wp_user_event_logging_enabled}
+                            checked={
+                                settings.wp_user_event_logging?.enabled ?? true
+                            }
                             onChange={(value: boolean) =>
-                                editSetting(
-                                    'wp_user_event_logging_enabled',
-                                    value
-                                )
+                                editFeature('wp_user_event_logging', value)
                             }
                             disabled={!settings.enabled}
                             help={__(
@@ -131,9 +146,9 @@ export default function SettingsPage(): React.ReactNode {
                         />
                         <ToggleControl
                             label={__('Authentication Logging', 'lolly')}
-                            checked={settings.wp_auth_logging_enabled}
+                            checked={authConfig.enabled}
                             onChange={(value: boolean) =>
-                                editSetting('wp_auth_logging_enabled', value)
+                                editAuthSetting('enabled', value)
                             }
                             disabled={!settings.enabled}
                             help={__(
@@ -144,9 +159,9 @@ export default function SettingsPage(): React.ReactNode {
                         />
                         <ToggleControl
                             label={__('HTTP Redactions', 'lolly')}
-                            checked={settings.http_redactions_enabled}
+                            checked={settings.http_redactions?.enabled ?? true}
                             onChange={(value: boolean) =>
-                                editSetting('http_redactions_enabled', value)
+                                editFeature('http_redactions', value)
                             }
                             disabled={!settings.enabled}
                             help={__(
@@ -157,9 +172,9 @@ export default function SettingsPage(): React.ReactNode {
                         />
                         <ToggleControl
                             label={__('HTTP Whitelist', 'lolly')}
-                            checked={settings.http_whitelist_enabled}
+                            checked={settings.http_whitelist?.enabled ?? false}
                             onChange={(value: boolean) =>
-                                editSetting('http_whitelist_enabled', value)
+                                editFeature('http_whitelist', value)
                             }
                             disabled={!settings.enabled}
                             help={__(
@@ -172,7 +187,7 @@ export default function SettingsPage(): React.ReactNode {
                 </CardBody>
             </Card>
 
-            {settings.wp_auth_logging_enabled && (
+            {authConfig.enabled && (
                 <Card>
                     <CardHeader>
                         <h2 style={{ margin: 0 }}>
@@ -185,7 +200,7 @@ export default function SettingsPage(): React.ReactNode {
                                 label={__('Login', 'lolly')}
                                 checked={authConfig.login}
                                 onChange={(value: boolean) =>
-                                    editAuthConfig('login', value)
+                                    editAuthSetting('login', value)
                                 }
                                 disabled={authEventsDisabled}
                                 help={__(
@@ -198,7 +213,7 @@ export default function SettingsPage(): React.ReactNode {
                                 label={__('Logout', 'lolly')}
                                 checked={authConfig.logout}
                                 onChange={(value: boolean) =>
-                                    editAuthConfig('logout', value)
+                                    editAuthSetting('logout', value)
                                 }
                                 disabled={authEventsDisabled}
                                 help={__('Log user logouts.', 'lolly')}
@@ -208,7 +223,7 @@ export default function SettingsPage(): React.ReactNode {
                                 label={__('Login Failed', 'lolly')}
                                 checked={authConfig.login_failed}
                                 onChange={(value: boolean) =>
-                                    editAuthConfig('login_failed', value)
+                                    editAuthSetting('login_failed', value)
                                 }
                                 disabled={authEventsDisabled}
                                 help={__(
@@ -221,7 +236,7 @@ export default function SettingsPage(): React.ReactNode {
                                 label={__('Password Changed', 'lolly')}
                                 checked={authConfig.password_changed}
                                 onChange={(value: boolean) =>
-                                    editAuthConfig('password_changed', value)
+                                    editAuthSetting('password_changed', value)
                                 }
                                 disabled={authEventsDisabled}
                                 help={__(
@@ -237,7 +252,7 @@ export default function SettingsPage(): React.ReactNode {
                                 )}
                                 checked={authConfig.app_password_created}
                                 onChange={(value: boolean) =>
-                                    editAuthConfig(
+                                    editAuthSetting(
                                         'app_password_created',
                                         value
                                     )
@@ -256,7 +271,7 @@ export default function SettingsPage(): React.ReactNode {
                                 )}
                                 checked={authConfig.app_password_deleted}
                                 onChange={(value: boolean) =>
-                                    editAuthConfig(
+                                    editAuthSetting(
                                         'app_password_deleted',
                                         value
                                     )

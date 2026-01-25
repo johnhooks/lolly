@@ -1,7 +1,6 @@
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 
-import { SETTINGS_KEY } from '../../constants';
 import { Settings, WpRestApiError } from '../../types';
 import { isWpRestApiError } from '../../utils';
 
@@ -52,29 +51,11 @@ export const saveEditedSettings =
         });
 
         try {
-            const response = await apiFetch<Record<string, unknown>>({
-                path: '/wp/v2/settings',
-                method: 'POST',
-                data: { [SETTINGS_KEY]: combined },
+            const settings = await apiFetch<Settings>({
+                path: '/lolly/v1/settings',
+                method: 'PUT',
+                data: combined,
             });
-
-            // We don't have to validate the server response here... do we?
-            const settings = response?.[SETTINGS_KEY] as Settings | undefined;
-
-            if (!settings) {
-                dispatch({
-                    type: 'SAVE_SETTINGS_RECORD_FAILED',
-                    error: {
-                        code: 'lolly.save-settings-failed',
-                        message: __(
-                            'Failed to save Lolly settings, the server response is missing the Lolly settings value.',
-                            'lolly'
-                        ),
-                    },
-                });
-
-                return;
-            }
 
             dispatch({
                 type: 'SAVE_SETTINGS_RECORD_FINISHED',

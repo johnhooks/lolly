@@ -1,32 +1,15 @@
-export interface RedactionItem {
-    type: string;
-    value: string;
-    remove?: boolean;
+/**
+ * Simple feature config with just an enabled flag.
+ */
+export interface FeatureConfig {
+    enabled: boolean;
 }
 
-export interface PathRedaction {
-    path: string;
-    redactions: RedactionItem[];
-    glob?: boolean;
-}
-
-export interface HttpRedactionSet {
-    host: string;
-    paths: PathRedaction[];
-}
-
-export interface PathWhitelist {
-    path: string;
-    glob?: boolean;
-}
-
-export interface HttpWhitelistSet {
-    host: string;
-    paths: PathWhitelist[];
-    glob?: boolean;
-}
-
+/**
+ * Authentication logging settings.
+ */
 export interface AuthLoggingConfig {
+    enabled: boolean;
     login: boolean;
     logout: boolean;
     login_failed: boolean;
@@ -35,17 +18,24 @@ export interface AuthLoggingConfig {
     app_password_deleted: boolean;
 }
 
+/**
+ * Settings returned by /lolly/v1/settings endpoint.
+ *
+ * Each feature is a nested object with an `enabled` flag, allowing
+ * additional feature-specific settings to be added later.
+ *
+ * Note: http_redactions.rules and http_whitelist.rules arrays are stored
+ * separately and will have their own endpoints in the future.
+ */
 export interface Settings {
+    version: number;
     enabled: boolean;
-    http_redactions_enabled: boolean;
-    http_whitelist_enabled: boolean;
-    wp_rest_logging_enabled: boolean;
-    wp_http_client_logging_enabled: boolean;
-    wp_user_event_logging_enabled: boolean;
-    wp_auth_logging_enabled: boolean;
-    wp_auth_logging_config: AuthLoggingConfig;
-    http_redactions: HttpRedactionSet[];
-    http_whitelist: HttpWhitelistSet[];
+    wp_rest_logging: FeatureConfig;
+    wp_http_client_logging: FeatureConfig;
+    wp_user_event_logging: FeatureConfig;
+    wp_auth_logging: AuthLoggingConfig;
+    http_redactions: FeatureConfig;
+    http_whitelist: FeatureConfig;
 }
 
 /**

@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace Tests\Wpunit\Listeners;
+namespace Tests\Wpunit\Listeners\UserListener;
 
-use Lolly\Listeners\LogOnUserCreated;
+use Lolly\Listeners\UserListener;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use Tests\Support\WpunitTester;
 
 /**
  * @property WpunitTester $tester
  */
-class LogOnUserCreatedTest extends WPTestCase {
+class CreatedTest extends WPTestCase {
     public function _before(): void {
         parent::_before();
 
         $this->tester->updateSettings(
             [
-                'enabled'                       => true,
-                'wp_user_event_logging_enabled' => true,
+                'enabled'               => true,
+                'wp_user_event_logging' => [ 'enabled' => true ],
             ]
         );
 
         add_action(
             'user_register',
-            lolly()->callback( LogOnUserCreated::class, 'handle' ),
+            lolly()->callback( UserListener::class, 'on_created' ),
             10,
             2
         );

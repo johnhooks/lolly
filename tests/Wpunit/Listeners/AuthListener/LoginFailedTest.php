@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Wpunit\Listeners;
+namespace Tests\Wpunit\Listeners\AuthListener;
 
-use Lolly\Listeners\LogOnLoginFailed;
+use Lolly\Listeners\AuthListener;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use Tests\Support\WpunitTester;
 use WP_Error;
@@ -12,15 +12,15 @@ use WP_Error;
 /**
  * @property WpunitTester $tester
  */
-class LogOnLoginFailedTest extends WPTestCase {
+class LoginFailedTest extends WPTestCase {
     public function _before(): void {
         parent::_before();
 
         $this->tester->updateSettings(
             [
-                'enabled'                 => true,
-                'wp_auth_logging_enabled' => true,
-                'wp_auth_logging_config'  => [
+                'enabled'         => true,
+                'wp_auth_logging' => [
+                    'enabled'              => true,
                     'login'                => true,
                     'logout'               => true,
                     'login_failed'         => true,
@@ -33,7 +33,7 @@ class LogOnLoginFailedTest extends WPTestCase {
 
         add_action(
             'wp_login_failed',
-            lolly()->callback( LogOnLoginFailed::class, 'handle' ),
+            lolly()->callback( AuthListener::class, 'on_login_failed' ),
             10,
             2
         );

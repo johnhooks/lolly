@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Wpunit\Listeners;
+namespace Tests\Wpunit\Listeners\HttpListener;
 
-use Lolly\Listeners\LogOnHttpClientRequest;
+use Lolly\Listeners\HttpListener;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use Tests\Support\WpunitTester;
 use WP_Error;
@@ -12,7 +12,7 @@ use WP_Error;
 /**
  * @property WpunitTester $tester
  */
-class LogOnHttpClientRequestTest extends WPTestCase {
+class ClientRequestTest extends WPTestCase {
     private const TEST_URL = 'https://api.example.com/test';
 
     public function _before(): void {
@@ -20,8 +20,8 @@ class LogOnHttpClientRequestTest extends WPTestCase {
 
         $this->tester->updateSettings(
             [
-                'enabled'                        => true,
-                'wp_http_client_logging_enabled' => true,
+                'enabled'                => true,
+                'wp_http_client_logging' => [ 'enabled' => true ],
             ]
         );
 
@@ -29,7 +29,7 @@ class LogOnHttpClientRequestTest extends WPTestCase {
 
         add_action(
             'http_api_debug',
-            lolly()->callback( LogOnHttpClientRequest::class, 'handle' ),
+            lolly()->callback( HttpListener::class, 'on_client_request' ),
             999,
             5
         );
@@ -88,13 +88,15 @@ class LogOnHttpClientRequestTest extends WPTestCase {
     public function testRespectsWhitelistWhenEnabled(): void {
         $this->tester->updateSettings(
             [
-                'enabled'                        => true,
-                'wp_http_client_logging_enabled' => true,
-                'http_whitelist_enabled'         => true,
-                'http_whitelist'                 => [
-                    [
-                        'host'  => 'allowed.example.com',
-                        'paths' => [ [ 'path' => '*' ] ],
+                'enabled'                => true,
+                'wp_http_client_logging' => [ 'enabled' => true ],
+                'http_whitelist'         => [
+                    'enabled' => true,
+                    'rules'   => [
+                        [
+                            'host'  => 'allowed.example.com',
+                            'paths' => [ [ 'path' => '*' ] ],
+                        ],
                     ],
                 ],
             ]

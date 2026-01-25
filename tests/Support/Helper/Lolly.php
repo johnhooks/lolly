@@ -71,18 +71,31 @@ class Lolly extends Module {
      */
     public function updateSettings( array $settings ): void {
         $defaults = [
-            'version'                        => 1,
-            'enabled'                        => false,
-            'wp_http_client_logging_enabled' => false,
-            'wp_rest_logging_enabled'        => false,
-            'wp_user_event_logging_enabled'  => false,
-            'http_redactions_enabled'        => false,
-            'http_whitelist_enabled'         => false,
-            'http_redactions'                => [],
-            'http_whitelist'                 => [],
+            'version'                => 1,
+            'enabled'                => false,
+            'wp_http_client_logging' => [ 'enabled' => false ],
+            'wp_rest_logging'        => [ 'enabled' => false ],
+            'wp_user_event_logging'  => [ 'enabled' => false ],
+            'wp_auth_logging'        => [
+                'enabled'              => false,
+                'login'                => true,
+                'logout'               => true,
+                'login_failed'         => false,
+                'password_changed'     => true,
+                'app_password_created' => true,
+                'app_password_deleted' => true,
+            ],
+            'http_redactions'        => [
+                'enabled' => false,
+                'rules'   => [],
+            ],
+            'http_whitelist'         => [
+                'enabled' => false,
+                'rules'   => [],
+            ],
         ];
 
-        update_option( Config::OPTION_SLUG, array_merge( $defaults, $settings ) );
+        update_option( Config::OPTION_SLUG, array_replace_recursive( $defaults, $settings ) );
 
         // Reload the cached config.
         lolly( Config::class )->reload();

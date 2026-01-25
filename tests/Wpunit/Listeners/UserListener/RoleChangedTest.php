@@ -2,56 +2,58 @@
 
 declare(strict_types=1);
 
-namespace Tests\Wpunit\Listeners;
+namespace Tests\Wpunit\Listeners\UserListener;
 
-use Lolly\Listeners\LogOnUserDeleted;
+use Lolly\Listeners\UserListener;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use Tests\Support\WpunitTester;
 
 /**
  * @property WpunitTester $tester
  */
-class LogOnUserDeletedTest extends WPTestCase {
+class RoleChangedTest extends WPTestCase {
     public function _before(): void {
         parent::_before();
 
         $this->tester->updateSettings(
             [
-                'enabled'                       => true,
-                'wp_user_event_logging_enabled' => true,
+                'enabled'               => true,
+                'wp_user_event_logging' => [ 'enabled' => true ],
             ]
         );
 
         add_action(
-            'delete_user',
-            lolly()->callback( LogOnUserDeleted::class, 'handle' ),
+            'set_user_role',
+            lolly()->callback( UserListener::class, 'on_role_changed' ),
             10,
             3
         );
     }
 
     public function _after(): void {
-        remove_all_actions( 'delete_user' );
+        remove_all_actions( 'set_user_role' );
 
         parent::_after();
     }
 
-    public function testLogsUserDeletion(): void {
+    public function testLogsRoleChange(): void {
         $user_id = self::factory()->user->create( [ 'role' => 'subscriber' ] );
+        $user    = get_userdata( $user_id );
 
         $this->tester->fakeLogger();
 
-        wp_delete_user( $user_id );
+        $user->set_role( 'editor' );
 
-        $this->tester->seeLogMessage( 'User deleted.', 'info' );
+        $this->tester->seeLogMessage( 'User role changed.', 'info' );
     }
 
     public function testCapturesTargetUserIdAndRoles(): void {
-        $user_id = self::factory()->user->create( [ 'role' => 'editor' ] );
+        $user_id = self::factory()->user->create( [ 'role' => 'subscriber' ] );
+        $user    = get_userdata( $user_id );
 
         $this->tester->fakeLogger();
 
-        wp_delete_user( $user_id );
+        $user->set_role( 'author' );
 
         $records = $this->tester->grabLogRecords();
         $this->assertCount( 1, $records );
@@ -60,17 +62,20 @@ class LogOnUserDeletedTest extends WPTestCase {
         $this->assertArrayHasKey( 'target_user', $context );
         $this->assertIsArray( $context['target_user'] );
         $this->assertEquals( $user_id, $context['target_user']['id'] );
-        $this->assertArrayHasKey( 'roles', $context );
-        $this->assertContains( 'editor', $context['roles'] );
+        $this->assertArrayHasKey( 'role', $context );
+        $this->assertArrayHasKey( 'old_roles', $context );
+        $this->assertEquals( 'author', $context['role'] );
+        $this->assertContains( 'subscriber', $context['old_roles'] );
     }
 
     public function testCapturesActorInExtra(): void {
         $admin   = $this->tester->loginAsAdmin();
         $user_id = self::factory()->user->create( [ 'role' => 'subscriber' ] );
+        $user    = get_userdata( $user_id );
 
         $this->tester->fakeLogger();
 
-        wp_delete_user( $user_id );
+        $user->set_role( 'editor' );
 
         $records = $this->tester->grabLogRecords();
         $this->assertCount( 1, $records );
@@ -78,24 +83,5 @@ class LogOnUserDeletedTest extends WPTestCase {
         $extra = $records[0]->extra;
         $this->assertArrayHasKey( 'user', $extra );
         $this->assertEquals( $admin->ID, $extra['user']['id'] );
-    }
-
-    public function testCapturesReassignUserId(): void {
-        $this->tester->loginAsAdmin();
-
-        $user_id     = self::factory()->user->create( [ 'role' => 'author' ] );
-        $reassign_id = self::factory()->user->create( [ 'role' => 'editor' ] );
-
-        $this->tester->fakeLogger();
-
-        wp_delete_user( $user_id, $reassign_id );
-
-        $records = $this->tester->grabLogRecords();
-        $this->assertCount( 1, $records );
-
-        $context = $records[0]->context;
-        $this->assertArrayHasKey( 'reassign_to', $context );
-        $this->assertIsArray( $context['reassign_to'] );
-        $this->assertEquals( $reassign_id, $context['reassign_to']['id'] );
     }
 }

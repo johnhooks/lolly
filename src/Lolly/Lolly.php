@@ -66,6 +66,7 @@ final class Lolly implements LoggerInterface {
     private array $service_providers = [
         Admin\Provider::class,
         Config\Provider::class,
+        Rest\Provider::class,
         Redactors\Provider::class,
         Listeners\Provider::class,
         Log\Provider::class,

@@ -28,8 +28,5 @@ class Provider extends ServiceProvider {
         // Note: These are intended to function as aliases.
         $this->container->bind( Redactors\Config::class, fn(): Redactors\Config => $this->container->get( Config::class ) );
         $this->container->bind( Whitelist\Config::class, fn(): Whitelist\Config => $this->container->get( Config::class ) );
-
-        add_action( 'admin_init', $this->container->callback( Config::class, 'register_settings' ) );
-        add_action( 'rest_api_init', $this->container->callback( Config::class, 'register_settings' ) );
     }
 }
