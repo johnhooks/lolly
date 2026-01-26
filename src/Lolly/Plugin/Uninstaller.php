@@ -10,6 +10,7 @@ declare( strict_types=1 );
 namespace Lolly\Plugin;
 
 use Lolly\Config\Config;
+use Lolly\Dropin\DropinManager;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -57,5 +58,17 @@ final class Uninstaller {
      */
     private function handle_uninstall(): void {
         delete_option( Config::OPTION_SLUG );
+        $this->remove_dropin();
+    }
+
+    /**
+     * Remove the drop-in file if it belongs to Lolly.
+     */
+    private function remove_dropin(): void {
+        $dropin_manager = new DropinManager();
+
+        if ( $dropin_manager->is_ours() ) {
+            $dropin_manager->uninstall();
+        }
     }
 }

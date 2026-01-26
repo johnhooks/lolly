@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Wpunit\Rest;
 
 use Lolly\Config\Config;
+use Lolly\Dropin\DropinManager;
 use lucatume\WPBrowser\TestCase\WPRestApiTestCase;
 use WP_REST_Request;
 
@@ -25,7 +26,17 @@ class SettingsControllerTest extends WPRestApiTestCase {
         delete_option( Config::OPTION_SLUG );
         delete_transient( 'lolly_schema_settings_' . LOLLY_VERSION );
 
+        // Clean up drop-in if installed during tests.
+        $this->remove_dropin_if_exists();
+
         $this->tester->logout();
+    }
+
+    private function remove_dropin_if_exists(): void {
+        $manager = new DropinManager();
+        if ( $manager->is_ours() ) {
+            $manager->uninstall();
+        }
     }
 
     public function testRouteIsRegistered(): void {
@@ -270,5 +281,86 @@ class SettingsControllerTest extends WPRestApiTestCase {
         $this->assertArrayHasKey( 'enabled', $schema['properties'] );
         $this->assertArrayHasKey( 'wp_auth_logging', $schema['properties'] );
         $this->assertArrayHasKey( 'wp_rest_logging', $schema['properties'] );
+    }
+
+    // Drop-in endpoint tests.
+
+    public function testDropinRouteIsRegistered(): void {
+        global $wp_rest_server;
+        $routes = $wp_rest_server->get_routes();
+
+        $this->assertArrayHasKey( '/lolly/v1/settings/dropin', $routes );
+    }
+
+    public function testDropinGetStatusReturnsNotInstalled(): void {
+        $this->tester->loginAsAdmin();
+
+        $request  = new WP_REST_Request( 'GET', '/lolly/v1/settings/dropin' );
+        $response = rest_do_request( $request );
+
+        $this->assertEquals( 200, $response->get_status() );
+
+        $data = $response->get_data();
+
+        $this->assertArrayHasKey( 'installed', $data );
+        $this->assertArrayHasKey( 'is_lolly', $data );
+        $this->assertArrayHasKey( 'version', $data );
+        $this->assertArrayHasKey( 'writable', $data );
+        $this->assertFalse( $data['installed'] );
+    }
+
+    public function testDropinInstallCreatesFile(): void {
+        $this->tester->loginAsAdmin();
+
+        $request  = new WP_REST_Request( 'POST', '/lolly/v1/settings/dropin' );
+        $response = rest_do_request( $request );
+
+        $this->assertEquals( 201, $response->get_status() );
+
+        $data = $response->get_data();
+
+        $this->assertTrue( $data['installed'] );
+        $this->assertTrue( $data['is_lolly'] );
+        $this->assertNotNull( $data['version'] );
+    }
+
+    public function testDropinUninstallRemovesFile(): void {
+        $this->tester->loginAsAdmin();
+
+        // First install.
+        $install_request = new WP_REST_Request( 'POST', '/lolly/v1/settings/dropin' );
+        rest_do_request( $install_request );
+
+        // Now uninstall.
+        $request  = new WP_REST_Request( 'DELETE', '/lolly/v1/settings/dropin' );
+        $response = rest_do_request( $request );
+
+        $this->assertEquals( 200, $response->get_status() );
+
+        $data = $response->get_data();
+
+        $this->assertFalse( $data['installed'] );
+    }
+
+    public function testDropinEndpointsRequireAdmin(): void {
+        $this->tester->loginAsRole( 'subscriber' );
+
+        $get_response    = rest_do_request( new WP_REST_Request( 'GET', '/lolly/v1/settings/dropin' ) );
+        $post_response   = rest_do_request( new WP_REST_Request( 'POST', '/lolly/v1/settings/dropin' ) );
+        $delete_response = rest_do_request( new WP_REST_Request( 'DELETE', '/lolly/v1/settings/dropin' ) );
+
+        $this->assertEquals( 403, $get_response->get_status() );
+        $this->assertEquals( 403, $post_response->get_status() );
+        $this->assertEquals( 403, $delete_response->get_status() );
+    }
+
+    public function testDropinEndpointsRequireAuth(): void {
+        $get_response    = rest_do_request( new WP_REST_Request( 'GET', '/lolly/v1/settings/dropin' ) );
+        $post_response   = rest_do_request( new WP_REST_Request( 'POST', '/lolly/v1/settings/dropin' ) );
+        $delete_response = rest_do_request( new WP_REST_Request( 'DELETE', '/lolly/v1/settings/dropin' ) );
+
+        $this->assertEquals( 401, $get_response->get_status() );
+        $this->assertEquals( 401, $post_response->get_status() );
+        $this->assertEquals( 401, $delete_response->get_status() );
     }
 }
