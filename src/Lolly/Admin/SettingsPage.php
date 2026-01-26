@@ -73,9 +73,10 @@ class SettingsPage {
             true
         );
 
-        // Preload the settings endpoint response.
+        // Preload the settings and drop-in endpoint responses.
         $preload_paths = [
             '/lolly/v1/settings',
+            '/lolly/v1/settings/dropin',
         ];
 
         $preload_data = array_reduce(

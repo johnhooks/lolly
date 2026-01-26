@@ -4,7 +4,7 @@ import { __ } from '@wordpress/i18n';
 import { Settings, WpRestApiError } from '../../types';
 import { isWpRestApiError } from '../../utils';
 
-import { Action, SettingsThunk } from './types';
+import { Action, DropinStatus, SettingsThunk } from './types';
 
 /**
  * Edit a settings property.
@@ -74,6 +74,91 @@ export const saveEditedSettings =
 
             dispatch({
                 type: 'SAVE_SETTINGS_RECORD_FAILED',
+                error,
+            });
+        }
+    };
+
+/**
+ * Clear the drop-in error.
+ */
+export function clearDropinError(): Action {
+    return {
+        type: 'CLEAR_DROPIN_ERROR',
+    };
+}
+
+/**
+ * Install the drop-in.
+ */
+export const installDropin =
+    (): SettingsThunk =>
+    async ({ dispatch }) => {
+        dispatch({
+            type: 'INSTALL_DROPIN_START',
+        });
+
+        try {
+            const status = await apiFetch<DropinStatus>({
+                path: '/lolly/v1/settings/dropin',
+                method: 'POST',
+            });
+
+            dispatch({
+                type: 'INSTALL_DROPIN_FINISHED',
+                status,
+            });
+        } catch (e: unknown) {
+            const error: WpRestApiError = isWpRestApiError(e)
+                ? e
+                : {
+                      code: 'lolly.install-dropin-failed',
+                      message: __(
+                          'Failed to install the drop-in, an unknown error occurred.',
+                          'lolly'
+                      ),
+                  };
+
+            dispatch({
+                type: 'INSTALL_DROPIN_FAILED',
+                error,
+            });
+        }
+    };
+
+/**
+ * Uninstall the drop-in.
+ */
+export const uninstallDropin =
+    (): SettingsThunk =>
+    async ({ dispatch }) => {
+        dispatch({
+            type: 'UNINSTALL_DROPIN_START',
+        });
+
+        try {
+            const status = await apiFetch<DropinStatus>({
+                path: '/lolly/v1/settings/dropin',
+                method: 'DELETE',
+            });
+
+            dispatch({
+                type: 'UNINSTALL_DROPIN_FINISHED',
+                status,
+            });
+        } catch (e: unknown) {
+            const error: WpRestApiError = isWpRestApiError(e)
+                ? e
+                : {
+                      code: 'lolly.uninstall-dropin-failed',
+                      message: __(
+                          'Failed to uninstall the drop-in, an unknown error occurred.',
+                          'lolly'
+                      ),
+                  };
+
+            dispatch({
+                type: 'UNINSTALL_DROPIN_FAILED',
                 error,
             });
         }

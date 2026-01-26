@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lolly\Rest;
 
 use Lolly\Config\Config;
+use Lolly\Dropin\DropinManager;
 use Lolly\Schema\SchemaLoader;
 use WP_Error;
 use WP_REST_Controller;
@@ -24,6 +25,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Endpoints:
  * - GET /lolly/v1/settings Get all settings
  * - PUT /lolly/v1/settings Update settings
+ * - GET /lolly/v1/settings/dropin Get drop-in status
+ * - POST /lolly/v1/settings/dropin Install drop-in
+ * - DELETE /lolly/v1/settings/dropin Uninstall drop-in
  * - OPTIONS /lolly/v1/settings Get schema (WordPress default)
  */
 class SettingsController extends WP_REST_Controller {
@@ -33,6 +37,7 @@ class SettingsController extends WP_REST_Controller {
     public function __construct(
         private readonly Config $config,
         private readonly SchemaLoader $schema_loader,
+        private readonly DropinManager $dropin_manager,
     ) {
         $this->namespace = 'lolly/v1';
         $this->rest_base = 'settings';
@@ -59,6 +64,28 @@ class SettingsController extends WP_REST_Controller {
                     'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
                 ],
                 'schema' => [ $this, 'get_public_item_schema' ],
+            ]
+        );
+
+        register_rest_route(
+            $this->namespace,
+            '/' . $this->rest_base . '/dropin',
+            [
+                [
+                    'methods'             => WP_REST_Server::READABLE,
+                    'callback'            => [ $this, 'get_dropin_status' ],
+                    'permission_callback' => [ $this, 'permissions_check' ],
+                ],
+                [
+                    'methods'             => WP_REST_Server::CREATABLE,
+                    'callback'            => [ $this, 'install_dropin' ],
+                    'permission_callback' => [ $this, 'permissions_check' ],
+                ],
+                [
+                    'methods'             => WP_REST_Server::DELETABLE,
+                    'callback'            => [ $this, 'uninstall_dropin' ],
+                    'permission_callback' => [ $this, 'permissions_check' ],
+                ],
             ]
         );
         // phpcs:enable
@@ -158,6 +185,69 @@ class SettingsController extends WP_REST_Controller {
         }
 
         return new WP_REST_Response( $settings );
+    }
+
+    /**
+     * Get drop-in status.
+     *
+     * @param WP_REST_Request<array<string, mixed>> $request The request object.
+     *
+     * @return WP_REST_Response|WP_Error The status response.
+     */
+    public function get_dropin_status( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+        $status = $this->dropin_manager->get_status();
+
+        if ( is_wp_error( $status ) ) {
+            return $status;
+        }
+
+        return new WP_REST_Response( $status );
+    }
+
+    /**
+     * Install the drop-in.
+     *
+     * @param WP_REST_Request<array<string, mixed>> $request The request object.
+     *
+     * @return WP_REST_Response|WP_Error The status response.
+     */
+    public function install_dropin( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+        $result = $this->dropin_manager->install();
+
+        if ( is_wp_error( $result ) ) {
+            return $result;
+        }
+
+        $status = $this->dropin_manager->get_status();
+
+        if ( is_wp_error( $status ) ) {
+            return $status;
+        }
+
+        return new WP_REST_Response( $status, 201 );
+    }
+
+    /**
+     * Uninstall the drop-in.
+     *
+     * @param WP_REST_Request<array<string, mixed>> $request The request object.
+     *
+     * @return WP_REST_Response|WP_Error The status response.
+     */
+    public function uninstall_dropin( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+        $result = $this->dropin_manager->uninstall();
+
+        if ( is_wp_error( $result ) ) {
+            return $result;
+        }
+
+        $status = $this->dropin_manager->get_status();
+
+        if ( is_wp_error( $status ) ) {
+            return $status;
+        }
+
+        return new WP_REST_Response( $status );
     }
 
     /**

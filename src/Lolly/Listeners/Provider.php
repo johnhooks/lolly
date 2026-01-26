@@ -28,16 +28,19 @@ class Provider extends ServiceProvider {
         HttpListener::class,
         UserListener::class,
         AuthListener::class,
+        FatalErrorListener::class,
     ];
 
     public function register() {
         $this->container->bind( HttpListener::class, HttpListener::class );
         $this->container->bind( UserListener::class, UserListener::class );
         $this->container->bind( AuthListener::class, AuthListener::class );
+        $this->container->bind( FatalErrorListener::class, FatalErrorListener::class );
 
         $this->register_http_listeners();
         $this->register_user_listeners();
         $this->register_auth_listeners();
+        $this->register_fatal_error_listener();
     }
 
     private function register_http_listeners(): void {
@@ -162,5 +165,15 @@ class Provider extends ServiceProvider {
                 2
             );
         }
+    }
+
+    private function register_fatal_error_listener(): void {
+        if ( ! $this->config->is_logging_enabled() ) {
+            return;
+        }
+
+        register_shutdown_function(
+            $this->container->callback( FatalErrorListener::class, 'on_shutdown' )
+        );
     }
 }

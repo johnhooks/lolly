@@ -16,6 +16,8 @@ import { __ } from '@wordpress/i18n';
 import { store as settingStore } from '../settings/store';
 import type { AuthLoggingConfig, FeatureConfig } from '../types';
 
+import DropinCard from './dropin-card';
+
 const defaultAuthConfig: AuthLoggingConfig = {
     enabled: true,
     login: true,
@@ -287,6 +289,8 @@ export default function SettingsPage(): React.ReactNode {
                     </CardBody>
                 </Card>
             )}
+
+            <DropinCard />
 
             <HStack>
                 <Button

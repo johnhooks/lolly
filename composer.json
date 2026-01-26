@@ -48,6 +48,7 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\Support\\": "tests/Support",
+            "Tests\\Stubs\\": "tests/Stubs",
             "Tests\\Wpunit\\": "tests/Wpunit"
         }
     },

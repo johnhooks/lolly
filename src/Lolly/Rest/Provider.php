@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Lolly\Rest;
 
+use Lolly\Dropin\DropinManager;
 use Lolly\lucatume\DI52\ServiceProvider;
 use Lolly\Schema\SchemaLoader;
 
@@ -26,6 +27,7 @@ class Provider extends ServiceProvider {
     public array $provides = [
         SchemaLoader::class,
         SettingsController::class,
+        DropinManager::class,
     ];
 
     /**
@@ -33,6 +35,7 @@ class Provider extends ServiceProvider {
      */
     public function register(): void {
         $this->container->singleton( SchemaLoader::class, SchemaLoader::class );
+        $this->container->singleton( DropinManager::class, DropinManager::class );
         $this->container->singleton( SettingsController::class, SettingsController::class );
 
         add_action( 'rest_api_init', $this->container->callback( SettingsController::class, 'register_routes' ) );

@@ -11,7 +11,7 @@ Lolly Log is an ECS (Elastic Common Schema) compatible HTTP request/response log
 ```
 src/Lolly/
 ├── Admin/           # Settings page UI
-├── Config/          # Configuration loading, validation, settings registration
+├── Config/          # Configuration loading and validation
 ├── Lib/
 │   ├── Contracts/   # Interfaces for redactors and whitelist
 │   ├── Enums/       # HttpRedactionType enum
@@ -20,13 +20,16 @@ src/Lolly/
 │   └── ValueObjects/# Data structures (RedactionItem, etc.)
 ├── Listeners/       # HTTP event listeners (REST API, HTTP Client)
 ├── Log/             # Logger factory (Monolog)
+├── Rest/            # Custom REST API controllers
+├── Schema/          # JSON Schema loading and caching
 └── Processors/      # WordPress-specific processors
 ```
 
 Key patterns:
 - **Listeners** capture HTTP events and delegate to processors
 - **Processors** transform log records (ECS format, redaction)
-- **Config** manages settings via WordPress options with JSON Schema validation
+- **Config** manages settings via WordPress options
+- **Rest** provides custom `/lolly/v1/settings` endpoint with JSON Schema validation
 
 ## Local Development
 
@@ -85,7 +88,7 @@ slic composer install            # Install dependencies
 slic composer strauss            # Build prefixed dependencies
 slic airplane-mode on            # Block external HTTP requests
 slic run Wpunit                  # Run tests
-slic run Wpunit:SettingsTest     # Run specific test
+slic run Wpunit:SettingsControllerTest  # Run specific test
 
 # Drop into slic shell for debugging
 slic shell

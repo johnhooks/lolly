@@ -1,6 +1,12 @@
 import { combineReducers } from '@wordpress/data';
 
-import type { SettingsState, State, Action, EditsState } from './types';
+import type {
+    SettingsState,
+    State,
+    Action,
+    EditsState,
+    DropinState,
+} from './types';
 
 function settings(state: SettingsState, action: Action): SettingsState {
     switch (action.type) {
@@ -71,9 +77,86 @@ function edits(state: EditsState, action: Action): EditsState {
     return state;
 }
 
+function dropin(state: DropinState, action: Action): DropinState {
+    switch (action.type) {
+        case 'FETCH_DROPIN_STATUS_START': {
+            return {
+                ...state,
+                isLoading: true,
+                error: undefined,
+            };
+        }
+        case 'FETCH_DROPIN_STATUS_FINISHED': {
+            return {
+                ...state,
+                isLoading: false,
+                status: action.status,
+            };
+        }
+        case 'FETCH_DROPIN_STATUS_FAILED': {
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error,
+            };
+        }
+        case 'INSTALL_DROPIN_START': {
+            return {
+                ...state,
+                isInstalling: true,
+                error: undefined,
+            };
+        }
+        case 'INSTALL_DROPIN_FINISHED': {
+            return {
+                ...state,
+                isInstalling: false,
+                status: action.status,
+            };
+        }
+        case 'INSTALL_DROPIN_FAILED': {
+            return {
+                ...state,
+                isInstalling: false,
+                error: action.error,
+            };
+        }
+        case 'UNINSTALL_DROPIN_START': {
+            return {
+                ...state,
+                isUninstalling: true,
+                error: undefined,
+            };
+        }
+        case 'UNINSTALL_DROPIN_FINISHED': {
+            return {
+                ...state,
+                isUninstalling: false,
+                status: action.status,
+            };
+        }
+        case 'UNINSTALL_DROPIN_FAILED': {
+            return {
+                ...state,
+                isUninstalling: false,
+                error: action.error,
+            };
+        }
+        case 'CLEAR_DROPIN_ERROR': {
+            return {
+                ...state,
+                error: undefined,
+            };
+        }
+    }
+
+    return state;
+}
+
 export default combineReducers({
     settings,
     edits,
+    dropin,
 });
 
 export function initializeDefaultState(): State {
@@ -86,6 +169,13 @@ export function initializeDefaultState(): State {
         edits: {
             edits: {},
             isSaving: false,
+            error: undefined,
+        },
+        dropin: {
+            status: undefined,
+            isLoading: false,
+            isInstalling: false,
+            isUninstalling: false,
             error: undefined,
         },
     };
